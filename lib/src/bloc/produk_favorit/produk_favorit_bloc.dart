@@ -12,6 +12,15 @@ class ProdukFavBloc {
     _products.sink.add(data);
   }
 
+  Future<bool> deleteData(String id, String idUser) async {
+    final bool result = await _provider.deleteFromFavorite(id, idUser);
+    if(result != null){
+      return result;
+    }else {
+      return false;
+    }
+  }
+
   dispose() {
     _products.close();
   }

@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/produk_sample.dart';
-import 'package:siplah_jpmall/src/ui/produk_detail.dart';
+//import 'package:siplah_jpmall/src/ui/produk_detail.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:siplah_jpmall/src/ui/produk_detail.dart';
 
 // class Nontext extends StatefulWidget {
 //   @override
@@ -204,14 +206,13 @@ import 'package:http/http.dart' as http;
 // }
 
 class Nontext extends StatefulWidget {
-  final List data;
+  final List<Product> data;
   final String kategori;
   final String level;
   final String id;
 
-  const Nontext({Key key, this.data, this.kategori, this.level, this.id}) : super(key: key);  
-
-
+  const Nontext({Key key, this.data, this.kategori, this.level, this.id})
+      : super(key: key);
 
   @override
   _NontextState createState() => _NontextState();
@@ -222,13 +223,14 @@ class _NontextState extends State<Nontext> {
   void initState() {
     // TODO: implement initState
     super.initState();
-     changeIndex();
-
+    changeIndex();
   }
+
   void changeIndex() {
     setState(() => index = random.nextInt(3));
   }
- List colors = [Colors.white, Colors.white, Colors.white];
+
+  List colors = [Colors.white, Colors.white, Colors.white];
   Random random = new Random();
   var f = NumberFormat("#,##0", "en_US");
   List<String> satu = [
@@ -240,7 +242,6 @@ class _NontextState extends State<Nontext> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
-   
     return Container(
       height: 225,
       width: MediaQuery.of(context).size.width,
@@ -264,8 +265,9 @@ class _NontextState extends State<Nontext> {
                               bottomLeft: Radius.circular(20),
                               topLeft: Radius.circular(20)),
                           image: DecorationImage(
-                              image:
-                                  NetworkImage(widget.kategori!=null?widget.kategori:'http://siplah.mascitra.co.id/assets/images/no-image.png'))),
+                              image: NetworkImage(widget.kategori != null
+                                  ? widget.kategori
+                                  : 'http://siplah.mascitra.co.id/assets/images/no-image.png'))),
                       child: SizedBox(
                         height: 220,
                         width: 150,
@@ -328,55 +330,55 @@ class _NontextState extends State<Nontext> {
 //                ),
 //              ],
 //            ),
-            SizedBox(height: 20,),
-            
-          ],
-        ),),
-      ),
-    ):Container(
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(20),
                               topLeft: Radius.circular(20)),
                           image: DecorationImage(
-                              image:
-                                  NetworkImage('http://siplah.mascitra.co.id/assets/images/no-image.png'))),
+                              image: NetworkImage(
+                                  'http://siplah.mascitra.co.id/assets/images/no-image.png'))),
                       child: SizedBox(
                         height: 220,
                         width: 150,
                         child: Container(
-
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               SizedBox(
                                 height: 15,
                               ),
-                        
                               SizedBox(
                                 height: 120,
                               ),
-            SizedBox(height: 20,),
-            
-          ],
-        ),),
-      )
-    ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
 
-    //end
+              //end
               SizedBox(
                 width: 8.0,
               ),
               Container(
                 height: 180,
-                decoration: BoxDecoration(
-                    color: colors[index],
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(0, 3),
-                          blurRadius: 3)
-                    ]),
+                decoration: BoxDecoration(color: colors[index], boxShadow: [
+                  BoxShadow(
+                      color: Colors.black26,
+                      offset: Offset(0, 3),
+                      blurRadius: 3)
+                ]),
                 child: Container(
                   height: 100,
                   child: ListView.builder(
@@ -385,7 +387,6 @@ class _NontextState extends State<Nontext> {
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, int index) {
-                     
                       return Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                         child: GestureDetector(
@@ -395,18 +396,17 @@ class _NontextState extends State<Nontext> {
                                   transitionDuration:
                                       Duration(milliseconds: 350),
                                   pageBuilder: (context, _, __) => DetailProduk2(
-                                    penjual_id:widget.data[index]['user_id'],
-                                    penjual_user_id:widget.data[index]['user_id'],
-                                    produk_id:widget.data[index]['id'],
-                                    id: widget.id,
-                                    level: widget.level,
-                                      nama: widget.data[index]['produk'],
-                                      gambar: widget.data[index]['foto'] != null
-                                          ? widget.data[index]['foto'][0]
-                                              ['foto']
+                                      penjual_id: widget.data[index].userId,
+                                      penjual_user_id:
+                                          widget.data[index].userId,
+                                      produk_id: widget.data[index].id,
+                                      id: widget.id,
+                                      level: widget.level,
+                                      nama: widget.data[index].produk,
+                                      gambar: widget.data[index] != null
+                                          ? widget.data[index].foto[0].foto
                                           : 'http://siplah.mascitra.co.id/assets/images/no-image.png',
-                                      harga: widget.data[index]['harga']))),
-                                    
+                                      harga: widget.data[index].harga))),
                           child: Container(
                             width: 130,
                             height: 100,
@@ -421,10 +421,8 @@ class _NontextState extends State<Nontext> {
                                   width: 100,
                                   child: Container(
                                     child: Image.network(
-                                      widget.data[index]['foto'] !=
-                                              null
-                                          ? widget.data[index]['foto'][0]
-                                              ['foto']
+                                      widget.data[index].foto.length != 0
+                                          ? widget.data[index].foto[0].foto
                                           : 'http://siplah.mascitra.co.id/assets/images/no-image.png',
                                       fit: BoxFit.cover,
                                     ),
@@ -440,7 +438,7 @@ class _NontextState extends State<Nontext> {
                                   height: 40,
                                   width: 110,
                                   child: Text(
-                                    widget.data[index]['produk'],
+                                    widget.data[index].produk,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -452,8 +450,8 @@ class _NontextState extends State<Nontext> {
                                 Container(
                                   width: 110,
                                   child: Text(
-                                     widget.data[index]['harga'] != '0'
-                                        ?"Rp " + widget.data[index]['harga']
+                                    widget.data[index].harga != '0'
+                                        ? "Rp " + widget.data[index].harga
                                         : "harga zona",
                                     style: TextStyle(
                                       color: Colors.red,
@@ -467,7 +465,7 @@ class _NontextState extends State<Nontext> {
                                 SizedBox(
                                   height: 5,
                                 ),
-                                                              ],
+                              ],
                             ),
                           ),
                         ),
@@ -492,9 +490,8 @@ class Nontextbaru extends StatefulWidget {
   final String level;
   final String id;
 
-  const Nontextbaru({Key key, this.data, this.kategori, this.level, this.id}) : super(key: key);  
-
-
+  const Nontextbaru({Key key, this.data, this.kategori, this.level, this.id})
+      : super(key: key);
 
   @override
   _NontextStatebaru createState() => _NontextStatebaru();
@@ -505,13 +502,14 @@ class _NontextStatebaru extends State<Nontextbaru> {
   void initState() {
     // TODO: implement initState
     super.initState();
-     changeIndex();
-
+    changeIndex();
   }
+
   void changeIndex() {
     setState(() => index = random.nextInt(3));
   }
- List colors = [Colors.white, Colors.white, Colors.white];
+
+  List colors = [Colors.white, Colors.white, Colors.white];
   Random random = new Random();
   var f = NumberFormat("#,##0", "en_US");
   List<String> satu = [
@@ -523,7 +521,6 @@ class _NontextStatebaru extends State<Nontextbaru> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
-   
     return Container(
       height: 225,
       width: MediaQuery.of(context).size.width,
@@ -541,21 +538,18 @@ class _NontextStatebaru extends State<Nontextbaru> {
                 width: 8.0,
               ),
 
-
-    //end
+              //end
               SizedBox(
                 width: 8.0,
               ),
               Container(
                 height: 180,
-                decoration: BoxDecoration(
-                    color: colors[index],
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(0, 3),
-                          blurRadius: 3)
-                    ]),
+                decoration: BoxDecoration(color: colors[index], boxShadow: [
+                  BoxShadow(
+                      color: Colors.black26,
+                      offset: Offset(0, 3),
+                      blurRadius: 3)
+                ]),
                 child: Container(
                   height: 100,
                   child: ListView.builder(
@@ -564,7 +558,6 @@ class _NontextStatebaru extends State<Nontextbaru> {
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, int index) {
-                     
                       return Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                         child: GestureDetector(
@@ -574,18 +567,18 @@ class _NontextStatebaru extends State<Nontextbaru> {
                                   transitionDuration:
                                       Duration(milliseconds: 350),
                                   pageBuilder: (context, _, __) => DetailProduk2(
-                                    penjual_id:widget.data[index]['user_id'],
-                                    penjual_user_id:widget.data[index]['user_id'],
-                                    produk_id:widget.data[index]['id'],
-                                    id: widget.id,
-                                    level: widget.level,
+                                      penjual_id: widget.data[index]['user_id'],
+                                      penjual_user_id: widget.data[index]
+                                          ['user_id'],
+                                      produk_id: widget.data[index]['id'],
+                                      id: widget.id,
+                                      level: widget.level,
                                       nama: widget.data[index]['produk'],
                                       gambar: widget.data[index]['foto'] != null
                                           ? widget.data[index]['foto'][0]
                                               ['foto']
                                           : 'http://siplah.mascitra.co.id/assets/images/no-image.png',
                                       harga: widget.data[index]['harga']))),
-                                    
                           child: Container(
                             width: 130,
                             height: 100,
@@ -600,8 +593,7 @@ class _NontextStatebaru extends State<Nontextbaru> {
                                   width: 100,
                                   child: Container(
                                     child: Image.network(
-                                      widget.data[index]['foto'] !=
-                                              null
+                                      widget.data[index]['foto'] != null
                                           ? widget.data[index]['foto'][0]
                                               ['foto']
                                           : 'http://siplah.mascitra.co.id/assets/images/no-image.png',
@@ -631,8 +623,8 @@ class _NontextStatebaru extends State<Nontextbaru> {
                                 Container(
                                   width: 110,
                                   child: Text(
-                                     widget.data[index]['harga'] != '0'
-                                        ?"Rp " + widget.data[index]['harga']
+                                    widget.data[index]['harga'] != '0'
+                                        ? "Rp " + widget.data[index]['harga']
                                         : "harga zona",
                                     style: TextStyle(
                                       color: Colors.red,
@@ -646,7 +638,7 @@ class _NontextStatebaru extends State<Nontextbaru> {
                                 SizedBox(
                                   height: 5,
                                 ),
-                                                              ],
+                              ],
                             ),
                           ),
                         ),

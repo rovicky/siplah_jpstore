@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:siplah_jpmall/src/bloc/produk_favorit/produk_favorit_bloc.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
@@ -13,5 +14,35 @@ abstract class ProductFavState {
 
   firstLoad() async {
     _bloc.getData(await Provider.of<AuthProvider>(_state.context, listen: false).getCredential());
+  }
+
+  deleteData(String id) async {
+    String idUser = await Provider.of<AuthProvider>(_state.context, listen: false).getCredential();
+    _bloc.deleteData(id, idUser).then((value) {
+      if(value) {
+        firstLoad();
+        _berhasil(_state.context);
+      }else {
+        _showAlert(_state.context);
+      }
+    });
+  }
+
+  void _showAlert(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Peringatan"),
+          content: Text("maaf gagal edit"),
+        ));
+  }
+
+  void _berhasil(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Peringatan"),
+          content: Text("Buku telah dihapus dari daftar favorit"),
+        ));
   }
 }

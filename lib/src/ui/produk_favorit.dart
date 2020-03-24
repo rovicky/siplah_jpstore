@@ -21,58 +21,58 @@ class ProdukFavoritState extends State<ProdukFavorit> with ProductFavState{
   ProdukFavoritState createState() => this;
   final ProdukFavBloc bloc = ProdukFavBloc();
 
-  Future<http.Response> _delete(String id) async {
-    //a=a+id;
-    print(id);
-    var url = BaseUrl.base + 'sekolah/produk_favorit/hapus';
-
-    Map data = {'user_id': "" + nama, 'id': id};
-    //encode Map to JSON
-    var body = json.encode(data);
-
-    var response = await http.post(url,
-        headers: {
-          "Content-Type": BaseUrl.headers.contentTypeJson,
-          "API-App": BaseUrl.headers.apiApp,
-          "Api-Key": BaseUrl.headers.apiKey,
-          "API-Token": BaseUrl.headers.apiToken
-        },
-        body: body);
-    // print("${response.statusCode}");
-
-    //print("${response.body}");
-    Map<String, dynamic> map = jsonDecode(response.body);
-    //print(map);
-    if (map["Error"] == true || map["Error"] == "true") {
-      _berhasil(context);
-      ProdukFavorit();
-    } else {
-      // savedata();
-      _showAlert(context);
-    }
-    return response;
-  }
-
-  void _showAlert(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Peringatan"),
-              content: Text("maaf gagal edit"),
-            ));
-  }
-
-  void _berhasil(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Peringatan"),
-              content: Text("Buku telah dihapus dari daftar favorit"),
-            ));
-  }
-
-  String nama;
-  List data, data2;
+//  Future<http.Response> _delete(String id) async {
+//    //a=a+id;
+//    print(id);
+//    var url = BaseUrl.base + 'sekolah/produk_favorit/hapus';
+//
+//    Map data = {'user_id': "" + nama, 'id': id};
+//    //encode Map to JSON
+//    var body = json.encode(data);
+//
+//    var response = await http.post(url,
+//        headers: {
+//          "Content-Type": BaseUrl.headers.contentTypeJson,
+//          "API-App": BaseUrl.headers.apiApp,
+//          "Api-Key": BaseUrl.headers.apiKey,
+//          "API-Token": BaseUrl.headers.apiToken
+//        },
+//        body: body);
+//    // print("${response.statusCode}");
+//
+//    //print("${response.body}");
+//    Map<String, dynamic> map = jsonDecode(response.body);
+//    //print(map);
+//    if (map["Error"] == true || map["Error"] == "true") {
+//      _berhasil(context);
+//      ProdukFavorit();
+//    } else {
+//      // savedata();
+//      _showAlert(context);
+//    }
+//    return response;
+//  }
+//
+//  void _showAlert(BuildContext context) {
+//    showDialog(
+//        context: context,
+//        builder: (context) => AlertDialog(
+//          title: Text("Peringatan"),
+//          content: Text("maaf gagal edit"),
+//        ));
+//  }
+//
+//  void _berhasil(BuildContext context) {
+//    showDialog(
+//        context: context,
+//        builder: (context) => AlertDialog(
+//          title: Text("Peringatan"),
+//          content: Text("Buku telah dihapus dari daftar favorit"),
+//        ));
+//  }
+//
+//  String nama;
+//  List data, data2;
 //  Future<String> getJsonData() async {
 //    var response = await http.post(
 //        //Encode the url
@@ -133,6 +133,9 @@ class ProdukFavoritState extends State<ProdukFavorit> with ProductFavState{
   }
 
   _body(BuildContext context, Products produk) {
+    if(produk.data.length == 0) {
+      return Center(child: Text("Tidak Ada Produk Favorit"),);
+    }
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -222,6 +225,7 @@ class ProdukFavoritState extends State<ProdukFavorit> with ProductFavState{
                                       color: Colors.blue,
                                     ),
                                     onPressed: () {
+                                      deleteData(content.id);
 //                                      _delete(data[i]['id']);
                                     },
                                   ),
