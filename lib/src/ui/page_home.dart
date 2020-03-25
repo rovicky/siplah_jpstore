@@ -1,32 +1,30 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:siplah_jpmall/src/bloc/home/home_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/home/home_state.dart';
-import 'package:siplah_jpmall/src/models/get_token.dart';
+//import 'package:siplah_jpmall/src/models/get_token.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
-import 'package:siplah_jpmall/src/models/produk_sample.dart';
-import 'package:siplah_jpmall/src/models/user.dart';
+//import 'package:siplah_jpmall/src/models/produk_sample.dart';
+//import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
-import 'package:siplah_jpmall/src/ui/flashdeal.dart';
+//import 'package:siplah_jpmall/src/ui/flashdeal.dart';
 import 'package:siplah_jpmall/src/ui/nontext.dart';
-import 'package:siplah_jpmall/src/ui/alatperaga.dart';
+//import 'package:siplah_jpmall/src/ui/alatperaga.dart';
 import 'package:siplah_jpmall/src/ui/gridkategori.dart';
-import 'package:siplah_jpmall/src/ui/gridproduk.dart';
+//import 'package:siplah_jpmall/src/ui/gridproduk.dart';
 import 'package:siplah_jpmall/src/ui/imageslider.dart';
 import 'package:siplah_jpmall/src/ui/myappbar.dart';
 import 'package:siplah_jpmall/src/ui/myflexspace.dart';
-import 'package:siplah_jpmall/src/ui/pendamping.dart';
-import 'package:siplah_jpmall/src/ui/produk_detail.dart';
-import 'package:siplah_jpmall/src/ui/rekomtoko.dart';
-import 'dart:async';
-import 'dart:convert';
-//import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+//import 'package:siplah_jpmall/src/ui/pendamping.dart';
+//import 'package:siplah_jpmall/src/ui/produk_detail.dart';
+//import 'package:siplah_jpmall/src/ui/rekomtoko.dart';
+//import 'dart:async';
+//import 'dart:convert';
+////import 'package:pull_to_refresh/pull_to_refresh.dart';
+//import 'package:flutter/material.dart';
+//import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -84,20 +82,6 @@ class HomePageState extends State<HomePage> with HomeState {
   int currentPage = 0;
   ScrollController _controller;
   _scrollListener() {
-//     if (_controller.offset >= _controller.position.maxScrollExtent &&
-//         !_controller.position.outOfRange) {
-//       setState(() {
-//         message = "reach the bottom";
-//       });
-//         // print("reach the bottom");
-//     }
-//     if (_controller.offset <= _controller.position.minScrollExtent &&
-//         !_controller.position.outOfRange) {
-//       setState(() {
-//         message = "reach the top";
-//       });
-//         // print("reach the top");
-//     }
     setState(() {
       posisi = _controller.offset;
     });
@@ -221,15 +205,12 @@ class HomePageState extends State<HomePage> with HomeState {
                                     mainAxisSize: MainAxisSize.min,
                                     children: List.generate(
                                         snapshot.data.data.length,
-                                            (index) => Container(
-                                            child: Column(
+                                        (index) => Container(
+                                                child: Column(
                                               children: <Widget>[
                                                 Nontext(
-                                                  level:
-                                                  _auth.user
-                                                      .levelId,
-                                                  id: _auth.user
-                                                      .id,
+                                                  level: _auth.user.levelId,
+                                                  id: _auth.user.id,
                                                   data: snapshot
                                                       .data.data[index].produk,
                                                   kategori: snapshot
