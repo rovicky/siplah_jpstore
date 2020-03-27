@@ -1,5 +1,22 @@
 # siplah_jpmall
 
+#BACA_GW
+24_03_2020
+1. yang di home apaan namanya ntuh yang ditarik keatas gw ubah jadi refreshindicator aja. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 A new Flutter project.
 
 ## Getting Started
