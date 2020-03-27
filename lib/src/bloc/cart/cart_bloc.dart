@@ -16,4 +16,9 @@ class CartBloc {
   dispose(){
     _cartModel.close();
   }
+
+  Future<bool> delete(String id, String userId) async {
+    final bool result = await _cartProvider.delete(id, userId);
+    return result;
+  }
 }

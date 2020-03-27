@@ -26,4 +26,8 @@ void main(){
     final CartModel cartModel = await cartProvider.fetchData("47");
     expect(cartModel.error, false);
   });
+
+  test("Delete Cart", () async {
+    expect(await cartProvider.delete("11", "47"), true);
+  });
 }

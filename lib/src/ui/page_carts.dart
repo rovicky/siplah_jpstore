@@ -20,6 +20,9 @@ class CartsPage extends StatefulWidget {
 
 class CartsPageState extends State<CartsPage> with CartState {
   final CartBloc bloc = new CartBloc();
+  List<bool> itemSelected = [];
+  bool checkedAll = true;
+  int priceTotal = 0;
 
   @override
   CartsPageState createState() => this;
@@ -297,7 +300,7 @@ class CartsPageState extends State<CartsPage> with CartState {
 
     return Container(
       child: Scaffold(
-        backgroundColor: Colors.black12,
+          backgroundColor: Colors.black12,
           appBar: AppBar(
             flexibleSpace:
                 Container(decoration: BoxDecoration(color: Colors.blue[800])),
@@ -321,7 +324,27 @@ class CartsPageState extends State<CartsPage> with CartState {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.check_box, color: Colors.white),
+                    Checkbox(
+                        value: checkedAll,
+                        onChanged: (value) {
+                          if (itemSelected.length != 0) {
+                            List<bool> newItem = [];
+                            itemSelected.forEach((i) {
+                              setState(() => newItem.add(value));
+                            });
+                            setState(() {
+                              checkedAll = value;
+                              itemSelected = newItem;
+
+                              if(value) {
+                                print("this value is true");
+//                                priceTotal = priceTotal + int.parse()
+                              }else {
+                                print("this value is false");
+                              }
+                            });
+                          }
+                        }),
                     SizedBox(
                       width: 5.0,
                     ),
@@ -353,7 +376,7 @@ class CartsPageState extends State<CartsPage> with CartState {
                   children: <Widget>[
                     Text("Total Harga"),
                     Text(
-                      'Rp . ' + formatter.format(totalharga),
+                      'Rp . ' + formatter.format(priceTotal),
                       style: TextStyle(fontSize: 14, color: Colors.cyan),
                     )
                   ],
@@ -408,6 +431,8 @@ class CartsPageState extends State<CartsPage> with CartState {
   }
 
   _itemada(BuildContext context, CartModel snapshot) {
+
+
     if (snapshot.data == null) {
       return Center(
         child: Text("Your Cart is Empty"),
@@ -447,16 +472,18 @@ class CartsPageState extends State<CartsPage> with CartState {
                         // final y = x.produk[i];
 
                         final x = snapshot.data[index].produk;
-                        String a = 'aku';
+//                        String a = 'aku';
                         int totalqty = int.parse(x[i].jumlah);
-                        bool aktif = false;
+//                        bool aktif = false;
 
-                        qtyjumlah = int.parse(x[i].jumlah);
-                        int harga3 = x[i].subTotal;
-                        _subtotal[i] = harga3;
-                        print(_subtotal);
+//                        qtyjumlah = int.parse(x[i].jumlah);
+//                        int harga3 = x[i].subTotal;
+//                        _subtotal[i] = harga3;
+//                        print(_subtotal);
 
+                        priceTotal = priceTotal + int.parse(x[i].produkHarga);
                         _qty = TextEditingController(text: totalqty.toString());
+                        itemSelected.add(false);
                         return Column(
                           // produk
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,17 +495,20 @@ class CartsPageState extends State<CartsPage> with CartState {
                                 Container(
                                   width: 20,
                                   child: Checkbox(
-                                    value: _check[i] == false ? false : true,
-                                    onChanged: (bool value) {
-                                      setState(() {
-                                        _check[i] = value;
-                                        if (value == true) {
-                                          totalmethod(_subtotal[i]);
-                                        } else {
-                                          totalmethod(
-                                              _subtotal[i] - _subtotal[i] * 2);
-                                        }
-                                      });
+                                    value: itemSelected[index],
+                                    onChanged: (value) {
+                                      setState(
+                                              () {
+                                            itemSelected[index] = value;
+//                                            if(value) {
+//                                              priceTotal = priceTotal + int.parse(snapshot.data[index].produk[i].produkHarga);
+//                                              print(priceTotal);
+//                                            }else {
+//                                              priceTotal = priceTotal - int.parse(snapshot.data[index].produk[i].produkHarga);
+//                                              print(priceTotal);
+//                                            }
+                                          });
+
                                     },
                                   ),
                                 ),
@@ -504,7 +534,10 @@ class CartsPageState extends State<CartsPage> with CartState {
                                           ),
                                         )),
                                     Container(
-                                        child: Text("Rp "+MyTools.priceFormat(int.parse(x[i].produkHarga)),
+                                        child: Text(
+                                            "Rp " +
+                                                MyTools.priceFormat(int.parse(
+                                                    x[i].produkHarga)),
                                             style: TextStyle(
                                               fontSize: 13.5,
                                               fontWeight: FontWeight.w500,
@@ -518,7 +551,7 @@ class CartsPageState extends State<CartsPage> with CartState {
                                     color: Colors.blue,
                                   ),
                                   onPressed: () {
-                                    _showAlert1(context, x[i].id);
+                                    showAlert1(context, x[i].id);
                                   },
                                 ),
                               ],
@@ -544,9 +577,9 @@ class CartsPageState extends State<CartsPage> with CartState {
                                         ]),
                                     child: Center(
                                         child: Icon(
-                                      Icons.favorite_border,
-                                      size: 20,
-                                    ))),
+                                          Icons.favorite_border,
+                                          size: 20,
+                                        ))),
                                 SizedBox(
                                   width: 15,
                                 ),
@@ -567,7 +600,7 @@ class CartsPageState extends State<CartsPage> with CartState {
                                                 shape: BoxShape.circle,
                                                 border: Border.all()),
                                             child:
-                                                Center(child: Icon(Icons.add))),
+                                            Center(child: Icon(Icons.add))),
                                       ),
                                       Container(
                                         width: 50,
@@ -670,3 +703,4 @@ class CartsPageState extends State<CartsPage> with CartState {
     );
   }
 }
+
