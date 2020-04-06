@@ -3,150 +3,158 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 // import 'package:share/share.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siplah_jpmall/main.dart';
+import 'package:siplah_jpmall/src/bloc/product_details/product_detail_bloc.dart';
+import 'package:siplah_jpmall/src/bloc/product_details/product_detail_state.dart';
 import 'package:siplah_jpmall/src/bloc/state_bloc.dart';
 import 'package:siplah_jpmall/src/models/get_token.dart';
+import 'package:siplah_jpmall/src/models/product_detail.dart';
 import 'package:siplah_jpmall/src/models/produk_sample.dart';
+import 'package:siplah_jpmall/src/models/user.dart';
+import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/ui/nontext.dart';
 import 'package:siplah_jpmall/src/ui/page_carts.dart';
 import 'package:siplah_jpmall/src/ui/star.dart';
 // import 'package:siplah_jpmall/src/ui/star.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-class DetailProduk extends StatefulWidget {
-  final String nama;
-  final String harga;
-  final String gambar;
 
-  const DetailProduk({Key key, this.nama, this.harga, this.gambar}) : super(key: key);
-  @override
-  _DetailProdukState createState() => _DetailProdukState();
-}
-
-class _DetailProdukState extends State<DetailProduk>
-    with TickerProviderStateMixin {
-  PageController pageController;
-  int currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    pageController = PageController(
-      keepPage: true,
-      initialPage: currentPage,
-    );
- 
-  }
-//  share(BuildContext context) {
-//   final RenderBox box = context.findRenderObject();
-
-//   Share.share("http://www.google.com");
-// }
- 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: Container(
-              margin: EdgeInsets.only(left: 25),
-              child: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
-              )),
-          elevation: 0.0,
-          actions: <Widget>[
-            
-            Container(
-              margin: EdgeInsets.only(right: 25),
-              child: IconButton(
-                onPressed: () => print("lolo"),
-                icon: Icon(
-                  Icons.share,
-                  color: Colors.black,
-                ),
-              ),
-            )
-          
-          ],
-        ),
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Stack(
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30.0),
-                      child: Container(
-                        height: 300,
-                        child: PageView(
-                          onPageChanged: (index) {
-                            setState(() {
-                              currentPage = index;
-                            });
-                          },
-                          controller: pageController,
-                          children: List.generate(5, (f){
-                            return Hero(
-                              tag: widget.gambar,
-                              child: Container(
-                                height: 300,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            widget.gambar))),
-                              ),
-                            );
-                          })
-                        ),
-                      )
-                    ),
-                  ]),
-                  Positioned(
-                    top: 350,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      // width: 150,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: List.generate(5, (i){
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                            child: Container(
-                              height: 2,
-                              width: 40,
-                              color: currentPage == i ? Colors.cyan : Colors.grey,
-                            ),
-                          );
-                        })
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              // AppBar(
-              //   backgroundColor: Colors.transparent,
-              //   elevation: 0.0,
-              // ),
-           
-            ],
-          ),
-        ));
-  }
-}
+import 'package:siplah_jpmall/src/utils/mytools.dart';
+//class DetailProduk extends StatefulWidget {
+//  final String nama;
+//  final String harga;
+//  final String gambar;
+//
+//  const DetailProduk({Key key, this.nama, this.harga, this.gambar}) : super(key: key);
+//  @override
+//  _DetailProdukState createState() => _DetailProdukState();
+//}
+//
+//class _DetailProdukState extends State<DetailProduk>
+//    with TickerProviderStateMixin {
+//  PageController pageController;
+//  int currentPage = 0;
+//
+//  @override
+//  void initState() {
+//    super.initState();
+//    pageController = PageController(
+//      keepPage: true,
+//      initialPage: currentPage,
+//    );
+//
+//  }
+////  share(BuildContext context) {
+////   final RenderBox box = context.findRenderObject();
+//
+////   Share.share("http://www.google.com");
+//// }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Scaffold(
+//        appBar: AppBar(
+//          backgroundColor: Colors.transparent,
+//          leading: Container(
+//              margin: EdgeInsets.only(left: 25),
+//              child: IconButton(
+//                onPressed: () => Navigator.pop(context),
+//                icon: Icon(
+//                  Icons.arrow_back,
+//                  color: Colors.black,
+//                ),
+//              )),
+//          elevation: 0.0,
+//          actions: <Widget>[
+//
+//            Container(
+//              margin: EdgeInsets.only(right: 25),
+//              child: IconButton(
+//                onPressed: () => print("lolo"),
+//                icon: Icon(
+//                  Icons.share,
+//                  color: Colors.black,
+//                ),
+//              ),
+//            )
+//
+//          ],
+//        ),
+//        backgroundColor: Colors.white,
+//        body: SafeArea(
+//          child: Stack(
+//            children: <Widget>[
+//              Stack(
+//                children: <Widget>[
+//                  Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+//                    Padding(
+//                      padding: const EdgeInsets.only(top: 30.0),
+//                      child: Container(
+//                        height: 300,
+//                        child: PageView(
+//                          onPageChanged: (index) {
+//                            setState(() {
+//                              currentPage = index;
+//                            });
+//                          },
+//                          controller: pageController,
+//                          children: List.generate(5, (f){
+//                            return Hero(
+//                              tag: widget.gambar,
+//                              child: Container(
+//                                height: 300,
+//                                width: double.infinity,
+//                                decoration: BoxDecoration(
+//                                    color: Colors.white,
+//                                    image: DecorationImage(
+//                                        image: NetworkImage(
+//                                            widget.gambar))),
+//                              ),
+//                            );
+//                          })
+//                        ),
+//                      )
+//                    ),
+//                  ]),
+//                  Positioned(
+//                    top: 350,
+//                    left: 0.0,
+//                    right: 0.0,
+//                    child: Container(
+//                      // width: 150,
+//                      child: Row(
+//                        mainAxisAlignment: MainAxisAlignment.center,
+//                        crossAxisAlignment: CrossAxisAlignment.center,
+//                        children: List.generate(5, (i){
+//                          return Padding(
+//                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+//                            child: Container(
+//                              height: 2,
+//                              width: 40,
+//                              color: currentPage == i ? Colors.cyan : Colors.grey,
+//                            ),
+//                          );
+//                        })
+//                      ),
+//                    ),
+//                  )
+//                ],
+//              ),
+//              // AppBar(
+//              //   backgroundColor: Colors.transparent,
+//              //   elevation: 0.0,
+//              // ),
+//
+//            ],
+//          ),
+//        ));
+//  }
+//}
 
 class DetailProduk2 extends StatefulWidget {
-   final String nama;
+  final String nama;
   final String harga;
   final String gambar;
   final String level;
@@ -155,19 +163,27 @@ class DetailProduk2 extends StatefulWidget {
   final String penjual_user_id;
   final String penjual_id;
 
-  const DetailProduk2({Key key, this.nama, this.harga, this.gambar, this.level, this.id, this.produk_id, this.penjual_user_id, this.penjual_id}) : super(key: key);
+  const DetailProduk2(
+      {Key key,
+      this.nama,
+      this.harga,
+      this.gambar,
+      this.level,
+      this.id,
+      this.produk_id,
+      this.penjual_user_id,
+      this.penjual_id})
+      : super(key: key);
 
-
- 
-  
   @override
-  _DetailProduk2State createState() => _DetailProduk2State();
+  DetailProduk2State createState() => DetailProduk2State();
 }
 
-class _DetailProduk2State extends State<DetailProduk2>
-    with TickerProviderStateMixin {
+class DetailProduk2State extends State<DetailProduk2> with ProductDetailState {
   PageController pageController;
   int currentPage = 0;
+
+  final bloc = ProductDetailBloc();
 
   @override
   void initState() {
@@ -175,31 +191,32 @@ class _DetailProduk2State extends State<DetailProduk2>
     pageController = PageController(
       keepPage: true,
       initialPage: currentPage,
-      
     );
-   
+    firstLoad(this.widget.produk_id);
+    print(this.widget.produk_id);
+  }
 
-  }
-  
   Future<void> share() async {
-    String a=widget.nama;
+    String a = widget.nama;
     await FlutterShare.share(
-      title: widget.nama,
-      text: widget.nama,
-      linkUrl: "http://siplah.mascitra.co.id/search/?q="+widget.nama.replaceAll(" ", "+").replaceAll(",", "%2C").replaceAll(":", "%3A"),
-      chooserTitle: widget.nama
-      
-    );
-    
+        title: widget.nama,
+        text: widget.nama,
+        linkUrl: "http://siplah.mascitra.co.id/search/?q=" +
+            widget.nama
+                .replaceAll(" ", "+")
+                .replaceAll(",", "%2C")
+                .replaceAll(":", "%3A"),
+        chooserTitle: widget.nama);
   }
-  
-   List data;
+
+  List data;
   List data2;
   List kategorilist;
   Future<String> getJsonData() async {
     var response = await http.post(
       //Encode the url
-      Uri.encodeFull('http://siplah.mascitra.co.id/api/sekolah/keranjang/tambah'),
+      Uri.encodeFull(
+          'http://siplah.mascitra.co.id/api/sekolah/keranjang/tambah'),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "API-App": "siplah_jpmall.id",
@@ -207,16 +224,15 @@ class _DetailProduk2State extends State<DetailProduk2>
         "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
       },
       body: {
-        "user_id":widget.id,
-        "penjual_id":widget.penjual_id,
-        "produk_id":widget.produk_id,
-        "penjual_user_id":widget.penjual_user_id,
-        "jumlah":'1',
-
+        "user_id": widget.id,
+        "penjual_id": widget.penjual_id,
+        "produk_id": widget.produk_id,
+        "penjual_user_id": widget.penjual_user_id,
+        "jumlah": '1',
       },
     );
-    
-     //print(response.body);
+
+    //print(response.body);
     setState(() {
       // ignore: deprecated_member_use
       var convertDataToJson = json.decode(response.body);
@@ -225,7 +241,8 @@ class _DetailProduk2State extends State<DetailProduk2>
 
     return "Success";
   }
-   void _showAlert(BuildContext context) {
+
+  void _showAlert(BuildContext context) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -239,199 +256,251 @@ class _DetailProduk2State extends State<DetailProduk2>
                   },
                 ),
                 new FlatButton(
-                  child: new Text("OK"),
-                  onPressed:() {
-                    Navigator.of(context).pop();
-                    getJsonData();
-                  }
-                ),
+                    child: new Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      getJsonData();
+                    }),
               ],
             ));
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: Container(
-              margin: EdgeInsets.only(left: 25),
-              child: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
-              )),
-          elevation: 0.0,
-          actions: <Widget>[
-             Container(
-              margin: EdgeInsets.only(right: 25),
-              child: IconButton(
-                onPressed: () => share(),
-                icon: Icon(
-                  Icons.share,
-                  color: Colors.black,
-                ),
+    return StreamBuilder<ProductDetail>(
+        stream: bloc.product,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(
+                child: Text("Can't show anything!"),
               ),
-            )
-          ],
-        ),
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Stack(
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-                    Padding(
-                        padding: const EdgeInsets.only(top: 30.0),
-                        child: Container(
-                          height: 300,
-                          child: PageView(
-                              onPageChanged: (index) {
-                                setState(() {
-                                  currentPage = index;
-                                });
-                              },
-                              controller: pageController,
-                              children: List.generate(2, (f){
-                                return Container(
-                                  height: 300,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              widget.gambar))),
-                                );
-                              })
-                          ),
-                        )
-                    ),
-                  ]),
-                  Positioned(
-                    top: 350,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      // width: 150,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: List.generate(2, (i){
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                              child: Container(
-                                height: 2,
-                                width: 40,
-                                color: currentPage == i ? Colors.cyan : Colors.grey,
-                              ),
-                            );
-                          })
+            );
+          } else if (snapshot.hasData) {
+            if (snapshot.data.id == "0") {
+              return Scaffold(
+                body: Center(
+                  child: Text("Produk Tidak Ada!"),
+                ),
+              );
+            } else if (snapshot.data.id == "00") {
+              return Scaffold(
+                body: Center(
+                  child: Text("Can't load anything!"),
+                ),
+              );
+            } else {
+              final result = snapshot.data;
+              return Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  leading: Container(
+                      margin: EdgeInsets.only(left: 25),
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                        ),
+                      )),
+                  elevation: 0.0,
+                  actions: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 25),
+                      child: IconButton(
+                        onPressed: () => share(),
+                        icon: Icon(
+                          Icons.share,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-              // AppBar(
-              //   backgroundColor: Colors.transparent,
-              //   elevation: 0.0,
-              // ),
-             CustomBottomSheet(
-               nama: widget.nama,gambar: widget.gambar,harga: widget.harga == '0'?"Rp "+ widget.harga:"Rp "+widget.harga,penjual_user_id: widget.penjual_user_id,produk_id:widget.produk_id
-             ),
-            ],
-          ),
-          
-        ),
-       bottomNavigationBar:widget.level=='2'?Container(
-         decoration: BoxDecoration(
-           boxShadow: [
-             BoxShadow(
-               blurRadius: 4,
-               color: Colors.grey
-             )
-           ],
-           border: Border(
-             top: BorderSide(width: 2,color: Colors.grey[100]),
-           ),
-         ),
-         child: Row(
-           children: <Widget>[
-             GestureDetector(
-             onTap: (){
-                Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  CartsPage(),
-                            ));
-             },
-             child:Container(
-               height: 60,
-               width: MediaQuery.of(context).size.width/3,
-               color: Colors.white,
-               child: Center(child: IconButton(icon: Icon(Icons.shopping_cart,size: 30,)),),
-             ),
-             ),
-             GestureDetector(
-               onTap: (){
-                  _showAlert(context);
-                 
-               },
+                    )
+                  ],
+                ),
+                backgroundColor: Colors.white,
+                body: SafeArea(
+                  child: Stack(
+                    children: <Widget>[
+                      Stack(
+                        children: <Widget>[
+                          Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 30.0),
+                                    child: Container(
+                                      height: 300,
+                                      child: PageView(
+                                          onPageChanged: (index) {
+                                            setState(() {
+                                              currentPage = index;
+                                            });
+                                          },
+                                          controller: pageController,
+                                          children: List.generate(2, (f) {
+                                            return Container(
+                                              height: 300,
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(result
+                                                          .foto[0].foto))),
+                                            );
+                                          })),
+                                    )),
+                              ]),
+                          Positioned(
+                            top: 350,
+                            left: 0.0,
+                            right: 0.0,
                             child: Container(
-                 height: 60,
-                 width: MediaQuery.of(context).size.width/1.5,
-                 color: Colors.pink,
-                 child: Center(child: Text("Beli",style: TextStyle(fontSize: 20,     color: Colors.white),)),
-               ),
-             ),
-            
-           ],
-         ),
-       ):Container(
-         decoration: BoxDecoration(
-           boxShadow: [
-             BoxShadow(
-               blurRadius: 4,
-               color: Colors.grey
-             )
-           ],
-           border: Border(
-             top: BorderSide(width: 2,color: Colors.grey[100]),
-           ),
-         ),
-         child: Row(
-           children: <Widget>[
-             Container(
-               height: 0,
-               width: MediaQuery.of(context).size.width/5,
-               color: Colors.white,
-               child: Center(child: IconButton(icon: Icon(Icons.shopping_cart,size: 30,)),),
-             ),
-             Container(
-               height: 0,
-               width: MediaQuery.of(context).size.width/3.5,
-               color: Colors.pink,
-               child: Center(child: Text("Beli",style: TextStyle(fontSize: 20,     color: Colors.white),)),
-             ),
-              Expanded(
-                            child: Container(
-                 height: 0,
-                 width: MediaQuery.of(context).size.width/2,
-                 color: Colors.purple,
-                   child: Center(child: Text("Negosiasi",style: TextStyle(fontSize: 20,     color: Colors.white),)),
-             
-             ),
-              ),
-           ],
-         ),
-       ),
-        );
-        
+                              // width: 150,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: List.generate(2, (i) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, right: 8.0),
+                                      child: Container(
+                                        height: 2,
+                                        width: 40,
+                                        color: currentPage == i
+                                            ? Colors.cyan
+                                            : Colors.grey,
+                                      ),
+                                    );
+                                  })),
+                            ),
+                          )
+                        ],
+                      ),
+                      // AppBar(
+                      //   backgroundColor: Colors.transparent,
+                      //   elevation: 0.0,
+                      // ),
+                      CustomBottomSheet(
+                          nama: result.nama,
+                          gambar: result.foto[0].foto,
+                          harga: result.hargaZona[0].harga,
+                          penjual_user_id: result.userId,
+                          produk_id: result.id),
+                    ],
+                  ),
+                ),
+                bottomNavigationBar: widget.level == '2'
+                    ? Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(blurRadius: 4, color: Colors.grey)
+                          ],
+                          border: Border(
+                            top: BorderSide(width: 2, color: Colors.grey[100]),
+                          ),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          CartsPage(),
+                                    ));
+                              },
+                              child: Container(
+                                height: 60,
+                                width: MediaQuery.of(context).size.width / 3,
+                                color: Colors.white,
+                                child: Center(
+                                  child: IconButton(
+                                      icon: Icon(
+                                    Icons.shopping_cart,
+                                    size: 30,
+                                  )),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _showAlert(context);
+                              },
+                              child: Container(
+                                height: 60,
+                                width: MediaQuery.of(context).size.width / 1.5,
+                                color: Colors.pink,
+                                child: Center(
+                                    child: Text(
+                                  "Beli",
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(blurRadius: 4, color: Colors.grey)
+                          ],
+                          border: Border(
+                            top: BorderSide(width: 2, color: Colors.grey[100]),
+                          ),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              height: 0,
+                              width: MediaQuery.of(context).size.width / 5,
+                              color: Colors.white,
+                              child: Center(
+                                child: IconButton(
+                                    icon: Icon(
+                                  Icons.shopping_cart,
+                                  size: 30,
+                                )),
+                              ),
+                            ),
+                            Container(
+                              height: 0,
+                              width: MediaQuery.of(context).size.width / 3.5,
+                              color: Colors.pink,
+                              child: Center(
+                                  child: Text(
+                                "Beli",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                              )),
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 0,
+                                width: MediaQuery.of(context).size.width / 2,
+                                color: Colors.purple,
+                                child: Center(
+                                    child: Text(
+                                  "Negosiasi",
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              );
+            }
+          }
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        });
   }
+
+  @override
+  DetailProduk2State createState() => this;
 }
 
 class SheetContainer extends StatelessWidget {
@@ -441,9 +510,14 @@ class SheetContainer extends StatelessWidget {
   final String penjual_user_id;
   final String produk_id;
 
-  const SheetContainer({Key key, this.nama, this.harga, this.gambar, this.penjual_user_id, this.produk_id}) : super(key: key);
-
- 
+  const SheetContainer(
+      {Key key,
+      this.nama,
+      this.harga,
+      this.gambar,
+      this.penjual_user_id,
+      this.produk_id})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -462,8 +536,12 @@ class SheetContainer extends StatelessWidget {
           Expanded(
               flex: 1,
               child: SheetItems(
-                nama: nama,gambar: gambar,harga: harga,penjual_user_id: penjual_user_id,produk_id:produk_id )
-          )],
+                  nama: nama,
+                  gambar: gambar,
+                  harga: harga,
+                  penjual_user_id: penjual_user_id,
+                  produk_id: produk_id))
+        ],
       ),
     );
   }
@@ -489,15 +567,21 @@ class SheetContainer extends StatelessWidget {
 //           ),
 //         )
 class CustomBottomSheet extends StatefulWidget {
-   final String nama;
+  final String nama;
   final String harga;
   final String gambar;
   final String penjual_user_id;
   final String produk_id;
 
-  const CustomBottomSheet({Key key, this.nama, this.harga, this.gambar, this.penjual_user_id, this.produk_id}) : super(key: key);
+  const CustomBottomSheet(
+      {Key key,
+      this.nama,
+      this.harga,
+      this.gambar,
+      this.penjual_user_id,
+      this.produk_id})
+      : super(key: key);
 
-  
   @override
   _CustomBottomSheetState createState() => _CustomBottomSheetState();
 }
@@ -570,24 +654,32 @@ class _CustomBottomSheetState extends State<CustomBottomSheet>
             return;
           }
         },
-        child: SheetContainer(nama: widget.nama,gambar: widget.gambar,harga: widget.harga,penjual_user_id: widget.penjual_user_id,produk_id:widget.produk_id),
+        child: SheetContainer(
+            nama: widget.nama,
+            gambar: widget.gambar,
+            harga: widget.harga,
+            penjual_user_id: widget.penjual_user_id,
+            produk_id: widget.produk_id),
       ),
     );
   }
 }
 
 class SheetItems extends StatefulWidget {
-   final String nama;
+  final String nama;
   final String harga;
-  final String gambar;  
+  final String gambar;
   final String penjual_user_id;
   final String produk_id;
 
-  const SheetItems({Key key, this.nama, this.harga, this.gambar, this.penjual_user_id, this.produk_id}) : super(key: key);
-
- 
- 
-  
+  const SheetItems(
+      {Key key,
+      this.nama,
+      this.harga,
+      this.gambar,
+      this.penjual_user_id,
+      this.produk_id})
+      : super(key: key);
 
   @override
   _SheetItemsState createState() => _SheetItemsState();
@@ -595,26 +687,31 @@ class SheetItems extends StatefulWidget {
 
 class _SheetItemsState extends State<SheetItems> with TickerProviderStateMixin {
   var f = NumberFormat("#,##0", "en_US");
+  Map<String, dynamic> favo;
   double sheetTop = 400;
   double minSheetTop = 30;
 
   Animation<double> animation;
   AnimationController controller;
-  String nama,level_id;
-getCredential() async {
-    final pref = await SharedPreferences.getInstance();
+  String nama, level_id;
+  getCredential() async {
+    final String id = await Provider.of<AuthProvider>(context, listen: false).getCredential();
+    final User user =  await Provider.of<AuthProvider>(context, listen: false).getUserInfo();
+    ProductDetailBloc().getProductFavorite(id, this.widget.produk_id).then((value) => setState(() => favo = value));
+//    print(widget.produk_id);
+//    final pref = await SharedPreferences.getInstance();
     setState(() {
-      nama = pref.getString("id");
-       level_id = pref.getString("level_id");
-     getJsonData();
+      nama = user.id;
+      level_id = user.levelId;
+
+      getJsonData();
     });
     //print("id profile sklh= " + nama);
-   
   }
+
   @override
   void initState() {
     getCredential();
-    
     super.initState();
     controller = AnimationController(
         duration: const Duration(milliseconds: 200), vsync: this);
@@ -631,14 +728,16 @@ getCredential() async {
 
   bool isExpanded = false;
 
- Future<http.Response> _setfavorit(String id) async {
+  Future<http.Response> _setfavorit(String id) async {
     //a=a+id;
     //print(id);
-  
-    var url =
-        'http://siplah.mascitra.co.id/api/sekolah/produk_favorit/tambah';
 
-    Map data = {'user_id': "" + nama, 'produk_id':id, };
+    var url = 'http://siplah.mascitra.co.id/api/sekolah/produk_favorit/tambah';
+
+    Map data = {
+      'user_id': "" + nama,
+      'produk_id': id,
+    };
     //encode Map to JSON
     var body = json.encode(data);
 
@@ -663,6 +762,7 @@ getCredential() async {
     }
     return response;
   }
+
   void _showAlert(BuildContext context) {
     showDialog(
         context: context,
@@ -680,40 +780,37 @@ getCredential() async {
               content: Text("Buku Telah Masuk Dalam Menu Favorit"),
             ));
   }
- List data6;
+
+  List data6;
   Future<String> getJsonData() async {
     var response = await http.post(
-      //Encode the url
-      Uri.encodeFull('http://siplah.mascitra.co.id/api/home/list'),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "API-App": "siplah_jpmall.id",
-        "Api-Key": "4P1_7Pm411_51p114h",
-        "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
-      },
-      body: {
-        'user_id':nama,
-        'id':'7'
-      }
-    );
+        //Encode the url
+        Uri.encodeFull('http://siplah.mascitra.co.id/api/home/list'),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "API-App": "siplah_jpmall.id",
+          "Api-Key": "4P1_7Pm411_51p114h",
+          "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
+        },
+        body: {
+          'user_id': nama,
+          'id': '7'
+        });
     //print(response.body);
     //print(data6[0]['foto']);
     setState(() {
       // ignore: deprecated_member_use
       var convertDataToJson = json.decode(response.body);
-      
+
       data6 = convertDataToJson['Data'];
-     
     });
   }
+
   @override
   Widget build(BuildContext context) {
-  
-   
-    var price  = widget.harga;
+    var price = widget.harga;
     return ListView(
       children: <Widget>[
-        
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -743,31 +840,37 @@ getCredential() async {
                     ),
                   ),
                   //edit
-                 
-                          level_id == '2' ? 
-                  CircleAvatar(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.grey,
-                    child: true == true
-                        ?     IconButton(
-                    icon: Icon(
-                            Icons.favorite,
-                            color: Colors.redAccent,
-                          ),
-                    onPressed: () => {
-                          _setfavorit(widget.produk_id)
-                        })
-                        : Icon(
-                            Icons.favorite_border,
-                          ),
-                  ):Container()
 
-
+                  level_id == '2'
+                      ? Container(
+                    height: 50,
+                        width: 50,
+                        child:  CircleAvatar(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.grey,
+                      child: favo == null ? IconButton(
+                        icon: Icon(Icons.favorite_border, color: Colors.black,),
+                      ) : IconButton(
+                        onPressed: () async {
+                          final String idUser = await Provider.of<AuthProvider>(context, listen: false).getCredential();
+                          if(favo['status']){
+                            ProductDetailBloc().deleteFromFavorite(idUser, favo['id']);
+                            ProductDetailBloc().getProductFavorite(idUser, this.widget.produk_id).then((value) => setState(() => favo = value));
+                          }else{
+                            ProductDetailBloc().addToFavorite(idUser, this.widget.produk_id);
+                            ProductDetailBloc().getProductFavorite(idUser, this.widget.produk_id).then((value) => setState(() => favo = value));
+                          }
+                        },
+                        icon: (favo['status']) ? Icon(Icons.favorite, color: Colors.red) : Icon(Icons.favorite_border, color: Colors.black38),
+                      )
+                  )
+                      )
+                      : Container()
                 ],
               ),
               Container(
                 width: double.infinity,
-                child: Text(price,
+                child: Text("Rp " + MyTools.priceFormat(int.parse(price)),
                     style: TextStyle(
                         fontSize: 18,
                         color: Colors.red,
@@ -779,62 +882,9 @@ getCredential() async {
               Divider(
                 color: Colors.black26,
               ),
-              // Container(
-              //     height: 20,
-              //     // color: Colors.red,
-              //     child: Row(
-              //       children: <Widget>[
-              //         Text(
-              //           "Stok Terbatas! ",
-              //           style: TextStyle(
-              //               fontSize: 12, fontWeight: FontWeight.w500),
-              //         ),
-              //         20 > 50
-              //             ? Text(
-              //                 "Tersedia > 50",
-              //                 style: TextStyle(
-              //                   fontSize: 12,
-              //                 ),
-              //               )
-              //             : Text(
-              //                 "Tersedia < 50",
-              //                 style: TextStyle(
-              //                   fontSize: 12,
-              //                 ),
-              //               ),
-              //       ],
-              //     )),
-              // SizedBox(
-              //   height: 10,
-              // ),
-              // Container(
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //     children: <Widget>[
-                    
-              //       _diskusi(12),
-              //       _pengiriman()
-              //     ],
-              //   ),
-              // ),
               SizedBox(
                 height: 15,
               ),
-              // Container(
-              //   height: 60,
-              //   decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(10),
-              //       color: Colors.black12),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //     // crossAxisAlignment: CrossAxisAlignment.center,
-              //     children: <Widget>[
-              //       _dilihat(200),
-              //       _transaksi(90, 100),
-              //       _wishlist(200)
-              //     ],
-              //   ),
-              // )
             ]),
           ),
         ),
@@ -844,227 +894,56 @@ getCredential() async {
             color: Colors.white,
             child: _informasiProduk()),
         _customDivider(),
-     
+
         _customDivider(),
-       
+
         _customDivider(),
         Container(
           padding: EdgeInsets.only(left: 20, top: 20, bottom: 8.0),
           width: double.infinity,
           color: Colors.white,
-          child: 
-              Text(
-                "Produk Lainnya",
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-              ),
-         
+          child: Text(
+            "Produk Lainnya",
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+          ),
         ),
-        
-        // Container(
-        //   height: 200,
-        //   child: prefix0.Kategori(data: data6[i]['produk'],)
-        //   // ListView.builder(itemCount: 2,
-        //   // scrollDirection: Axis.horizontal,
-        //   // itemBuilder: (context,i){
-        //   //   return Row(children: <Widget>[
-        //   //     Text(data6[i]['foto'])
-        //   //   ],);
-        //   // }),
-        // ),
-   
-      Container(
-                            height:data6 == null ? 0 : 100 * data6.length.toDouble(),
-                            child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount:
-                                        data6 == null ? 0 : 1,
-                                    itemBuilder: (context, i) {
-                                      return Container(
-                                          child: Column(
-                                        children: <Widget>[
-                                          data6 != null
-                                              ? Nontextbaru(
-                                                
-                                                level: level_id,
-                                                id:nama,
-                                                  data: data6[i]['produk'],
-                                                  
-                                                )
-                                              : CircularProgressIndicator(),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          //Pendamping(data: data2,kategori: kategorilist,),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                        ],
-                                      ));
-                                    },
-                                  ),
-                          ),
-      
-
-        //  Container(
-        //     padding: const EdgeInsets.only(left: 20),
-        //     width: double.infinity,
-        //     color: Colors.white,
-        //     child: _otherProduk()
-        //     )
-             
- 
-         
-      
-        // Container(
-        //   height: 100,
-        // ),
-        // Column(
-        //   children: List.generate(100, (p) {
-        //     return ListTile(
-        //       title: Text("hello world ${p.toString()}"),
-        //     );
-        //   }),
-        // ),
+        Container(
+          height: data6 == null ? 0 : 100 * data6.length.toDouble(),
+          child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: data6 == null ? 0 : 1,
+            itemBuilder: (context, i) {
+              return Container(
+                  child: Column(
+                children: <Widget>[
+                  data6 != null
+                      ? Nontextbaru(
+                          level: level_id,
+                          id: nama,
+                          data: data6[i]['produk'],
+                        )
+                      : CircularProgressIndicator(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  //Pendamping(data: data2,kategori: kategorilist,),
+                  SizedBox(
+                    height: 5,
+                  ),
+                ],
+              ));
+            },
+          ),
+        ),
       ],
     );
   }
+  _otherProduk() {
+    //  getJsonData();
+    //  ListView.builder(itemCount: data6.length,
+    //  itemBuilder: (context,i){
 
-
-//   _otherProduk() {
-// getJsonData();
-// data6==null?Container(child: Text("data"),):
-// new ListView.builder(
-//   scrollDirection: Axis.horizontal,
-//   itemCount: data6.length,
-//   itemBuilder: (context,i){
-//     return Container(
-//       height: 300,
-//       width: double.infinity,
-//       child: Row(
-//         children: <Widget>[
-//           Container(
-//             padding: const EdgeInsets.only(left: 5),
-//             height: 260,
-//             width: 150,
-//             child: Card(
-//               elevation: 2,
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(10.0)),
-//               child: Container(
-//                 decoration: BoxDecoration(
-//                     color: Colors.white,
-//                     borderRadius: BorderRadius.circular(10.0)),
-//                 height: 100,
-//                 width: 120,
-//                 child: Column(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: <Widget>[
-//                     Stack(
-//                       children: <Widget>[
-//                         Container(
-//                             height: 120,
-//                             width: double.infinity,
-//                             decoration: BoxDecoration(
-//                                 borderRadius: BorderRadius.only(
-//                                     topLeft: Radius.circular(10),
-//                                     topRight: Radius.circular(10))),
-//                             child: Image.network(data6[i]['foto']==null?'http://siplah.mascitra.co.id/assets/images/no-image.png':data6[i]['foto'],
-//                               fit: BoxFit.fill,
-//                             )),
-//                         Positioned(
-//                           right: 10,
-//                           top: 10,
-//                           child: CircleAvatar(
-//                             backgroundColor: Colors.white,
-//                             foregroundColor: Colors.grey,
-//                             child: Icon(
-//                               Icons.favorite_border,
-//                             ),
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                     SizedBox(height: 8.0),
-//                     Container(
-//                       width: 100,
-//                       height: 50,
-//                       // color: Colors.black,
-//                       child: Text(
-//                         "Belajar Berbahagia",
-//                         style: TextStyle(
-//                             fontSize: 17, fontWeight: FontWeight.w600),
-//                         maxLines: 2,
-//                         overflow: TextOverflow.ellipsis,
-//                       ),
-//                     ),
-//                     Container(
-//                       width: 100,
-//                       // color: Colors.black,
-//                       child: Text(
-//                         "Rp " + f.format(140000),
-//                         style: TextStyle(
-//                           fontSize: 15,
-//                         ),
-//                         maxLines: 2,
-//                         overflow: TextOverflow.ellipsis,
-//                       ),
-//                     ),
-//                     SizedBox(
-//                       height: 8.0,
-//                     ),
-//                     Container(
-//                       width: 100,
-//                       height: 20,
-//                       child: Row(
-//                         children: <Widget>[
-//                           CircleAvatar(
-//                             child: Icon(
-//                               Icons.store,
-//                               size: 15,
-//                               color: Colors.red,
-//                             ),
-//                             minRadius: 10,
-//                             backgroundColor: Colors.amber,
-//                             foregroundColor: Colors.red,
-//                           ),
-//                           SizedBox(width: 5.0),
-//                           Text(
-//                             "Sumatera",
-//                             style: TextStyle(
-//                               fontSize: 11,
-//                             ),
-//                           )
-//                         ],
-//                       ),
-//                     ),
-//                     SizedBox(
-//                       height: 5.0,
-//                     ),
-//                     Container(
-//                         width: 100,
-//                         child: StarDisplay(
-//                           size: 10,
-//                           value: 4,
-//                         ))
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//     }
-// );
-//   }
-
- _otherProduk() {
-  //  getJsonData();
-  //  ListView.builder(itemCount: data6.length,
-  //  itemBuilder: (context,i){
-     
-   
     return Container(
       height: 300,
       width: double.infinity,
@@ -1097,7 +976,7 @@ getCredential() async {
                                     topLeft: Radius.circular(10),
                                     topRight: Radius.circular(10))),
                             child: Image.network(
-                               "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/5/3/370667535/370667535_e643982c-71ee-49f4-99a6-8e96f30f5038_1080_1080.jpg",
+                              "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/5/3/370667535/370667535_e643982c-71ee-49f4-99a6-8e96f30f5038_1080_1080.jpg",
                               fit: BoxFit.fill,
                             )),
                         Positioned(
@@ -1183,20 +1062,17 @@ getCredential() async {
         ],
       ),
     );
-   // });
+    // });
   }
 
- 
   _informasiProduk() {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: <Widget>[
-        
           SizedBox(
             height: 10,
           ),
-         
           Container(
             width: double.infinity,
             child: Text(
@@ -1212,7 +1088,7 @@ getCredential() async {
             height: 100,
             width: double.infinity,
             child: Text(
-           widget.nama,
+              widget.nama,
               overflow: TextOverflow.ellipsis,
               maxLines: 5,
               textAlign: TextAlign.left,
@@ -1222,7 +1098,6 @@ getCredential() async {
           SizedBox(
             height: 3.0,
           ),
-        
         ],
       ),
     );
