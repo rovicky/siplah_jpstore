@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -1644,20 +1644,8 @@ class _DetailPesananState extends State<DetailPesanan> {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             width: MediaQuery.of(context).size.width / 7,
-                            child: Html(
-                              data: produk[i]['deskripsi'],
-                              //Optional parameters:
-                              onLinkTap: (url) {
-                                print("Opening $url...");
-                              },
-                              customRender: (node, children) {
-                                if (node is dom.Element) {
-                                  switch (node.localName) {
-                                    case "custom_tag":
-                                      return Column(children: children);
-                                  }
-                                }
-                              },
+                            child: HtmlWidget(
+                                produk[i]['deskripsi']
                             ), //Text(produk[i]['deskripsi'])),
                           )),
                       Padding(

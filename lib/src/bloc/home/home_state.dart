@@ -14,8 +14,7 @@ abstract class HomeState {
 //  User get theUser => _state.user;
 
 
-  firstLoad() async {
-    _bloc.getData(await Provider.of<AuthProvider>(_state.context, listen: false).getCredential());
-//    Provider.of<AuthProvider>(_state.context).getUserInfo();
+  firstLoad(String id) async {
+    _bloc.getData(id);
   }
 }

@@ -1,13 +1,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:siplah_jpmall/src/bloc/kabupaten_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/kecamatan_bloc.dart';
+import 'package:siplah_jpmall/src/bloc/login/login_bloc.dart';
+import 'package:siplah_jpmall/src/bloc/login/login_state.dart';
 import 'package:siplah_jpmall/src/bloc/provinsi_bloc.dart';
 import 'package:siplah_jpmall/src/models/get_token.dart';
 import 'package:siplah_jpmall/src/models/kabupaten_model.dart';
 import 'package:siplah_jpmall/src/models/kecamatan_model.dart';
 import 'package:siplah_jpmall/src/models/product_model.dart';
 import 'package:siplah_jpmall/src/models/provinsi_model.dart';
+import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'dart:async';
 import 'package:siplah_jpmall/src/ui/mainpage.dart';
 import 'package:http/http.dart' as http;
@@ -21,8 +25,6 @@ class WelcomePage extends StatefulWidget {
   _WelcomePageState createState() => _WelcomePageState();
 }
 
-final username = TextEditingController();
-final password = TextEditingController();
 SharedPreferences sharedPreferences;
 
 class _WelcomePageState extends State<WelcomePage> {
@@ -62,22 +64,7 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0, keepPage: true);
-    postRequest();
-    getCredential();
-  }
-
-  getCredential() async {
-    //print(username.text);
-    final pref = await SharedPreferences.getInstance();
-    setState(() {
-      usernama = pref.getString("username");
-      if (usernama != null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            new MaterialPageRoute(
-                builder: (BuildContext context) => new MainPage()),
-            (Route<dynamic> route) => false);
-      }
-    });
+//    postRequest();
   }
 
   @override
@@ -318,14 +305,19 @@ class LoginPage extends StatefulWidget {
   final List foto;
   final List kabupaten;
 
-  const LoginPage({Key key, this.npsn, this.levelid, this.nama, this.foto, this.kabupaten}) : super(key: key);
- 
+  const LoginPage(
+      {Key key, this.npsn, this.levelid, this.nama, this.foto, this.kabupaten})
+      : super(key: key);
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
-  String levelid, npsn,nama,foto,kabupaten;
+class LoginPageState extends State<LoginPage> with LoginState {
+  final bloc = LoginBloc();
+  final username = TextEditingController();
+  final password = TextEditingController();
+  String levelid, npsn, nama, foto, kabupaten;
 
   @override
   void initState() {
@@ -341,94 +333,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    void savedata() async {
-      sharedPreferences = await SharedPreferences.getInstance();
-
-      setState(() {
-        //  sharedPreferences.setString("foto",widget.data1[0]["foto"]);
-        //  sharedPreferences.setString("npsn",widget.data1[0]["npsn"]);
-        //  sharedPreferences.setString("nama",widget.data1[0]["nama"]);
-        //  sharedPreferences.setString("email",widget.data1[0]["email"]);
-        //  sharedPreferences.setString("alamat",widget.data1[0]["alamat"]);
-        //  sharedPreferences.setString("kodepos",widget.data1[0]["kodepos"]);
-        sharedPreferences.setString("foto", foto);
-        sharedPreferences.setString("nama", nama);
-        sharedPreferences.setString("id", npsn);
-        sharedPreferences.setString("level_id", levelid);
-        sharedPreferences.setString("username", username.text);
-        sharedPreferences.setString('kabupaten_id', kabupaten);
-        sharedPreferences.commit();
-
-        //print("npsn berhasil = "+npsn);
-        //print("level_id= "+levelid);
-      });
-      Navigator.of(context).pushAndRemoveUntil(
-          new MaterialPageRoute(
-              builder: (BuildContext context) => new MainPage()),
-          (Route<dynamic> route) => false);
-    }
-
-    void _showAlert(BuildContext context) {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: Text("Peringatan"),
-                content: Text("Password atau Email Kamu Salah"),
-              ));
-    }
-
-    Future<http.Response> login_api() async {
-      var url = 'http://siplah.mascitra.co.id/api/user/login';
-
-      Map data = {'email': username.text, 'password': password.text};
-      
-      //encode Map to JSON
-      var body = json.encode(data);
-
-      var response = await http.post(url,
-          headers: {
-            "Content-Type": "application/json",
-            "API-App": "siplah_jpmall.id",
-            "Api-Key": "4P1_7Pm411_51p114h",
-            "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
-          },
-          body: body);
-
-      // var response1 = await http.post(
-      //       //Encode the url
-      //       Uri.encodeFull('http://siplah.mascitra.co.id/api/user/login'),
-      //       headers: {"Content-Type": "application/x-www-form-urlencoded","API-App":"siplah_jpmall.id","Api-Key":"4P1_7Pm411_51p114h","API-Token":$Token({this.apitoken})fd43a64c539788b356da4910e5e95fb573"},
-      //       body:{
-      //         "email":username.text,
-      //         "password":password.text,
-      //       }
-      //       );
-
-      //print("${response.statusCode}");
-
-      Map<String, dynamic> map = jsonDecode(response.body);
-
-      //var convertDataToJson = json.decode(response.body);
-      foto = map['Data'][0]['foto'];
-      nama = map['Data'][0]['nama'];
-      npsn = map['Data'][0]['id'];
-      levelid = map['Data'][0]['level_id'];
-      kabupaten=map['Data'][0]['kecamatan_id'];
-      //  nama = convertDataToJson["nama"];
-      //  email = convertDataToJson["email"];
-      //  alamat = convertDataToJson["alamat"];
-      //  kodepos = convertDataToJson["kodepos"];
-      //  telepon = convertDataToJson["telepon"];
-//print("npsn = "+npsn);
-
-      if (map["Error"] == true || map["Error"] == "true") {
-        _showAlert(context);
-      } else {
-        savedata();
-      }
-      return response;
-    }
-
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -472,22 +376,20 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                               Container(
+                              Container(
                                 height: 80,
                                 width: 20,
                                 decoration: new BoxDecoration(
                                     image: new DecorationImage(
-                                        image:
-                                            AssetImage("src/image/Icons_SIPLAH_JPSTORE_2020.png"),
+                                        image: AssetImage(
+                                            "src/image/Icons_SIPLAH_JPSTORE_2020.png"),
                                         fit: BoxFit.fill)),
                               ),
                               RichText(
                                 textAlign: TextAlign.center,
                                 text: TextSpan(children: [
-                                
                                   TextSpan(
-                                      text:
-                                          "\nMasukkan Akun Kamu Disini",
+                                      text: "\nMasukkan Akun Kamu Disini",
                                       style: TextStyle(
                                           color: Colors.black54,
                                           fontWeight: FontWeight.w400,
@@ -534,11 +436,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               SizedBox(height: 10),
                               MaterialButton(
                                 onPressed: () {
-                                  if(username.text==""&&password.text==""){
-                                    _showAlert(context);
-                                  }else{
-                                  login_api();
-                                  }
+                                  submit();
+//                                  if (username.text == "" &&
+//                                      password.text == "") {
+//                                    _showAlert(context);
+//                                  } else {
+//                                    login_api();
+//                                  }
                                 },
                                 color: Color(0xFF3FCB9B),
                                 shape: RoundedRectangleBorder(
@@ -550,7 +454,19 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 ),
                               ), //Login
 //                        SizedBox(height:),
-                              
+
+                              SizedBox(height: 10),
+                              MaterialButton(
+                                onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage())),
+                                color: Color(0xffab2345).withOpacity(0.7),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text("Daftar Nanti",
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              ),
                               SizedBox(height: 10),
                               Center(
                                 child: Row(
@@ -598,8 +514,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           ),
                         ),
                         SizedBox(height: 10),
-                       //Button Login Google
-                         //Button Login facebook
+                        //Button Login Google
+                        //Button Login facebook
                       ],
                     ),
                   ),
@@ -611,6 +527,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
   }
+
+  @override
+  LoginPageState createdState() => this;
 }
 
 class Register extends StatefulWidget {
@@ -619,12 +538,13 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-   bool _obscureText = true;
+  bool _obscureText = true;
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
     });
   }
+
   var katPel = ['1', '2'];
   var codetlp = ['+62', '+81'];
   final nama = TextEditingController();
@@ -644,15 +564,15 @@ class _RegisterState extends State<Register> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                   Container(
-                                height: 80,
-                              width: 300,
-                                decoration: new BoxDecoration(
-                                    image: new DecorationImage(
-                                        image:
-                                            AssetImage("src/image/Icons_SIPLAH_JPSTORE_2020.png"),
-                                        fit: BoxFit.fill)),
-                              ),
+                  Container(
+                    height: 80,
+                    width: 300,
+                    decoration: new BoxDecoration(
+                        image: new DecorationImage(
+                            image: AssetImage(
+                                "src/image/Icons_SIPLAH_JPSTORE_2020.png"),
+                            fit: BoxFit.fill)),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
@@ -675,7 +595,9 @@ class _RegisterState extends State<Register> {
                           items: List.generate(
                               katPel.length,
                               (i) => DropdownMenuItem<String>(
-                                    child: Text(katPel[i]=='1'?"Berbadan Hukum":"Perseorangan"),
+                                    child: Text(katPel[i] == '1'
+                                        ? "Berbadan Hukum"
+                                        : "Perseorangan"),
                                     value: katPel[i],
                                   )),
                           onChanged: (item) {
@@ -809,13 +731,12 @@ class _RegisterState extends State<Register> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => Register2(
-                                  nama: nama.text,
-                                  email: email.text,
-                                  konfirmasi: konfirmasi.text,
-                                  password: password.text,
-                                  telp: telp.text,
-                                  ketpel :slctdKatPel
-                                )),
+                                nama: nama.text,
+                                email: email.text,
+                                konfirmasi: konfirmasi.text,
+                                password: password.text,
+                                telp: telp.text,
+                                ketpel: slctdKatPel)),
                         (_) => false),
                     child: Text(
                       "Next",
@@ -910,7 +831,15 @@ class Register2 extends StatefulWidget {
   final String telp;
   final String ketpel;
 
-  const Register2({Key key, this.nama, this.email, this.password, this.konfirmasi, this.telp, this.ketpel}) : super(key: key);
+  const Register2(
+      {Key key,
+      this.nama,
+      this.email,
+      this.password,
+      this.konfirmasi,
+      this.telp,
+      this.ketpel})
+      : super(key: key);
 
   @override
   _Register2State createState() => _Register2State();

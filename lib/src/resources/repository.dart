@@ -19,7 +19,7 @@ class Repository {
 
 
   Future<List<Blog>> fetchBlog() => blogProvider.fetchBlog();
-  Future<List<Products>> fetchProducts() => todoApiProvider.fetchProducts();
+//  Future<List<Products>> fetchProducts() => todoApiProvider.fetchProducts();
   Future<Province> fetchProvince() => provinceProvider.province();
   Future<Kabupaten> fetchKabupaten(provId) => kabupatenProvider.kabupaten(provId);
   Future<Kecamatan> fetchKecamatan(kabId) => kecamatanProvider.kecamatan(kabId);

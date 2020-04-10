@@ -1,6 +1,6 @@
 class BaseUrl {
-  static String base = "http://siplah.mascitra.co.id/api/";
-  static String baseImage = "'http://siplah.mascitra.co.id/assets/images/no-image.png'";
+  static String base = "https://siplah.jpstore.id/api/";
+  static String baseImage = "http://siplah.mascitra.co.id/assets/images/no-image.png";
   static Headers headers = Headers();
 }
 

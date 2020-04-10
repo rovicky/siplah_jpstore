@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:siplah_jpmall/src/models/produk_sample.dart';
+import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/ui/produk_detail.dart';
 
 // class FlashDeal extends StatefulWidget {
@@ -199,9 +200,10 @@ import 'package:siplah_jpmall/src/ui/produk_detail.dart';
 // }
 
 class FlashDeal extends StatefulWidget {
+  final UserData user;
   final List<Produk> data;
 
-  const FlashDeal({Key key, this.data}) : super(key: key);
+  const FlashDeal({Key key, this.data, this.user}) : super(key: key);
   @override
   _FlashDealState createState() => _FlashDealState();
 }
@@ -328,7 +330,7 @@ class _FlashDealState extends State<FlashDeal> {
                   PageRouteBuilder(
                       transitionDuration: Duration(milliseconds: 350),
                       pageBuilder: (context, _, __) =>
-                          DetailProduk2())),
+                          ProductDetailPage(user: this.widget.user, productId: this.widget.data[i].index.toString(),))),
               child: Container(
                 width: 130,
                 height: 200,

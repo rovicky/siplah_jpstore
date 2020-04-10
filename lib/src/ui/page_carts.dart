@@ -8,12 +8,17 @@ import 'package:siplah_jpmall/src/bloc/cart/cart_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/cart/cart_state.dart';
 import 'package:siplah_jpmall/src/models/cart_model.dart';
 import 'package:siplah_jpmall/src/models/get_token.dart';
+import 'package:siplah_jpmall/src/models/user.dart';
+import 'package:siplah_jpmall/src/ui/login.dart';
 import 'package:siplah_jpmall/src/ui/pembayaran.dart';
 import 'package:intl/intl.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 import 'globals.dart' as globals;
 
 class CartsPage extends StatefulWidget {
+  final UserData user;
+
+  const CartsPage({Key key, this.user}) : super(key: key);
   @override
   CartsPageState createState() => CartsPageState();
 }
@@ -139,7 +144,9 @@ class CartsPageState extends State<CartsPage> with CartState {
   void initState() {
     _controllerProduk = ScrollController();
     super.initState();
-    firstLoad();
+    if (this.widget.user != null) {
+      firstLoad(this.widget.user.id);
+    }
   }
 
   List datatrans;
@@ -296,7 +303,33 @@ class CartsPageState extends State<CartsPage> with CartState {
 
   @override
   Widget build(BuildContext context) {
-    //print(data);
+    if (this.widget.user == null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              MyTools.errorWidget(context,
+                  message: "Upss!. Kamu Belum Login, Login Dulu Yuk ! "),
+              SizedBox(
+                height: 30,
+              ),
+              MaterialButton(
+                onPressed: () => Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginPage())),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                height: 40,
+                minWidth: 120,
+                color: Colors.redAccent,
+                child: Text("Login Disini", style: MyTools.boldStyle(color: Colors.white, size: 15),),
+              )
+            ],
+          ),
+        ),
+      );
+    }
 
     return Container(
       child: Scaffold(
@@ -336,10 +369,10 @@ class CartsPageState extends State<CartsPage> with CartState {
                               checkedAll = value;
                               itemSelected = newItem;
 
-                              if(value) {
+                              if (value) {
                                 print("this value is true");
 //                                priceTotal = priceTotal + int.parse()
-                              }else {
+                              } else {
                                 print("this value is false");
                               }
                             });
@@ -431,11 +464,23 @@ class CartsPageState extends State<CartsPage> with CartState {
   }
 
   _itemada(BuildContext context, CartModel snapshot) {
-
-
     if (snapshot.data == null) {
       return Center(
-        child: Text("Your Cart is Empty"),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              height: 60,
+              width: 60,
+              child: Icon(
+                Icons.insert_emoticon,
+                size: 40,
+                color: Colors.blue,
+              ),
+            ),
+            Text("Your Cart is Empty"),
+          ],
+        ),
       );
     }
     return SingleChildScrollView(
@@ -497,9 +542,8 @@ class CartsPageState extends State<CartsPage> with CartState {
                                   child: Checkbox(
                                     value: itemSelected[index],
                                     onChanged: (value) {
-                                      setState(
-                                              () {
-                                            itemSelected[index] = value;
+                                      setState(() {
+                                        itemSelected[index] = value;
 //                                            if(value) {
 //                                              priceTotal = priceTotal + int.parse(snapshot.data[index].produk[i].produkHarga);
 //                                              print(priceTotal);
@@ -507,8 +551,7 @@ class CartsPageState extends State<CartsPage> with CartState {
 //                                              priceTotal = priceTotal - int.parse(snapshot.data[index].produk[i].produkHarga);
 //                                              print(priceTotal);
 //                                            }
-                                          });
-
+                                      });
                                     },
                                   ),
                                 ),
@@ -551,7 +594,8 @@ class CartsPageState extends State<CartsPage> with CartState {
                                     color: Colors.blue,
                                   ),
                                   onPressed: () {
-                                    showAlert1(context, x[i].id);
+                                    showAlert1(
+                                        context, x[i].id, this.widget.user.id);
                                   },
                                 ),
                               ],
@@ -577,9 +621,9 @@ class CartsPageState extends State<CartsPage> with CartState {
                                         ]),
                                     child: Center(
                                         child: Icon(
-                                          Icons.favorite_border,
-                                          size: 20,
-                                        ))),
+                                      Icons.favorite_border,
+                                      size: 20,
+                                    ))),
                                 SizedBox(
                                   width: 15,
                                 ),
@@ -600,7 +644,7 @@ class CartsPageState extends State<CartsPage> with CartState {
                                                 shape: BoxShape.circle,
                                                 border: Border.all()),
                                             child:
-                                            Center(child: Icon(Icons.add))),
+                                                Center(child: Icon(Icons.add))),
                                       ),
                                       Container(
                                         width: 50,
@@ -703,4 +747,3 @@ class CartsPageState extends State<CartsPage> with CartState {
     );
   }
 }
-

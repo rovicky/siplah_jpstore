@@ -24,19 +24,19 @@ class ProductModeltwo {
   });
 
   factory ProductModeltwo.fromJson(Map<String, dynamic> json) => ProductModeltwo(
-    error: json["Error"],
+    error: json["Error"] == null ? null : json["Error"],
     pesanSys: json["Pesan_sys"],
     pesanUsr: json["Pesan_usr"],
-    data: List<Datum>.from(json["Data"].map((x) => Datum.fromJson(x))),
-    paging: Paging.fromJson(json["Paging"]),
+    data: json["Data"] == null ? null : List<Datum>.from(json["Data"].map((x) => Datum.fromJson(x))),
+    paging: json["Paging"] == null ? null : Paging.fromJson(json["Paging"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "Error": error,
+    "Error": error == null ? null : error,
     "Pesan_sys": pesanSys,
     "Pesan_usr": pesanUsr,
-    "Data": List<dynamic>.from(data.map((x) => x.toJson())),
-    "Paging": paging.toJson(),
+    "Data": data == null ? null : List<dynamic>.from(data.map((x) => x.toJson())),
+    "Paging": paging == null ? null : paging.toJson(),
   };
 }
 
@@ -46,7 +46,8 @@ class Datum {
   String nama;
   DateTime createdAt;
   DateTime updatedAt;
-  List<Product> produk;
+  int sub;
+  List<Produk> produk;
 
   Datum({
     this.id,
@@ -54,41 +55,44 @@ class Datum {
     this.nama,
     this.createdAt,
     this.updatedAt,
+    this.sub,
     this.produk,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["id"],
-    gambar: json["gambar"],
-    nama: json["nama"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    produk: List<Product>.from(json["produk"].map((x) => Product.fromJson(x))),
+    id: json["id"] == null ? null : json["id"],
+    gambar: json["gambar"] == null ? null : json["gambar"],
+    nama: json["nama"] == null ? null : json["nama"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+    sub: json["sub"] == null ? null : json["sub"],
+    produk: json["produk"] == null ? null : List<Produk>.from(json["produk"].map((x) => Produk.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "gambar": gambar,
-    "nama": nama,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
-    "produk": List<dynamic>.from(produk.map((x) => x.toJson())),
+    "id": id == null ? null : id,
+    "gambar": gambar == null ? null : gambar,
+    "nama": nama == null ? null : nama,
+    "created_at": createdAt == null ? null : createdAt.toIso8601String(),
+    "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
+    "sub": sub == null ? null : sub,
+    "produk": produk == null ? null : List<dynamic>.from(produk.map((x) => x.toJson())),
   };
 }
 
-class Product {
+class Produk {
   String id;
   List<Foto> foto;
   String produk;
   String harga;
-  List<dynamic> hargaZona;
+  List<HargaZona> hargaZona;
   String userId;
   String userFoto;
   String userNama;
   String kabupatenId;
   String kabupatenNama;
 
-  Product({
+  Produk({
     this.id,
     this.foto,
     this.produk,
@@ -101,30 +105,30 @@ class Product {
     this.kabupatenNama,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-    id: json["id"],
-    foto: List<Foto>.from(json["foto"].map((x) => Foto.fromJson(x))),
-    produk: json["produk"],
-    harga: json["harga"],
-    hargaZona: json['harga_zona'],
-    userId: json["user_id"],
-    userFoto: json["user_foto"],
-    userNama: json["user_nama"],
-    kabupatenId: json["kabupaten_id"],
-    kabupatenNama: json["kabupaten_nama"],
+  factory Produk.fromJson(Map<String, dynamic> json) => Produk(
+    id: json["id"] == null ? null : json["id"],
+    foto: json["foto"] == null ? null : List<Foto>.from(json["foto"].map((x) => Foto.fromJson(x))),
+    produk: json["produk"] == null ? null : json["produk"],
+    harga: json["harga"] == null ? null : json["harga"],
+    hargaZona: json["harga_zona"] == null ? null : List<HargaZona>.from(json["harga_zona"].map((x) => HargaZona.fromJson(x))),
+    userId: json["user_id"] == null ? null : json["user_id"],
+    userFoto: json["user_foto"] == null ? null : json["user_foto"],
+    userNama: json["user_nama"] == null ? null : json["user_nama"],
+    kabupatenId: json["kabupaten_id"] == null ? null : json["kabupaten_id"],
+    kabupatenNama: json["kabupaten_nama"] == null ? null : json["kabupaten_nama"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "foto": List<dynamic>.from(foto.map((x) => x.toJson())),
-    "produk": produk,
-    "harga": harga,
-    "harga_zona": List<dynamic>.from(hargaZona.map((x) => x)),
-    "user_id": userId,
-    "user_foto": userFoto,
-    "user_nama": userNama,
-    "kabupaten_id": kabupatenId,
-    "kabupaten_nama": kabupatenNama,
+    "id": id == null ? null : id,
+    "foto": foto == null ? null : List<dynamic>.from(foto.map((x) => x.toJson())),
+    "produk": produk == null ? null : produk,
+    "harga": harga == null ? null : harga,
+    "harga_zona": hargaZona == null ? null : List<dynamic>.from(hargaZona.map((x) => x.toJson())),
+    "user_id": userId == null ? null : userId,
+    "user_foto": userFoto == null ? null : userFoto,
+    "user_nama": userNama == null ? null : userNama,
+    "kabupaten_id": kabupatenId == null ? null : kabupatenId,
+    "kabupaten_nama": kabupatenNama == null ? null : kabupatenNama,
   };
 }
 
@@ -142,20 +146,49 @@ class Foto {
   });
 
   factory Foto.fromJson(Map<String, dynamic> json) => Foto(
-    id: json["id"],
-    foto: json["foto"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    id: json["id"] == null ? null : json["id"],
+    foto: json["foto"] == null ? null : json["foto"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "foto": foto,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "id": id == null ? null : id,
+    "foto": foto == null ? null : foto,
+    "created_at": createdAt == null ? null : createdAt.toIso8601String(),
+    "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
   };
 }
 
+class HargaZona {
+  Nama nama;
+  String harga;
+
+  HargaZona({
+    this.nama,
+    this.harga,
+  });
+
+  factory HargaZona.fromJson(Map<String, dynamic> json) => HargaZona(
+    nama: json["nama"] == null ? null : namaValues.map[json["nama"]],
+    harga: json["harga"] == null ? null : json["harga"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "nama": nama == null ? null : namaValues.reverse[nama],
+    "harga": harga == null ? null : harga,
+  };
+}
+
+enum Nama { ZONA_1, ZONA_2, ZONA_3, ZONA_4, ZONA_5 }
+
+final namaValues = EnumValues({
+  "Zona 1": Nama.ZONA_1,
+  "Zona 2": Nama.ZONA_2,
+  "Zona 3": Nama.ZONA_3,
+  "Zona 4": Nama.ZONA_4,
+  "Zona 5": Nama.ZONA_5
+});
 
 class Paging {
   bool pagination;
@@ -165,10 +198,24 @@ class Paging {
   });
 
   factory Paging.fromJson(Map<String, dynamic> json) => Paging(
-    pagination: json["Pagination"],
+    pagination: json["Pagination"] == null ? null : json["Pagination"],
   );
 
   Map<String, dynamic> toJson() => {
-    "Pagination": pagination,
+    "Pagination": pagination == null ? null : pagination,
   };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
 }

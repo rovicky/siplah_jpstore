@@ -8,12 +8,12 @@ class ProductBloc{
   final _productFetcher = PublishSubject<List<Products>>();
   final _repository = Repository();
 
-  Observable<List<Products>> get allProducts => _productFetcher.stream;
+//  Observable<List<Products>> get allProducts => _productFetcher.stream;
 
-  fetchAll() async {
-    List<Products> products = await _repository.fetchProducts();
-    _productFetcher.sink.add(products);
-  }
+//  fetchAll() async {
+////    List<Products> products = await _repository.fetchProducts();
+////    _productFetcher.sink.add(products);
+//  }
 
   dispose() async {
     _productFetcher.close();

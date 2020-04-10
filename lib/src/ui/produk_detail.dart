@@ -1,1410 +1,473 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/painting.dart';
-import 'package:intl/intl.dart';
-// import 'package:share/share.dart';
-import 'package:flutter_share/flutter_share.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:siplah_jpmall/main.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:siplah_jpmall/src/bloc/product_details/product_detail_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/product_details/product_detail_state.dart';
-import 'package:siplah_jpmall/src/bloc/state_bloc.dart';
-import 'package:siplah_jpmall/src/models/get_token.dart';
 import 'package:siplah_jpmall/src/models/product_detail.dart';
-import 'package:siplah_jpmall/src/models/produk_sample.dart';
+import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
-import 'package:siplah_jpmall/src/resources/auth_provider.dart';
-import 'package:siplah_jpmall/src/ui/nontext.dart';
-import 'package:siplah_jpmall/src/ui/page_carts.dart';
-import 'package:siplah_jpmall/src/ui/star.dart';
-// import 'package:siplah_jpmall/src/ui/star.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import 'package:siplah_jpmall/src/utils/mytools.dart';
-//class DetailProduk extends StatefulWidget {
-//  final String nama;
-//  final String harga;
-//  final String gambar;
-//
-//  const DetailProduk({Key key, this.nama, this.harga, this.gambar}) : super(key: key);
-//  @override
-//  _DetailProdukState createState() => _DetailProdukState();
-//}
-//
-//class _DetailProdukState extends State<DetailProduk>
-//    with TickerProviderStateMixin {
-//  PageController pageController;
-//  int currentPage = 0;
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//    pageController = PageController(
-//      keepPage: true,
-//      initialPage: currentPage,
-//    );
-//
-//  }
-////  share(BuildContext context) {
-////   final RenderBox box = context.findRenderObject();
-//
-////   Share.share("http://www.google.com");
-//// }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//        appBar: AppBar(
-//          backgroundColor: Colors.transparent,
-//          leading: Container(
-//              margin: EdgeInsets.only(left: 25),
-//              child: IconButton(
-//                onPressed: () => Navigator.pop(context),
-//                icon: Icon(
-//                  Icons.arrow_back,
-//                  color: Colors.black,
-//                ),
-//              )),
-//          elevation: 0.0,
-//          actions: <Widget>[
-//
-//            Container(
-//              margin: EdgeInsets.only(right: 25),
-//              child: IconButton(
-//                onPressed: () => print("lolo"),
-//                icon: Icon(
-//                  Icons.share,
-//                  color: Colors.black,
-//                ),
-//              ),
-//            )
-//
-//          ],
-//        ),
-//        backgroundColor: Colors.white,
-//        body: SafeArea(
-//          child: Stack(
-//            children: <Widget>[
-//              Stack(
-//                children: <Widget>[
-//                  Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-//                    Padding(
-//                      padding: const EdgeInsets.only(top: 30.0),
-//                      child: Container(
-//                        height: 300,
-//                        child: PageView(
-//                          onPageChanged: (index) {
-//                            setState(() {
-//                              currentPage = index;
-//                            });
-//                          },
-//                          controller: pageController,
-//                          children: List.generate(5, (f){
-//                            return Hero(
-//                              tag: widget.gambar,
-//                              child: Container(
-//                                height: 300,
-//                                width: double.infinity,
-//                                decoration: BoxDecoration(
-//                                    color: Colors.white,
-//                                    image: DecorationImage(
-//                                        image: NetworkImage(
-//                                            widget.gambar))),
-//                              ),
-//                            );
-//                          })
-//                        ),
-//                      )
-//                    ),
-//                  ]),
-//                  Positioned(
-//                    top: 350,
-//                    left: 0.0,
-//                    right: 0.0,
-//                    child: Container(
-//                      // width: 150,
-//                      child: Row(
-//                        mainAxisAlignment: MainAxisAlignment.center,
-//                        crossAxisAlignment: CrossAxisAlignment.center,
-//                        children: List.generate(5, (i){
-//                          return Padding(
-//                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-//                            child: Container(
-//                              height: 2,
-//                              width: 40,
-//                              color: currentPage == i ? Colors.cyan : Colors.grey,
-//                            ),
-//                          );
-//                        })
-//                      ),
-//                    ),
-//                  )
-//                ],
-//              ),
-//              // AppBar(
-//              //   backgroundColor: Colors.transparent,
-//              //   elevation: 0.0,
-//              // ),
-//
-//            ],
-//          ),
-//        ));
-//  }
-//}
 
-class DetailProduk2 extends StatefulWidget {
-  final String nama;
-  final String harga;
-  final String gambar;
-  final String level;
-  final String id;
-  final String produk_id;
-  final String penjual_user_id;
-  final String penjual_id;
+class ProductDetailPage extends StatefulWidget {
+  final UserData user;
+  final String productId;
+  final String mitraId;
+  final String categoryId;
 
-  const DetailProduk2(
+  const ProductDetailPage(
       {Key key,
-      this.nama,
-      this.harga,
-      this.gambar,
-      this.level,
-      this.id,
-      this.produk_id,
-      this.penjual_user_id,
-      this.penjual_id})
+      this.user,
+      this.productId,
+      @required this.mitraId,
+      this.categoryId})
       : super(key: key);
-
   @override
-  DetailProduk2State createState() => DetailProduk2State();
+  ProductDetailPageState createState() => ProductDetailPageState();
 }
 
-class DetailProduk2State extends State<DetailProduk2> with ProductDetailState {
-  PageController pageController;
-  int currentPage = 0;
-
-  final bloc = ProductDetailBloc();
+class ProductDetailPageState extends State<ProductDetailPage>
+    with ProductDetailState {
+  final ProductDetailBloc bloc = ProductDetailBloc();
+  int initialPage = 0;
+  PageController controller;
+  @override
+  ProductDetailPageState createState() => this;
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController(
-      keepPage: true,
-      initialPage: currentPage,
-    );
-    firstLoad(this.widget.produk_id);
-    print(this.widget.produk_id);
+    firstLoad(this.widget.productId, (this.widget.user == null) ? '' : this.widget.user.id);
+    controller = PageController(
+        initialPage: initialPage, keepPage: true, viewportFraction: 1.0);
   }
 
-  Future<void> share() async {
-    String a = widget.nama;
-    await FlutterShare.share(
-        title: widget.nama,
-        text: widget.nama,
-        linkUrl: "http://siplah.mascitra.co.id/search/?q=" +
-            widget.nama
-                .replaceAll(" ", "+")
-                .replaceAll(",", "%2C")
-                .replaceAll(":", "%3A"),
-        chooserTitle: widget.nama);
-  }
-
-  List data;
-  List data2;
-  List kategorilist;
-  Future<String> getJsonData() async {
-    var response = await http.post(
-      //Encode the url
-      Uri.encodeFull(
-          'http://siplah.mascitra.co.id/api/sekolah/keranjang/tambah'),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "API-App": "siplah_jpmall.id",
-        "Api-Key": "4P1_7Pm411_51p114h",
-        "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
-      },
-      body: {
-        "user_id": widget.id,
-        "penjual_id": widget.penjual_id,
-        "produk_id": widget.produk_id,
-        "penjual_user_id": widget.penjual_user_id,
-        "jumlah": '1',
-      },
-    );
-
-    //print(response.body);
-    setState(() {
-      // ignore: deprecated_member_use
-      var convertDataToJson = json.decode(response.body);
-      data = convertDataToJson['Data'];
-    });
-
-    return "Success";
-  }
-
-  void _showAlert(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Peringatan"),
-              content: Text("Yakin Mau Membeli"),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text("Cancel"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                new FlatButton(
-                    child: new Text("OK"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      getJsonData();
-                    }),
-              ],
-            ));
+  @override
+  void dispose() {
+    super.dispose();
+    bloc.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ProductDetail>(
-        stream: bloc.product,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Scaffold(
-              body: Center(
-                child: Text("Can't show anything!"),
-              ),
-            );
-          } else if (snapshot.hasData) {
-            if (snapshot.data.id == "0") {
-              return Scaffold(
-                body: Center(
-                  child: Text("Produk Tidak Ada!"),
-                ),
-              );
-            } else if (snapshot.data.id == "00") {
-              return Scaffold(
-                body: Center(
-                  child: Text("Can't load anything!"),
-                ),
-              );
-            } else {
-              final result = snapshot.data;
-              return Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  leading: Container(
-                      margin: EdgeInsets.only(left: 25),
-                      child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
-                        ),
-                      )),
-                  elevation: 0.0,
-                  actions: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 25),
-                      child: IconButton(
-                        onPressed: () => share(),
-                        icon: Icon(
-                          Icons.share,
-                          color: Colors.black,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                backgroundColor: Colors.white,
-                body: SafeArea(
+    return Scaffold(
+        body: StreamBuilder<ProductDetail>(
+            stream: bloc?.product,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data.id == "00") {
+                  return MyTools.errorWidget(context,
+                      message: "Can't Load Anything!");
+                } else if (snapshot.data.id == "0") {
+                  return MyTools.errorWidget(
+                    context,
+                  );
+                }
+                secondLoad((this.widget.user == null) ? '' : this.widget.user.id,
+                    mitraId: this.widget.mitraId,
+                    categoryId: this.widget.categoryId);
+                return SafeArea(
                   child: Stack(
                     children: <Widget>[
-                      Stack(
-                        children: <Widget>[
-                          Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Padding(
-                                    padding: const EdgeInsets.only(top: 30.0),
-                                    child: Container(
-                                      height: 300,
-                                      child: PageView(
-                                          onPageChanged: (index) {
-                                            setState(() {
-                                              currentPage = index;
-                                            });
-                                          },
-                                          controller: pageController,
-                                          children: List.generate(2, (f) {
-                                            return Container(
-                                              height: 300,
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(result
-                                                          .foto[0].foto))),
-                                            );
-                                          })),
-                                    )),
-                              ]),
-                          Positioned(
-                            top: 350,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              // width: 150,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: List.generate(2, (i) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, right: 8.0),
-                                      child: Container(
-                                        height: 2,
-                                        width: 40,
-                                        color: currentPage == i
-                                            ? Colors.cyan
-                                            : Colors.grey,
-                                      ),
-                                    );
-                                  })),
-                            ),
-                          )
-                        ],
-                      ),
-                      // AppBar(
-                      //   backgroundColor: Colors.transparent,
-                      //   elevation: 0.0,
-                      // ),
-                      CustomBottomSheet(
-                          nama: result.nama,
-                          gambar: result.foto[0].foto,
-                          harga: result.hargaZona[0].harga,
-                          penjual_user_id: result.userId,
-                          produk_id: result.id),
+                      //body
+                      _body(context, snapshot.data),
+                      //appbar
+                      _appBar(context),
+                      //button
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: _button(context, snapshot.data),
+                      )
                     ],
                   ),
-                ),
-                bottomNavigationBar: widget.level == '2'
-                    ? Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(blurRadius: 4, color: Colors.grey)
-                          ],
-                          border: Border(
-                            top: BorderSide(width: 2, color: Colors.grey[100]),
-                          ),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          CartsPage(),
-                                    ));
-                              },
-                              child: Container(
-                                height: 60,
-                                width: MediaQuery.of(context).size.width / 3,
-                                color: Colors.white,
-                                child: Center(
-                                  child: IconButton(
-                                      icon: Icon(
-                                    Icons.shopping_cart,
-                                    size: 30,
-                                  )),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                _showAlert(context);
-                              },
-                              child: Container(
-                                height: 60,
-                                width: MediaQuery.of(context).size.width / 1.5,
-                                color: Colors.pink,
-                                child: Center(
-                                    child: Text(
-                                  "Beli",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.white),
-                                )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(blurRadius: 4, color: Colors.grey)
-                          ],
-                          border: Border(
-                            top: BorderSide(width: 2, color: Colors.grey[100]),
-                          ),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              height: 0,
-                              width: MediaQuery.of(context).size.width / 5,
-                              color: Colors.white,
-                              child: Center(
-                                child: IconButton(
-                                    icon: Icon(
-                                  Icons.shopping_cart,
-                                  size: 30,
-                                )),
-                              ),
-                            ),
-                            Container(
-                              height: 0,
-                              width: MediaQuery.of(context).size.width / 3.5,
-                              color: Colors.pink,
-                              child: Center(
-                                  child: Text(
-                                "Beli",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
-                              )),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 0,
-                                width: MediaQuery.of(context).size.width / 2,
-                                color: Colors.purple,
-                                child: Center(
-                                    child: Text(
-                                  "Negosiasi",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.white),
-                                )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                );
+              } else if (snapshot.hasError) {
+                return MyTools.errorWidget(context,
+                    message: "Can't Load Anything!");
+              }
+              return Center(
+                child: CircularProgressIndicator(),
               );
-            }
-          }
-          return Scaffold(body: Center(child: CircularProgressIndicator()));
-        });
+            }));
   }
 
-  @override
-  DetailProduk2State createState() => this;
-}
-
-class SheetContainer extends StatelessWidget {
-  final String nama;
-  final String harga;
-  final String gambar;
-  final String penjual_user_id;
-  final String produk_id;
-
-  const SheetContainer(
-      {Key key,
-      this.nama,
-      this.harga,
-      this.gambar,
-      this.penjual_user_id,
-      this.produk_id})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // double sheetItemHeight = 110;
-    //print(nama);
+  _button(context, ProductDetail result) {
     return Container(
-      padding: EdgeInsets.only(top: 25),
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-          color: Color(0xfff1f1f1)),
-      child: Column(
-        children: <Widget>[
-          drawerHandle(),
-          Expanded(
-              flex: 1,
-              child: SheetItems(
-                  nama: nama,
-                  gambar: gambar,
-                  harga: harga,
-                  penjual_user_id: penjual_user_id,
-                  produk_id: produk_id))
-        ],
-      ),
-    );
-  }
-
-  drawerHandle() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 25),
-      height: 3,
-      width: 65,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15), color: Color(0xffd9dbdb)),
-    );
-  }
-}
-
-// Center(
-//           child: GestureDetector(
-//             onTap: () => Navigator.pop(context),
-//             child: Sidekick(
-//               tag: widget.produk.title,
-//               child: Image.network(widget.produk.gambar[1].link)
-//             ),
-//           ),
-//         )
-class CustomBottomSheet extends StatefulWidget {
-  final String nama;
-  final String harga;
-  final String gambar;
-  final String penjual_user_id;
-  final String produk_id;
-
-  const CustomBottomSheet(
-      {Key key,
-      this.nama,
-      this.harga,
-      this.gambar,
-      this.penjual_user_id,
-      this.produk_id})
-      : super(key: key);
-
-  @override
-  _CustomBottomSheetState createState() => _CustomBottomSheetState();
-}
-
-class _CustomBottomSheetState extends State<CustomBottomSheet>
-    with SingleTickerProviderStateMixin {
-  double sheetTop = 380;
-  double minSheetTop = 20;
-
-  Animation<double> animation;
-  AnimationController controller;
-  ScrollController scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-//    scrollController = ScrollController();
-//    scrollController.addListener(onScroll());
-    controller = AnimationController(
-        duration: const Duration(milliseconds: 200), vsync: this);
-    animation = Tween<double>(begin: sheetTop, end: minSheetTop)
-        .animate(CurvedAnimation(
-      parent: controller,
-      curve: Curves.easeInOut,
-      reverseCurve: Curves.easeInOut,
-    ))
-          ..addListener(() {
-            setState(() {});
-          });
-  }
-
-//  onScroll(){
-//    if(scrollController.offset > scrollController.position.minScrollExtent){
-//
-//    }else if(scrollController.offset == scrollController.position.minScrollExtent){
-//
-//    }
-//  }
-
-  forwardAnimation() {
-    controller.forward();
-    stateBloc.toggleAnimation();
-  }
-
-  reverseAnimation() {
-    controller.reverse();
-    stateBloc.toggleAnimation();
-  }
-
-  bool isExpanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: animation.value,
-      left: 0,
-      child: GestureDetector(
-        // onTap: () {
-        //   controller.isCompleted ? reverseAnimation() : forwardAnimation();
-        // },
-        onVerticalDragEnd: (DragEndDetails dragEndDetails) {
-          //upward drag
-          if (dragEndDetails.primaryVelocity < 0.0) {
-            forwardAnimation();
-            controller.forward();
-          } else if (dragEndDetails.primaryVelocity > 0.0) {
-            //downward drag
-            reverseAnimation();
-          } else {
-            return;
-          }
-        },
-        child: SheetContainer(
-            nama: widget.nama,
-            gambar: widget.gambar,
-            harga: widget.harga,
-            penjual_user_id: widget.penjual_user_id,
-            produk_id: widget.produk_id),
-      ),
-    );
-  }
-}
-
-class SheetItems extends StatefulWidget {
-  final String nama;
-  final String harga;
-  final String gambar;
-  final String penjual_user_id;
-  final String produk_id;
-
-  const SheetItems(
-      {Key key,
-      this.nama,
-      this.harga,
-      this.gambar,
-      this.penjual_user_id,
-      this.produk_id})
-      : super(key: key);
-
-  @override
-  _SheetItemsState createState() => _SheetItemsState();
-}
-
-class _SheetItemsState extends State<SheetItems> with TickerProviderStateMixin {
-  var f = NumberFormat("#,##0", "en_US");
-  Map<String, dynamic> favo;
-  double sheetTop = 400;
-  double minSheetTop = 30;
-
-  Animation<double> animation;
-  AnimationController controller;
-  String nama, level_id;
-  getCredential() async {
-    final String id = await Provider.of<AuthProvider>(context, listen: false).getCredential();
-    final User user =  await Provider.of<AuthProvider>(context, listen: false).getUserInfo();
-    ProductDetailBloc().getProductFavorite(id, this.widget.produk_id).then((value) => setState(() => favo = value));
-//    print(widget.produk_id);
-//    final pref = await SharedPreferences.getInstance();
-    setState(() {
-      nama = user.id;
-      level_id = user.levelId;
-
-      getJsonData();
-    });
-    //print("id profile sklh= " + nama);
-  }
-
-  @override
-  void initState() {
-    getCredential();
-    super.initState();
-    controller = AnimationController(
-        duration: const Duration(milliseconds: 200), vsync: this);
-    animation = Tween<double>(begin: sheetTop, end: minSheetTop)
-        .animate(CurvedAnimation(
-      parent: controller,
-      curve: Curves.easeInOut,
-      reverseCurve: Curves.easeInOut,
-    ))
-          ..addListener(() {
-            setState(() {});
-          });
-  }
-
-  bool isExpanded = false;
-
-  Future<http.Response> _setfavorit(String id) async {
-    //a=a+id;
-    //print(id);
-
-    var url = 'http://siplah.mascitra.co.id/api/sekolah/produk_favorit/tambah';
-
-    Map data = {
-      'user_id': "" + nama,
-      'produk_id': id,
-    };
-    //encode Map to JSON
-    var body = json.encode(data);
-
-    var response = await http.post(url,
-        headers: {
-          "Content-Type": "application/json",
-          "API-App": "siplah_jpmall.id",
-          "Api-Key": "4P1_7Pm411_51p114h",
-          "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
-        },
-        body: body);
-    // print("${response.statusCode}");
-
-    // print("${response.body}");
-    Map<String, dynamic> map = jsonDecode(response.body);
-    //print(map);
-    if (map["Error"] == true || map["Error"] == "true") {
-      _showAlert(context);
-    } else {
-      // savedata();
-      _berhasil(context);
-    }
-    return response;
-  }
-
-  void _showAlert(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Peringatan"),
-              content: Text("maaf gagal edit"),
-            ));
-  }
-
-  void _berhasil(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Peringatan"),
-              content: Text("Buku Telah Masuk Dalam Menu Favorit"),
-            ));
-  }
-
-  List data6;
-  Future<String> getJsonData() async {
-    var response = await http.post(
-        //Encode the url
-        Uri.encodeFull('http://siplah.mascitra.co.id/api/home/list'),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "API-App": "siplah_jpmall.id",
-          "Api-Key": "4P1_7Pm411_51p114h",
-          "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
-        },
-        body: {
-          'user_id': nama,
-          'id': '7'
-        });
-    //print(response.body);
-    //print(data6[0]['foto']);
-    setState(() {
-      // ignore: deprecated_member_use
-      var convertDataToJson = json.decode(response.body);
-
-      data6 = convertDataToJson['Data'];
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var price = widget.harga;
-    return ListView(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            // boxShadow: <BoxShadow>[BoxShadow(blurRadius: 5)]
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    width: 250,
-                    height: 80,
-                    child: Text(
-                      widget.nama,
-                      textAlign: TextAlign.left,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  //edit
-
-                  level_id == '2'
-                      ? Container(
-                    height: 50,
-                        width: 50,
-                        child:  CircleAvatar(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.grey,
-                      child: favo == null ? IconButton(
-                        icon: Icon(Icons.favorite_border, color: Colors.black,),
-                      ) : IconButton(
-                        onPressed: () async {
-                          final String idUser = await Provider.of<AuthProvider>(context, listen: false).getCredential();
-                          if(favo['status']){
-                            ProductDetailBloc().deleteFromFavorite(idUser, favo['id']);
-                            ProductDetailBloc().getProductFavorite(idUser, this.widget.produk_id).then((value) => setState(() => favo = value));
-                          }else{
-                            ProductDetailBloc().addToFavorite(idUser, this.widget.produk_id);
-                            ProductDetailBloc().getProductFavorite(idUser, this.widget.produk_id).then((value) => setState(() => favo = value));
-                          }
-                        },
-                        icon: (favo['status']) ? Icon(Icons.favorite, color: Colors.red) : Icon(Icons.favorite_border, color: Colors.black38),
-                      )
-                  )
-                      )
-                      : Container()
-                ],
-              ),
-              Container(
-                width: double.infinity,
-                child: Text("Rp " + MyTools.priceFormat(int.parse(price)),
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600)),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Divider(
-                color: Colors.black26,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-            ]),
-          ),
-        ),
-        _customDivider(),
-        Container(
-            width: double.infinity,
-            color: Colors.white,
-            child: _informasiProduk()),
-        _customDivider(),
-
-        _customDivider(),
-
-        _customDivider(),
-        Container(
-          padding: EdgeInsets.only(left: 20, top: 20, bottom: 8.0),
-          width: double.infinity,
-          color: Colors.white,
-          child: Text(
-            "Produk Lainnya",
-            textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-          ),
-        ),
-        Container(
-          height: data6 == null ? 0 : 100 * data6.length.toDouble(),
-          child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: data6 == null ? 0 : 1,
-            itemBuilder: (context, i) {
-              return Container(
-                  child: Column(
-                children: <Widget>[
-                  data6 != null
-                      ? Nontextbaru(
-                          level: level_id,
-                          id: nama,
-                          data: data6[i]['produk'],
-                        )
-                      : CircularProgressIndicator(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  //Pendamping(data: data2,kategori: kategorilist,),
-                  SizedBox(
-                    height: 5,
-                  ),
-                ],
-              ));
-            },
-          ),
-        ),
-      ],
-    );
-  }
-  _otherProduk() {
-    //  getJsonData();
-    //  ListView.builder(itemCount: data6.length,
-    //  itemBuilder: (context,i){
-
-    return Container(
-      height: 300,
+      height: 60,
       width: double.infinity,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black26,
+                offset: Offset(-3, 0),
+                blurRadius: 3,
+                spreadRadius: 2)
+          ]),
       child: Row(
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.only(left: 5),
-            height: 260,
-            width: 150,
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.0)),
-                height: 100,
-                width: 120,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Container(
-                            height: 120,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10))),
-                            child: Image.network(
-                              "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/5/3/370667535/370667535_e643982c-71ee-49f4-99a6-8e96f30f5038_1080_1080.jpg",
-                              fit: BoxFit.fill,
-                            )),
-                        Positioned(
-                          right: 10,
-                          top: 10,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.grey,
-                            child: Icon(
-                              Icons.favorite_border,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 8.0),
-                    Container(
-                      width: 100,
-                      height: 50,
-                      // color: Colors.black,
-                      child: Text(
-                        "Belajar Berbahagia",
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w600),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      // color: Colors.black,
-                      child: Text(
-                        "Rp " + f.format(140000),
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Container(
-                      width: 100,
-                      height: 20,
-                      child: Row(
-                        children: <Widget>[
-                          CircleAvatar(
-                            child: Icon(
-                              Icons.store,
-                              size: 15,
-                              color: Colors.red,
-                            ),
-                            minRadius: 10,
-                            backgroundColor: Colors.amber,
-                            foregroundColor: Colors.red,
-                          ),
-                          SizedBox(width: 5.0),
-                          Text(
-                            "Sumatera",
-                            style: TextStyle(
-                              fontSize: 11,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Container(
-                        width: 100,
-                        child: StarDisplay(
-                          size: 10,
-                          value: 4,
-                        ))
-                  ],
-                ),
-              ),
-            ),
+            height: 60,
+            width: MediaQuery.of(context).size.width * (3 / 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15))),
+            child: Center(
+                child: Text(
+              "Add to Cart",
+              style:
+                  MyTools.boldStyle(color: MyTools.darkAccentColor, size: 16),
+            )),
+          ),
+          Container(
+            height: 60,
+            width: MediaQuery.of(context).size.width * (2 / 5),
+            decoration: BoxDecoration(
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.only(topRight: Radius.circular(15))),
+            child: Center(
+                child: Text(
+              "Beli",
+              style: MyTools.boldStyle(color: Colors.white, size: 16),
+            )),
           ),
         ],
       ),
     );
-    // });
   }
 
-  _informasiProduk() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
+  _body(context, ProductDetail result) {
+    return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          SizedBox(
-            height: 10,
-          ),
           Container(
+            color: MyTools.darkAccentColor.withOpacity(0.3),
+            height: MediaQuery.of(context).size.height * (2/4),
             width: double.infinity,
-            child: Text(
-              "Deskripsi Produk",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 100,
-            width: double.infinity,
-            child: Text(
-              widget.nama,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 5,
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
-          SizedBox(
-            height: 3.0,
-          ),
-        ],
-      ),
-    );
-  }
-
-  _rowku(String title, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[Text(title), Text(value)],
-    );
-  }
-
-  _customDivider() {
-    return Container(
-      height: 5.0,
-      width: double.infinity,
-      decoration: BoxDecoration(boxShadow: <BoxShadow>[
-        BoxShadow(blurRadius: 2, color: Colors.black12)
-      ]),
-    );
-  }
-
-  _dilihat(int total) {
-    var jumlah = total / 1000;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        // Icon(Icons.remove_red_eye, color: Colors.)
-        Text("Dilihat"),
-        Text(jumlah.toInt().toString() + "rb")
-      ],
-    );
-  }
-
-  _transaksi(double persentase, double total) {
-    // var jumlah = total.bitLength > 3 && total.bitLength < 6 ? total.toDouble() / 1000 : total;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        // Icon(Icons.remove_red_eye, color: Colors.)
-        Text("Transaksi Berhasil"),
-        Text(
-            "${persentase.toInt().toString()}%(${total.toInt().toString()} produk)")
-      ],
-    );
-  }
-
-  _wishlist(int total) {
-    // var jumlah = total.bitLength > 3 && total.bitLength < 6 ? total.toDouble() / 1000 : total;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        // Icon(Icons.remove_red_eye, color: Colors.)
-        Text("Wishlist"),
-        Text(total.toString())
-      ],
-    );
-  }
-
-  //
-  _ulasan(Star star) {
-    var rating = (star.jumlahStar / star.jumlahUser);
-    return Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Text(
-              rating.toInt().toString(),
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            Icon(
-              Icons.star,
-              color: Colors.yellow,
-              size: 20,
-            ),
-            Text(
-              "/${star.jumlahUser.toInt().toString()}",
-              style: TextStyle(fontSize: 12),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Text(
-          "3 Ulasan",
-          style: TextStyle(color: Colors.cyan, fontSize: 12),
-        )
-      ],
-    );
-  }
-
-  _diskusi(int jumlah) {
-    return Column(
-      children: <Widget>[
-        Icon(Icons.feedback, color: Colors.cyan),
-        SizedBox(
-          height: 5,
-        ),
-        Text(
-          "${jumlah.toString()} Diskusi",
-          style: TextStyle(color: Colors.cyan, fontSize: 12),
-        )
-      ],
-    );
-  }
-
-  _pengiriman() {
-    return Column(
-      children: <Widget>[
-        Icon(Icons.local_shipping, color: Colors.cyan),
-        SizedBox(
-          height: 5,
-        ),
-        Text(
-          "Pengiriman",
-          style: TextStyle(color: Colors.cyan, fontSize: 12),
-        )
-      ],
-    );
-  }
-}
-
-class Ulasan extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      // flex: 1,
-      height: 390,
-      child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: _item.length,
-        itemBuilder: (context, i) {
-          final ulasan = _item[i];
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+            child: Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(ulasan.nama),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        ulasan.tgl,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      )
-                    ],
-                  ),
                   SizedBox(
-                    height: 3,
-                  ),
-                  StarDisplay(
-                    size: 15,
-                    value: ulasan.rating,
-                  ),
-                  SizedBox(
-                    height: 5,
+                    height: 60,
                   ),
                   Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          ulasan.title,
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          height: 50,
-                          width: 250,
-                          child: Text(
-                            ulasan.subtitle,
-                            textAlign: TextAlign.left,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )
-                      ],
+                    height: MediaQuery.of(context).size.height / 3 - 20,
+                    child: PageView(
+                      scrollDirection: Axis.horizontal,
+                      children: List.generate(
+                          result.foto.length,
+                          (index) => MyTools.imageProvider(
+                                result.foto[index].foto,
+                                context,
+                                height:
+                                    MediaQuery.of(context).size.height / 3 - 20,
+                                width: MediaQuery.of(context).size.width / 2 - 20,
+                              )),
+                      controller: controller,
+                      onPageChanged: (currentPage) =>
+                          setState(() => initialPage = currentPage),
                     ),
                   ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Container(
-                    height: 50,
-                    child: _imagelist(ulasan.image),
-                  )
+                      height: 20,
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+//                    mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                              result.foto.length,
+                              (index) => Padding(
+                                    padding: const EdgeInsets.only(left: 5.0),
+                                    child: Container(
+                                      height: 12,
+                                      width: 12,
+                                      decoration: BoxDecoration(
+                                          color: (initialPage == index)
+                                              ? MyTools.darkAccentColor
+                                                  .withOpacity(0.7)
+                                              : Colors.black26,
+                                          shape: BoxShape.circle),
+                                    ),
+                                  ))))
                 ],
               ),
             ),
-          );
-        },
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          _titleAndPrice(context, result),
+          SizedBox(
+            height: 10,
+          ),
+          _productOverview(context, result),
+          SizedBox(
+            height: 15,
+          ),
+          Padding(
+            padding: MyTools.defaultPadding(),
+            child: Divider(),
+          ),
+          _productInformation(context, result),
+          SizedBox(height: 10,),
+          _otherProduct(context),
+          SizedBox(height: 60,),
+        ],
       ),
     );
   }
 
-  _imagelist(List<UlasanImage> img) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: img.length,
-      itemBuilder: (BuildContext context, int i) {
-        return Container(
-          padding: EdgeInsets.only(left: 5),
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0)),
-          child: Image.network(img[i].link),
-        );
-      },
-    );
-  }
-}
-
-class DiskusiContainer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  _otherProduct(
+    context,
+  ) {
     return Container(
-      child: Column(
-        children: _dis.map((f) {
-          return ListTile(
-            contentPadding: EdgeInsets.all(0),
-            title: Text(f.uraian),
-            subtitle:
-                Text("oleh ${f.pengirim}, ${f.hari}, ${f.tgl} ${f.waktu}"),
-          );
-        }).toList(),
+      height: MediaQuery.of(context).size.width * (2 / 4),
+      width: double.infinity,
+      child: StreamBuilder<ProductModeltwo>(
+          stream: bloc?.products,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return MyTools.errorWidget(context);
+            } else if (snapshot.hasData) {
+              return Center(child: _listProductFromCategory(snapshot.data.data[0]));
+            }
+            return Center(child: CircularProgressIndicator());
+          }),
+    );
+  }
+
+  _titleAndPrice(context, ProductDetail result) {
+    var price = "0";
+    if (result.hargaSatuan == '0') {
+      for (var i in result.hargaZona) {
+        for (var j in i.provinsi) {
+          if (j.nama == this.widget.user.namaProvinsi) {
+            print(i.harga);
+            price = i.harga;
+//         break;
+          }
+        }
+      }
+    } else {
+      price = result.hargaSatuan;
+    }
+    return Padding(
+      padding: MyTools.defaultPadding(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width * (2 / 3) - 10,
+            child: Text(
+              result.nama,
+              style:
+                  MyTools.boldStyle(size: 18, color: MyTools.darkAccentColor),
+            ),
+          ),
+          Container(
+//          color: Colors.black,
+            width: MediaQuery.of(context).size.width * (1 / 3) - 10,
+            child: Text(
+              "Rp " + MyTools.priceFormat(int.parse(price)),
+              style: MyTools.boldStyle(size: 17, color: MyTools.redColor),
+              textAlign: TextAlign.end,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _productOverview(context, ProductDetail result) {
+    return Padding(
+      padding: MyTools.defaultPadding(),
+      child: Container(
+        width: double.infinity,
+        child: Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: <Widget>[
+            _iconOverview(context, Icons.visibility,
+                msg: "Dilihat", value: result.dilihat),
+            _iconOverview(context, Icons.access_time,
+                msg: "Kondisi", value: result.kondisi),
+            _iconOverview(context, Icons.local_shipping,
+                msg: "Terkirim", value: result.terkirim),
+            _iconOverview(context, Icons.local_offer,
+                msg: "Min. Pembelian", value: result.pembelianMinimum)
+          ],
+        ),
+      ),
+    );
+  }
+
+  _productInformation(context, ProductDetail result) {
+    return Padding(
+      padding: MyTools.defaultPadding(),
+      child: Container(
+        child: HtmlWidget(
+          result.deskripsi,
+          textStyle: MyTools.regular(
+              size: 14, color: MyTools.darkAccentColor.withOpacity(0.8)),
+        ),
+      ),
+    );
+  }
+
+  _iconOverview(context, IconData icon, {String msg, String value}) {
+    var val = (value == null) ? "0" : value;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Icon(
+          icon,
+          size: 30,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Text(
+          "$msg : $val",
+          style: MyTools.regular(color: MyTools.darkAccentColor, size: 14),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+      ],
+    );
+  }
+
+  _appBar(context) {
+    return Container(
+      height: 60,
+      child: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: MyTools.darkAccentColor,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              color: MyTools.darkAccentColor,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.favorite_border,
+              color: MyTools.darkAccentColor,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  _listProductFromCategory(Datum category) {
+    if(category.produk == null) {
+      return Container();
+    }
+    return Container(
+      height: 180,
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
+            color: Colors.black26,
+            offset: Offset(0, 3),
+            blurRadius: 3)
+      ]),
+      child: Container(
+//        height: 200,
+        child: ListView.builder(
+          itemCount: category?.produk?.length,
+          scrollDirection: Axis.horizontal,
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemBuilder: (context, int index) {
+            return Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        transitionDuration:
+                        Duration(milliseconds: 350),
+                        pageBuilder: (context, _, __) => ProductDetailPage(
+                            mitraId: category.produk[index].userId,
+                            categoryId: category.id,
+                            user: this.widget.user,
+                            productId: category.produk[index].id))),
+                child: Container(
+                  width: 130,
+//                  height: 180,
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: Container(
+                          child: (category.produk[index].foto != null) ? MyTools.imageProvider(category.produk[index].foto[0].foto, context) : Image.network('http://siplah.mascitra.co.id/assets/images/no-image.png',
+                            fit: BoxFit.cover,
+                          ),
+                          decoration: BoxDecoration(
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5.0)
+                              ]),
+                        ),
+                      ),
+                      SizedBox(height: 5,),
+                      Container(
+                        height: 40,
+                        width: 110,
+                        child: Text(
+                          category.produk[index].produk,
+                          style: MyTools.regular(size: 12, color: Colors.black87),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ),
+                      Container(
+                        width: 110,
+//                        height: 50,
+                        child: Text(
+                          category.produk[index].harga != '0'
+                              ? "Rp " + category.produk[index].harga
+                              : "harga zona",
+                          style: MyTools.boldStyle(size: 14, color: Colors.redAccent),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 }
-
-class UlasanItem {
-  final String nama;
-  final String tgl;
-  final int rating;
-  final String title;
-  final String subtitle;
-  final List<UlasanImage> image;
-
-  UlasanItem(
-      {this.nama,
-      this.tgl,
-      this.rating,
-      this.title,
-      this.subtitle,
-      this.image});
-}
-
-class UlasanImage {
-  final int index;
-  final String link;
-
-  UlasanImage(this.index, this.link);
-}
-
-List<UlasanItem> _item = <UlasanItem>[
-  UlasanItem(
-      nama: "guntur widianto",
-      tgl: "21 Jun 2019",
-      rating: 5,
-      title: "Barang bagus",
-      subtitle: "Bagus sesuai deskripsi, cuma box nya ga sesuai",
-      image: [
-        UlasanImage(0,
-            "http://ecs7.tokopedia.net/img/cache/700/product-1/2019/5/3/370667535/370667535_3ec73fa2-43e5-487d-8ff6-d25d9ce610cf_2048_2048.jpg"),
-        UlasanImage(1,
-            "http://ecs7.tokopedia.net/img/cache/700/product-1/2019/5/3/370667535/370667535_4cad02b0-2f39-4691-97a4-317a805c0457_2048_2048.jpg"),
-      ]),
-  UlasanItem(
-      nama: "Septian Iqbal",
-      tgl: "1 Mar 2019",
-      rating: 4,
-      title: "Barang Siip",
-      subtitle: "Sampai dengan selamat dan sesuai deskripsi.",
-      image: [
-        UlasanImage(0,
-            "http://ecs7.tokopedia.net/img/cache/700/product-1/2019/5/3/370667535/370667535_7d5afb9d-da49-4355-8d15-324575bdb622_2048_2048.jpg"),
-        UlasanImage(1,
-            "http://ecs7.tokopedia.net/img/cache/700/product-1/2019/5/3/370667535/370667535_e643982c-71ee-49f4-99a6-8e96f30f5038_1080_1080.jpg"),
-      ]),
-];
-
-class Diskusi {
-  final String uraian;
-  final String pengirim;
-  final String hari;
-  final String tgl;
-  final String waktu;
-
-  Diskusi({this.uraian, this.pengirim, this.hari, this.tgl, this.waktu});
-}
-
-List<Diskusi> _dis = <Diskusi>[
-  Diskusi(
-      uraian: "Selain buku dpt apa lagi gan ?",
-      pengirim: "teguh",
-      hari: "jumat",
-      tgl: "21 Jun 2019",
-      waktu: "15:05"),
-  Diskusi(
-      uraian: "Ready Gan ?",
-      pengirim: "Bima",
-      hari: "kamis",
-      tgl: "20 Jun 2019",
-      waktu: "21:05")
-];

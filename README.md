@@ -1,11 +1,22 @@
 # siplah_jpmall
 
 #BACA_GW
-24_03_2020
-1. yang di home apaan namanya ntuh yang ditarik keatas gw ubah jadi refreshindicator aja. 
 
+実優菜朱里　:v　
 
+10-04-2020
 
+1. adding splashscreen 
+2. adding login later,
+3. adding new product detail page
+4. adding new font,
+5. adding cache network image
+6. replace url from mascitra.co.id to jpstore.id
+7. other... 
+
+ほら！忘れちゃうダメですよ！:D　
+
+頑張ってfalahkun :v　いよいよいい子ですね！
 
 
 

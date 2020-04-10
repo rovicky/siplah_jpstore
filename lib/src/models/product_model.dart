@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-List<Products> productsFromJson(String str) => new List<Products>.from(json.decode(str).map((x) => Products.fromJson(x)));
+Products productsFromJson(String str) => Products.fromJson(json.decode(str).map((x) => Products.fromJson(x)));
 String productsToJson(Products data) => json.encode(data.toJson());
 
 class Products {

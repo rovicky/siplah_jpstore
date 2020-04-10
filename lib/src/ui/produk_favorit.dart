@@ -9,9 +9,13 @@ import 'package:siplah_jpmall/src/bloc/produk_favorit/produk_favorit_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/produk_favorit/produk_favorit_state.dart';
 import 'package:siplah_jpmall/src/models/get_token.dart';
 import 'package:siplah_jpmall/src/models/produk_model.dart';
+import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
 
 class ProdukFavorit extends StatefulWidget {
+  final UserData user;
+
+  const ProdukFavorit({Key key, @required this.user}) : super(key: key);
   @override
   ProdukFavoritState createState() => ProdukFavoritState();
 }
@@ -20,96 +24,10 @@ class ProdukFavoritState extends State<ProdukFavorit> with ProductFavState{
   @override
   ProdukFavoritState createState() => this;
   final ProdukFavBloc bloc = ProdukFavBloc();
-
-//  Future<http.Response> _delete(String id) async {
-//    //a=a+id;
-//    print(id);
-//    var url = BaseUrl.base + 'sekolah/produk_favorit/hapus';
-//
-//    Map data = {'user_id': "" + nama, 'id': id};
-//    //encode Map to JSON
-//    var body = json.encode(data);
-//
-//    var response = await http.post(url,
-//        headers: {
-//          "Content-Type": BaseUrl.headers.contentTypeJson,
-//          "API-App": BaseUrl.headers.apiApp,
-//          "Api-Key": BaseUrl.headers.apiKey,
-//          "API-Token": BaseUrl.headers.apiToken
-//        },
-//        body: body);
-//    // print("${response.statusCode}");
-//
-//    //print("${response.body}");
-//    Map<String, dynamic> map = jsonDecode(response.body);
-//    //print(map);
-//    if (map["Error"] == true || map["Error"] == "true") {
-//      _berhasil(context);
-//      ProdukFavorit();
-//    } else {
-//      // savedata();
-//      _showAlert(context);
-//    }
-//    return response;
-//  }
-//
-//  void _showAlert(BuildContext context) {
-//    showDialog(
-//        context: context,
-//        builder: (context) => AlertDialog(
-//          title: Text("Peringatan"),
-//          content: Text("maaf gagal edit"),
-//        ));
-//  }
-//
-//  void _berhasil(BuildContext context) {
-//    showDialog(
-//        context: context,
-//        builder: (context) => AlertDialog(
-//          title: Text("Peringatan"),
-//          content: Text("Buku telah dihapus dari daftar favorit"),
-//        ));
-//  }
-//
-//  String nama;
-//  List data, data2;
-//  Future<String> getJsonData() async {
-//    var response = await http.post(
-//        //Encode the url
-//
-//        Uri.encodeFull(
-//            BaseUrl.base + 'sekolah/produk_favorit/tampil'),
-//        headers: {
-//          "Content-Type": BaseUrl.headers.contentTypeurlx,
-//          "API-App": BaseUrl.headers.apiApp,
-//          "Api-Key": BaseUrl.headers.apiKey,
-//          "API-Token": BaseUrl.headers.apiToken
-//        },
-//        body: {
-//          "user_id": "" + nama,
-//        });
-//    //print(response.body);
-//    setState(() {
-//      // ignore: deprecated_member_use
-//      var convertDataToJson = json.decode(response.body);
-//      data = convertDataToJson['Data'];
-//      data2 = convertDataToJson['Data'][0]['foto'];
-//    });
-//  }
-//
-//  getCredential() async {
-//    final pref = await SharedPreferences.getInstance();
-//    setState(() {
-//      nama = pref.getString("id");
-//      getJsonData();
-//    });
-//    print("id = " + nama);
-//  }
-
   @override
   void initState() {
     super.initState();
-    firstLoad();
+    firstLoad(this.widget.user.id);
   }
 
   @override
@@ -225,7 +143,7 @@ class ProdukFavoritState extends State<ProdukFavorit> with ProductFavState{
                                       color: Colors.blue,
                                     ),
                                     onPressed: () {
-                                      deleteData(content.id);
+                                      deleteData(content.id, this.widget.user.id);
 //                                      _delete(data[i]['id']);
                                     },
                                   ),

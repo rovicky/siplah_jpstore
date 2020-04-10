@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/ui/page_carts.dart';
 
 import 'cart_bloc.dart';
@@ -11,14 +9,14 @@ abstract class CartState {
 
   CartBloc get _bloc => _state.bloc;
 
-  firstLoad() async {
-    _bloc.getData(await Provider.of<AuthProvider>(_state.context, listen: false).getCredential());
+  firstLoad(String id) async {
+    _bloc.getData(id);
   }
 
-  delete(String id) async {
-    final _bool = await _bloc.delete(id, await Provider.of<AuthProvider>(_state.context, listen: false).getCredential() );
+  delete(String id, String idUser) async {
+    final _bool = await _bloc.delete(id, idUser);
     if(_bool) {
-      firstLoad();
+      firstLoad(idUser);
       showAlert(_state.context, "Berhasil Menghapus Barang");
     }else {
       showAlert(_state.context, "Gagal Menghapus Barang");
@@ -32,7 +30,7 @@ abstract class CartState {
           content: Text(isi + " !."),
         ));
   }
-  void showAlert1(BuildContext context, String idx) {
+  void showAlert1(BuildContext context, String idx, String idUser) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -49,7 +47,7 @@ abstract class CartState {
                 child: new Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  delete(idx);
+                  delete(idx, idUser);
                 }),
           ],
         ));

@@ -12,15 +12,15 @@ abstract class ProductFavState {
 
   ProdukFavBloc get _bloc => _state.bloc;
 
-  firstLoad() async {
-    _bloc.getData(await Provider.of<AuthProvider>(_state.context, listen: false).getCredential());
+  firstLoad(String idUser) async {
+    _bloc.getData(idUser);
   }
 
-  deleteData(String id) async {
-    String idUser = await Provider.of<AuthProvider>(_state.context, listen: false).getCredential();
+  deleteData(String id, String idUser) async {
+//    String idUser = await Provider.of<AuthProvider>(_state.context, listen: false).getCredential();
     _bloc.deleteData(id, idUser).then((value) {
       if(value) {
-        firstLoad();
+        firstLoad(idUser);
         _berhasil(_state.context);
       }else {
         _showAlert(_state.context);

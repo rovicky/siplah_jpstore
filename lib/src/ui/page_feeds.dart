@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/ui/myappbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class FeedsPage extends StatefulWidget {
+  final UserData user;
+
+  const FeedsPage({Key key, this.user,}) : super(key: key);
   @override
   _FeedsPageState createState() => _FeedsPageState();
 }

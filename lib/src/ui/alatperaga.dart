@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:siplah_jpmall/src/models/produk_sample.dart';
+import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/ui/produk_detail.dart';
 import 'package:siplah_jpmall/src/models/get_token.dart';
 import 'dart:async';
@@ -207,10 +208,11 @@ import 'package:http/http.dart' as http;
 
 
 class Alatperaga extends StatefulWidget {
+  final UserData user;
   final List data;
   final List kategori;
 
-  const Alatperaga({Key key, this.data, this.kategori}) : super(key: key);
+  const Alatperaga({Key key, this.data, this.kategori, @required this.user}) : super(key: key);
 
  
  
@@ -224,21 +226,6 @@ class _AlatperagaState extends State<Alatperaga> {
   var f = NumberFormat("#,##0", "en_US");
   String api;
   List<String> satu = ["Buku Guru Pendidikan Jasmani Olahraga dan Kesehatan Kelas VII","","Third","4"];
-  
-//    _token(){
-//     api="";
-//     Token.getTokens("2").then((tokens){
-// for(int i = 0; i<tokens.length;i++)
-//      api = tokens[i].apitoken;
-
-//     //  a=output.toString();
-//      setState(() {
-                        
-//                          });
-
-//                       });
-//   }
-  
   @override
   void initState() {
     // TODO: implement initState
@@ -287,57 +274,8 @@ class _AlatperagaState extends State<Alatperaga> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             SizedBox(height: 15,),
-            // Text(widget.kategori != null ?widget.kategori[0]['nama'] : 'loading....', style: TextStyle(
-            //   color: Colors.white,
-            //   fontSize: 20
-              
-            //   ,
-            //   fontWeight: FontWeight.w500
-            // ),
-            // textAlign: TextAlign.center,),
             SizedBox(height: 120,),
-//            Row(
-//              mainAxisAlignment: MainAxisAlignment.spaceAround,
-//              children: <Widget>[
-//                Container(
-//                  height: 30,
-//                  width: 30,
-//                  child: Center(
-//                    child: Text("00"),
-//                  ),
-//                  decoration: BoxDecoration(
-//                      color: Colors.orange,
-//                      borderRadius: BorderRadius.circular(8.0)
-//                  ),
-//                ),
-//                Text(" : ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-//                Container(
-//                  height: 30,
-//                  width: 30,
-//                  child: Center(
-//                    child: Text("00"),
-//                  ),
-//                  decoration: BoxDecoration(
-//                      color: Colors.orange,
-//                      borderRadius: BorderRadius.circular(8.0)
-//                  ),
-//                ),
-//                Text(" : ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-//                Container(
-//                  height: 30,
-//                  width: 30,
-//                  child: Center(
-//                    child: Text("00"),
-//                  ),
-//                  decoration: BoxDecoration(
-//                      color: Colors.orange,
-//                      borderRadius: BorderRadius.circular(8.0)
-//                  ),
-//                ),
-//              ],
-//            ),
             SizedBox(height: 20,),
-            
           ],
         ),),
       ),
@@ -373,7 +311,7 @@ class _AlatperagaState extends State<Alatperaga> {
                   PageRouteBuilder(
                       transitionDuration: Duration(milliseconds: 350),
                       pageBuilder: (context, _, __) =>
-                          DetailProduk2(nama: widget.data[index]['produk'], gambar: widget.data[index]['foto'] != null ? widget.data[index]['foto'][0]['foto']: 'http://siplah.mascitra.co.id/assets/images/no-image.png',harga: widget.data[index]['harga'],))),
+                          ProductDetailPage(user: this.widget.user,productId: widget.data[index]['id'],))),
               
               child: Container(
                 width: 130,
@@ -548,7 +486,7 @@ class _AlatperagaState extends State<Alatperaga> {
                   PageRouteBuilder(
                       transitionDuration: Duration(milliseconds: 350),
                       pageBuilder: (context, _, __) =>
-                          DetailProduk2())),
+                          ProductDetailPage(user: this.widget.user, productId: this.widget.data[i]['id'],))),
               child: Container(
                 width: 130,
                 height: 200,
