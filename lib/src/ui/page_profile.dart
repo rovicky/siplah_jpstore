@@ -33,42 +33,23 @@ import 'login.dart';
 class ProfilePage extends StatefulWidget {
   final UserData user;
 
-  const ProfilePage({Key key, this.user, }) : super(key: key);
+  const ProfilePage({
+    Key key,
+    this.user,
+  }) : super(key: key);
   @override
   ProfilePageState createState() => ProfilePageState();
 }
 
-class ProfilePageState extends State<ProfilePage>
-    with SettingState {
+class ProfilePageState extends State<ProfilePage> with SettingState {
   final bloc = SettingBloc();
   double position = 0;
   @override
   void initState() {
     super.initState();
-    if(this.widget.user != null){firstLoad();}
-  }
-
-
-
-  List data, data2;
-  Future<String> getJsonData() async {
-    var response = await http.post(
-      //Encode the url
-      Uri.encodeFull('http://siplah.mascitra.co.id/api/blog/blog_footer'),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "API-App": "siplah_jpmall.id",
-        "Api-Key": "4P1_7Pm411_51p114h",
-        "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
-      },
-    );
-    //print(response.body);
-    setState(() {
-      // ignore: deprecated_member_use
-      var convertDataToJson = json.decode(response.body);
-      data = convertDataToJson['Data'];
-      data2 = convertDataToJson['Data'][0]['page'];
-    });
+    if (this.widget.user != null) {
+      firstLoad();
+    }
   }
 
   @override
@@ -93,7 +74,10 @@ class ProfilePageState extends State<ProfilePage>
                 height: 40,
                 minWidth: 120,
                 color: Colors.redAccent,
-                child: Text("Login Disini", style: MyTools.boldStyle(color: Colors.white, size: 15),),
+                child: Text(
+                  "Login Disini",
+                  style: MyTools.boldStyle(color: Colors.white, size: 15),
+                ),
               )
             ],
           ),
@@ -101,402 +85,155 @@ class ProfilePageState extends State<ProfilePage>
       );
     }
     return Scaffold(
-      appBar: _appBar(context),
+//      appBar: _appBar(context),
       body: StreamBuilder<ResultSetting>(
-        stream: bloc.setting,
+          stream: bloc.setting,
           builder: (context, snapshot) {
-          if(snapshot.hasError){
-           return Center(child: Text("Can't Load Data"),);
-          }else if(snapshot.hasData){
-            if(snapshot.data.error){
-              showAlert(snapshot.data.pesanUsr);
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Can't Load Data"),
+              );
+            } else if (snapshot.hasData) {
+              if (snapshot.data.error) {
+                showAlert(snapshot.data.pesanUsr);
+              }
+              return SafeArea(child: _body(context, snapshot.data));
             }
-            return _body(context, snapshot.data);
-          }return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }),
-      drawer: Drawer(
-        child: ListView(
-          // padding: EdgeInsets.zero,
-          children: <Widget>[
-            this.widget.user.levelId != '3'
-                ? Column(children: <Widget>[
-              SizedBox(
-                width: 300,
-                child: DrawerHeader(
-                  decoration: BoxDecoration(
-                      color: Colors.blue[800],
-                      image: new DecorationImage(
-                        //src/image/Icons_SIPLAH_JPSTORE_2020.png
-                          image: new AssetImage(
-                            "src/image/Icons_SIPLAH_JPSTORE_2020.png",
-                          ))),
-                ),
-              ),
-              ListTile(
-                title: Container(
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.person,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text('Profil'),
-                      ],
-                    )),
-                onTap: () async {
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            EditprofileSKL(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.shopping_basket,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Pesanan'),
-                    ],
-                  ),
-                ),
-                onTap: () async {
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            PesananState(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.local_shipping,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Alamat Pengiriman'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AlamatPemesan(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.comment,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Komplain'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            KomplainSekolah(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.favorite,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Produk Favorit'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            ProdukFavorit(user: this.widget.user,),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.exit_to_app,
-                        color: Colors.red,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Logout'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-//                  showAlert();
-                },
-              ),
-            ])
-                : Column(children: <Widget>[
-              SizedBox(
-                width: 380,
-                child: DrawerHeader(
-                  decoration: BoxDecoration(
-                      color: Colors.blue[800],
-                      image: new DecorationImage(
-                          image: new AssetImage(
-                              "src/image/Icons_SIPLAH_JPSTORE_2020.png"))),
-                ),
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.person,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Profil'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            Editprofile(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.store_mall_directory,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Penjualan'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            Penjualan(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.people_outline,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Cabang Mitra'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            TambahCabang(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.comment,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Komplain'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            KomplainMitra(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.local_convenience_store,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Marketing'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            Marketing(),
-                      ));
-                },
-              ),
-              ListTile(
-                title: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.exit_to_app,
-                        color: Colors.red,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Logout'),
-                    ],
-                  ),
-                ),
-                onTap: () {
-//                  showAlert(context);
-                },
-              ),
-            ])
-          ],
-        ),
-      ),
     );
   }
-  _body(BuildContext context, ResultSetting snapshot){
+
+  _body(BuildContext context, ResultSetting snapshot) {
     final result = snapshot.data;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 10,),
-          //
+          SizedBox(
+            height: 10,
+          ),
+          _customListTile(
+              "Profil",
+              List.generate(
+                  settingsDefault(context, this.widget.user).length,
+                  (index) => {
+                        "title": settingsDefault(context, this.widget.user)[index].title,
+                        "subtitle": settingsDefault(context, this.widget.user)[index].subtitle,
+                        "onPressed": settingsDefault(context, this.widget.user)[index].onPressed,
+
+                      })),
           Column(
             mainAxisSize: MainAxisSize.min,
-            children: List.generate(result.length, (index) => ListTile(
-              title: Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Text(result[index].nama, style: TextStyle(fontWeight: FontWeight.w500),),
-              ),
-              subtitle: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(result[index].page.length, (i) => Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0), side: BorderSide(
-                      color: Colors.black54,
-                      width: 2,
-                    )),
-                    child: ListTile(
-                      title: Text(result[index].page[i].judul, style: TextStyle(fontWeight: FontWeight.w500),),
-                    ),
-                  ),
-                )),
-              ),
-            )),
-          )
+            children: List.generate(
+                result.length,
+                (index) => _customListTile(
+                    result[index].nama,
+                    List.generate(
+                        result[index].page.length,
+                        (i) => {
+                              "title": result[index].page[i].judul,
+                              "id": result[index].page[i].id,
+                              "subtitle": null
+                            }))),
+          ),
+          _customListTile(
+              "Lain lain",
+              List.generate(
+                  settingMore.length,
+                      (index) => {
+                    "title": settingMore[index].title,
+                    "subtitle": settingMore[index].subtitle
+                  })),
         ],
       ),
     );
   }
-    _appBar(BuildContext context) {
-      return AppBar(
-        backgroundColor: Colors.blue[800],
-        title: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Row(
-            children: <Widget>[
-              CircleAvatar(
-                radius: 20,
-                child: Center(
-                  child: Image.network(
-                      (this.widget.user.foto == null)
-                        ? 'http://siplah.mascitra.co.id/assets/images/user.ico'
-                        : this.widget.user.foto,
+
+  _customListTile(String title, List<Map<String, dynamic>> children) {
+    return ListTile(
+      title: Padding(
+        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+        child: Text(
+          title,
+          style: MyTools.boldStyle(size: 14, color: MyTools.darkAccentColor),
+        ),
+      ),
+      subtitle: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(
+            children.length,
+            (i) => Padding(
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 7),
+                  child: Container(
+                    height: 70,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color:
+                            Colors.black54.withOpacity(0.8).withAlpha(25),
+                            blurRadius: 7,
+                            offset: Offset(0, 0),
+                            spreadRadius: 0.4)
+                      ],
+                      color: children[i]['title'] == "Keluar" ? Colors.redAccent :Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Center(
+                      child: ListTile(
+                        onTap: (){
+                          children[i]['onPressed']();
+                        },
+                        title: Text(
+                          children[i]['title'],
+                          style: MyTools.boldStyle(color: children[i]['title'] == "Keluar" ? Colors.white : MyTools.darkAccentColor, size: 16),
+                        ),
+                        subtitle: children[i]['subtitle'] == null ? null : Text(children[i]['subtitle'] ?? '', style: MyTools.regular(size: 13, color: MyTools.darkAccentColor),),
+                      ),
+                    ),
                   ),
+                )),
+      ),
+    );
+  }
+
+
+
+  _appBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.blue[800],
+      title: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Row(
+          children: <Widget>[
+            CircleAvatar(
+              radius: 20,
+              child: Center(
+                child: Image.network(
+                  (this.widget.user.foto == null)
+                      ? 'http://siplah.mascitra.co.id/assets/images/user.ico'
+                      : this.widget.user.foto,
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
-              Container(
-                  width: MediaQuery.of(context).size.width/2,
-                  child: Text(
-                    this.widget.user.nama != null ? this.widget.user.nama : "waiting...",
-                    style: TextStyle(color: Colors.white),
-                  )),
-            ],
-          ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+                width: MediaQuery.of(context).size.width / 2,
+                child: Text(
+                  this.widget.user.nama != null
+                      ? this.widget.user.nama
+                      : "waiting...",
+                  style: TextStyle(color: Colors.white),
+                )),
+          ],
         ),
-      );
-    }
+      ),
+    );
+  }
 
-    @override
+  @override
   void dispose() {
     bloc.dispose();
     super.dispose();

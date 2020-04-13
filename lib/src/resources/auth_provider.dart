@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siplah_jpmall/src/models/mitra_detail_model.dart';
+import 'package:siplah_jpmall/src/models/mitra_user.dart';
 import 'package:siplah_jpmall/src/models/result_user.dart';
+import 'package:siplah_jpmall/src/models/sekolah_user.dart';
 
 import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -79,6 +82,44 @@ class AuthProvider extends ChangeNotifier {
       }
     }else{
       return ResultUser(error: true);
+    }
+  }
+
+  Future<MitraUser> fetchMitraUser(String id) async {
+    final response = await http.post(BaseUrl.base + "user/profil",
+      headers: {
+        "Content-Type": BaseUrl.headers.contentTypeurlx,
+        "API-App": BaseUrl.headers.apiApp,
+        "Api-Key": BaseUrl.headers.apiKey,
+        "API-Token": BaseUrl.headers.apiToken
+      },
+      body: {
+      "user_id":id
+      }
+    );
+    if(response.statusCode == 200) {
+      return mitraUserFromJson(response.body);
+    }else{
+      return null;
+    }
+  }
+
+  Future<SekolahUser> fetchSekolahUser(String id) async {
+    final response = await http.post(BaseUrl.base + "user/profil",
+        headers: {
+          "Content-Type": BaseUrl.headers.contentTypeurlx,
+          "API-App": BaseUrl.headers.apiApp,
+          "Api-Key": BaseUrl.headers.apiKey,
+          "API-Token": BaseUrl.headers.apiToken
+        },
+        body: {
+          "user_id":id
+        }
+    );
+    if(response.statusCode == 200) {
+      return sekolahUserFromJson(response.body);
+    }else{
+      return null;
     }
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siplah_jpmall/src/bloc/splash/splash_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/splash/splash_state.dart';
-import 'package:siplah_jpmall/src/ui/login.dart';
-import 'package:siplah_jpmall/src/ui/mainpage.dart';
 
 class SplashPage extends StatefulWidget {
   @override

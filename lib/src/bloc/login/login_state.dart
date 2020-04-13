@@ -4,6 +4,7 @@ import 'package:siplah_jpmall/src/bloc/login/login_bloc.dart';
 import 'package:siplah_jpmall/src/models/result_user.dart';
 import 'package:siplah_jpmall/src/ui/login.dart';
 import 'package:siplah_jpmall/src/ui/mainpage.dart';
+import 'package:siplah_jpmall/src/ui/splash_screen.dart';
 
 abstract class LoginState {
   LoginPageState createdState();
@@ -19,7 +20,7 @@ abstract class LoginState {
     if (!resultUser.error) {
       final result = await _bloc.setIdPreferences(resultUser.data.id);
       if(result){
-        Navigator.pushReplacement(_state.context, MaterialPageRoute(builder: (context) => MainPage()));
+        Navigator.pushReplacement(_state.context, MaterialPageRoute(builder: (context) => SplashPage()));
       }else{
         _showAlert("Tidak Bisa Login, Silahkan Login Kembali!");
       }

@@ -43,6 +43,7 @@ class HomePageState extends State<HomePage> with HomeState {
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
     firstLoad((this.widget.user != null) ? this.widget.user.id : '');
+//    print(this.widget.user.id);
   }
 
   @override
@@ -75,7 +76,7 @@ class HomePageState extends State<HomePage> with HomeState {
             ];
           },
           body: RefreshIndicator(
-            onRefresh: () => firstLoad(this.widget.user.id),
+            onRefresh: () => firstLoad(this.widget.user == null ? '' : this.widget.user.id),
             child: StreamBuilder<ProductModeltwo>(
                 stream: bloc.homeContent,
                 builder: (context, snapshot) {

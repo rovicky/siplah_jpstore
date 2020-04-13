@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 ResultSetting resultSettingFromJson(String str) => ResultSetting.fromJson(json.decode(str));
 
 String resultSettingToJson(ResultSetting data) => json.encode(data.toJson());
@@ -94,4 +96,13 @@ class Page {
     "created_at": createdAt == null ? null : createdAt.toIso8601String(),
     "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
   };
+}
+
+
+class SettingsDefault{
+  final String title;
+  final String subtitle;
+  final VoidCallback onPressed;
+
+  SettingsDefault({this.title, this.subtitle, this.onPressed});
 }

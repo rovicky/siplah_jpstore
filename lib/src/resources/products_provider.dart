@@ -4,6 +4,7 @@ import 'package:http/http.dart' show Client;
 import 'package:flutter/foundation.dart';
 import 'package:siplah_jpmall/src/models/get_token.dart';
 import 'package:siplah_jpmall/src/models/product_detail.dart';
+import 'package:siplah_jpmall/src/models/product_mitra.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/produk_model.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
@@ -33,6 +34,25 @@ class ProductProvider {
       return result;
     } else {
       throw Exception("Failed to Load");
+    }
+  }
+
+  Future<ProductMitra> fetchProductMitra(String mitraId, {int page = 0}) async {
+    final response = await client.post(url+"produk/produk_mitra", headers: {
+      "Content-Type": BaseUrl.headers.contentTypeurlx,
+      "API-App": BaseUrl.headers.apiApp,
+      "Api-Key": BaseUrl.headers.apiKey,
+      "API-Token": BaseUrl.headers.apiToken
+    }, body: {
+      "mitra_id":mitraId,
+      "limit":"10",
+      "page":page.toString()
+    });
+
+    if(response.statusCode == 200 ) {
+      return productMitraFromJson(response.body);
+    }else {
+      return null;
     }
   }
 

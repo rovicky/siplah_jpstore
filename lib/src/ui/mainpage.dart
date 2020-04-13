@@ -52,13 +52,14 @@ class _MainPageState extends State<MainPage> {
         CartsPage(
           user: user,
         ),
-        FeedsPage(
+        user == null ? FeedsPage() :FeedsPage(
           user: user,
         ),
         ProfilePage(
           user: user,
         )
       ];
+
 
   void _tabItem(int index) {
     setState(() {
@@ -76,40 +77,43 @@ class _MainPageState extends State<MainPage> {
         fixedColor: Colors.purple,
         type: BottomNavigationBarType.fixed,
         unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-              // backgroundColor:
-              title: Text(
-                "home",
-                style: TextStyle(fontSize: 12),
-              ),
-              icon: Icon(Icons.home)),
-          BottomNavigationBarItem(
-              title: Text(
-                "Carts",
-                style: TextStyle(fontSize: 12),
-              ),
-              icon: Icon(
-                Icons.shopping_cart,
-              )),
-          BottomNavigationBarItem(
-              title: Text(
-                "Mitra",
-                style: TextStyle(fontSize: 12),
-              ),
-              icon: Icon(
-                Icons.group,
-              )),
-          BottomNavigationBarItem(
-              title: Text(
-                "Profile",
-                style: TextStyle(fontSize: 12),
-              ),
-              icon: Icon(
-                Icons.account_circle,
-              )),
-        ],
+        items: _tabList(this.widget.user),
       ),
     );
   }
+
+  List<BottomNavigationBarItem> _tabList(UserData user) => [
+    BottomNavigationBarItem(
+      // backgroundColor:
+        title: Text(
+          "home",
+          style: TextStyle(fontSize: 12),
+        ),
+        icon: Icon(Icons.home)),
+    BottomNavigationBarItem(
+        title: Text(
+          "Carts",
+          style: TextStyle(fontSize: 12),
+        ),
+        icon: Icon(
+          Icons.shopping_cart,
+        )),
+    BottomNavigationBarItem(
+        title: Text(
+          "Mitra",
+          style: TextStyle(fontSize: 12),
+        ),
+        icon: Icon(
+          (user == null || user.levelId == "2") ? Icons.group : Icons.dashboard,
+        )),
+    BottomNavigationBarItem(
+        title: Text(
+          "Profile",
+          style: TextStyle(fontSize: 12),
+        ),
+        icon: Icon(
+          Icons.account_circle,
+        )),
+  ];
+
 }

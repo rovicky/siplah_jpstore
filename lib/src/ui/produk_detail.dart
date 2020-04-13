@@ -6,6 +6,7 @@ import 'package:siplah_jpmall/src/bloc/product_details/product_detail_state.dart
 import 'package:siplah_jpmall/src/models/product_detail.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
+import 'package:siplah_jpmall/src/ui/mitra/detail_mitra.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -73,7 +74,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
                       //appbar
                       _appBar(context),
                       //button
-                      Align(
+                      (this.widget.user != null && this.widget.user.levelId == "3") ? Container() : Align(
                         alignment: Alignment.bottomCenter,
                         child: _button(context, snapshot.data),
                       )
@@ -208,10 +209,27 @@ class ProductDetailPageState extends State<ProductDetailPage>
           ),
           _productOverview(context, result),
           SizedBox(
-            height: 15,
+            height: 10,
           ),
           Padding(
             padding: MyTools.defaultPadding(),
+            child: Divider(),
+          ),
+          _storeInfo(context, {
+            'img': result.userFoto,
+            'key':result.userNama,
+            'value':result.userId
+          }),
+          SizedBox(
+            height: 10,
+          ),
+          (result.hargaSatuan == '0') ? Padding(
+            padding: MyTools.defaultPadding(),
+            child: Divider(),
+          ) : Container(),
+          (result.hargaSatuan == '0') ? _zonePriceList(context, result) : Container(),
+          Padding(
+            padding: MyTools.defaultPadding(top: 8),
             child: Divider(),
           ),
           _productInformation(context, result),
@@ -223,9 +241,42 @@ class ProductDetailPageState extends State<ProductDetailPage>
     );
   }
 
-  _otherProduct(
-    context,
-  ) {
+  _zonePriceList(context, ProductDetail result) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10,),
+      child: Table(
+        border: TableBorder.all(width: 2),
+        children: [
+          TableRow(
+            children: List.generate(result.hargaZona.length, (index) => GestureDetector(
+              onTap: (){
+                showDialog(context: context, builder: (context) => AlertDialog(
+                  content: RichText(text: TextSpan(
+                    style: MyTools.regular(color: MyTools.darkAccentColor, size: 14),
+                      children: List.generate(result.hargaZona[index].provinsi.length, (ind) => TextSpan(
+                          text: result.hargaZona[index].provinsi[ind].nama + ","
+                      ))
+                  )),
+                ));
+              },
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(result.hargaZona[index].zonaNama, style: MyTools.boldStyle(color: MyTools.darkAccentColor, size: 14)),
+                ),
+              ),
+            ))
+          ),
+          TableRow(children: List.generate(result.hargaZona.length, (index) => Center(child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text("Rp "+MyTools.priceFormat(int.parse(result.hargaZona[index].harga)), style: MyTools.regular(color: MyTools.darkAccentColor, size: 14),),
+          ))))
+        ],
+      ),
+    );
+  }
+
+  _otherProduct(context) {
     return Container(
       height: MediaQuery.of(context).size.width * (2 / 4),
       width: double.infinity,
@@ -244,7 +295,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
 
   _titleAndPrice(context, ProductDetail result) {
     var price = "0";
-    if (result.hargaSatuan == '0') {
+    if (result.hargaSatuan == '0' && this.widget.user != null) {
       for (var i in result.hargaZona) {
         for (var j in i.provinsi) {
           if (j.nama == this.widget.user.namaProvinsi) {
@@ -273,7 +324,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
           Container(
 //          color: Colors.black,
             width: MediaQuery.of(context).size.width * (1 / 3) - 10,
-            child: Text(
+            child: (result.hargaSatuan == '0') ? Container() : Text(
               "Rp " + MyTools.priceFormat(int.parse(price)),
               style: MyTools.boldStyle(size: 17, color: MyTools.redColor),
               textAlign: TextAlign.end,
@@ -281,6 +332,45 @@ class ProductDetailPageState extends State<ProductDetailPage>
           )
         ],
       ),
+    );
+  }
+
+  _storeInfo(context, Map<String, dynamic> result) {
+
+    /**
+     * img = image,
+     * key = store name,
+     * value = store id
+     */
+
+    return ListTile(
+      onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => DetailMitraPage(
+        user: this.widget.user,
+        mitraId: result['value'],
+      ))),
+      leading: CircleAvatar(
+        child: Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: NetworkImage(result['img']),
+              fit: BoxFit.cover,
+          )
+          ),
+        ),
+        backgroundColor: MyTools.primaryColor,
+      ),
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width * (1/2) + 20,
+              child: Text(result['key'], style: MyTools.boldStyle(size: 18, color: MyTools.darkAccentColor),)),
+        ],
+      ),
+      trailing: Icon(Icons.check_circle, size: 25, color: Colors.amberAccent),
     );
   }
 
@@ -393,7 +483,6 @@ class ProductDetailPageState extends State<ProductDetailPage>
         child: ListView.builder(
           itemCount: category?.produk?.length,
           scrollDirection: Axis.horizontal,
-          physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (context, int index) {
             return Padding(
