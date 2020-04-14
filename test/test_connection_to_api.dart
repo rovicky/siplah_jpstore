@@ -39,9 +39,9 @@ void main(){
   });
 
   test("product detail", () async {
-    ProductDetail result = await ProductProvider().fetchProduct("23", "47");
+    ProductDetail result = await ProductProvider().fetchProduct("13974", "");
 //    debugPrint(result.toString());
-    expect(result.id, "23");
+    expect(result.id, "13974");
   });
 
   test("delete favorite", () async {

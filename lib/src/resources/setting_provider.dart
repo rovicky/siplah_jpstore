@@ -1,8 +1,9 @@
-import 'dart:convert';
+
 
 import 'package:siplah_jpmall/src/models/setting_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:siplah_jpmall/src/utils/base_url.dart';
+import '../../src/models/address_model.dart';
 
 class SettingProvider {
   Future<ResultSetting> fetchData() async {
@@ -22,6 +23,22 @@ class SettingProvider {
       }
     }else{
       return errorResult("Can't Load data");
+    }
+  }
+
+  Future<AddressModel> fetchAddressList(String userId) async {
+    final response = await http.post(BaseUrl.base+"sekolah/alamat_pengiriman/list", headers: {
+      "Content-Type": BaseUrl.headers.contentTypeurlx,
+      "API-App": BaseUrl.headers.apiApp,
+      "Api-Key": BaseUrl.headers.apiKey,
+      "API-Token": BaseUrl.headers.apiToken
+    }, body: {
+      "user_id":userId
+    });
+    if(response.statusCode == 200){
+      return addressModelFromJson(response.body);
+    }else{
+      return null;
     }
   }
 }

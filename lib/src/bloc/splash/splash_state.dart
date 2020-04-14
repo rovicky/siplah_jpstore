@@ -1,4 +1,4 @@
-import 'package:provider/provider.dart';
+
 import 'package:siplah_jpmall/src/bloc/splash/splash_bloc.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
@@ -15,11 +15,11 @@ abstract class SplashState{
   SplashBloc get _bloc => _state.bloc;
 
   Future firstLoad() async {
-    final UserData userData = await Provider.of<AuthProvider>(_state.context, listen: false).getUserInfo();
     if(await isFirstTime()){
       print(await isFirstTime());
       onLoading().then((value) => Navigator.pushReplacement(_state.context, MaterialPageRoute(builder: (context) => WelcomePage())));
     }else {
+      final UserData userData = await AuthProvider().getUserInfo();
       onLoading().then((value) =>
           Navigator.pushReplacement(_state.context, MaterialPageRoute(
               builder: (context) => MainPage(user: userData,))));

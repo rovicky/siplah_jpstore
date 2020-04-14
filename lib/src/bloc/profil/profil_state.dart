@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:siplah_jpmall/src/bloc/profil/profil_bloc.dart';
 import 'package:siplah_jpmall/src/ui/auth/profil_page.dart';
 
@@ -15,4 +16,6 @@ abstract class ProfileState{
       _bloc.getDataMitra(id);
     }
   }
+
+
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/ui/login.dart';
 import 'package:siplah_jpmall/src/ui/mainpage.dart';
@@ -28,11 +27,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Color(0xFF6BB8E3),
           accentColor: Color(0xFF3FCB9B),
     ),
-    home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => AuthProvider())
-        ],
-        child: SplashPage())
+    home: SplashPage()
     );
   }
 }

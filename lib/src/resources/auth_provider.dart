@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +30,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<UserData> getUserInfo() async {
     final String idUser = await getCredential();
-    if(idUser == null){
+    if (idUser == null) {
       return null;
     }
     final response = await http.post(BaseUrl.base + "user/profil", headers: {
@@ -38,88 +39,90 @@ class AuthProvider extends ChangeNotifier {
       "Api-Key": BaseUrl.headers.apiKey,
       "API-Token": BaseUrl.headers.apiToken
     }, body: {
-      "user_id":idUser
+      "user_id": idUser
     });
 
     final errorResult = UserData(status: "error");
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      if(!data['Error']) {
+      if (!data['Error']) {
         final result = UserData.fromJson(data['Data'][0]);
         user = result;
         notifyListeners();
         return result;
-      }else{
+      } else {
         user = errorResult;
         notifyListeners();
 
         return errorResult;
       }
-    }else{
-        user = errorResult;
-        notifyListeners();
+    } else {
+      user = errorResult;
+      notifyListeners();
       return errorResult;
     }
   }
-  Future<ResultUser> fetchLogin(String email, String password) async {
-    final response = await http.post(BaseUrl.base + "user/login", headers: {
-      "Content-Type": BaseUrl.headers.contentTypeJson,
-      "API-App": BaseUrl.headers.apiApp,
-      "Api-Key": BaseUrl.headers.apiKey,
-      "API-Token": BaseUrl.headers.apiToken
-    }, body: jsonEncode({
-      "email":email,
-      "password":password
-    }));
 
-    if(response.statusCode == 200) {
+  Future<ResultUser> fetchLogin(String email, String password) async {
+    final response = await http.post(BaseUrl.base + "user/login",
+        headers: {
+          "Content-Type": BaseUrl.headers.contentTypeJson,
+          "API-App": BaseUrl.headers.apiApp,
+          "Api-Key": BaseUrl.headers.apiKey,
+          "API-Token": BaseUrl.headers.apiToken
+        },
+        body: jsonEncode({"email": email, "password": password}));
+
+    if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
 //      print(response.body);
-      if(!result['Error']){
+      if (!result['Error']) {
         return resultUserFromJson(response.body);
-      }else{
+      } else {
         return ResultUser(error: true);
       }
-    }else{
+    } else {
       return ResultUser(error: true);
     }
   }
 
   Future<MitraUser> fetchMitraUser(String id) async {
-    final response = await http.post(BaseUrl.base + "user/profil",
-      headers: {
-        "Content-Type": BaseUrl.headers.contentTypeurlx,
-        "API-App": BaseUrl.headers.apiApp,
-        "Api-Key": BaseUrl.headers.apiKey,
-        "API-Token": BaseUrl.headers.apiToken
-      },
-      body: {
-      "user_id":id
-      }
-    );
-    if(response.statusCode == 200) {
+    final response = await http.post(BaseUrl.base + "user/profil", headers: {
+      "Content-Type": BaseUrl.headers.contentTypeurlx,
+      "API-App": BaseUrl.headers.apiApp,
+      "Api-Key": BaseUrl.headers.apiKey,
+      "API-Token": BaseUrl.headers.apiToken
+    }, body: {
+      "user_id": id
+    });
+    if (response.statusCode == 200) {
       return mitraUserFromJson(response.body);
-    }else{
+    } else {
       return null;
     }
   }
 
   Future<SekolahUser> fetchSekolahUser(String id) async {
-    final response = await http.post(BaseUrl.base + "user/profil",
-        headers: {
-          "Content-Type": BaseUrl.headers.contentTypeurlx,
-          "API-App": BaseUrl.headers.apiApp,
-          "Api-Key": BaseUrl.headers.apiKey,
-          "API-Token": BaseUrl.headers.apiToken
-        },
-        body: {
-          "user_id":id
-        }
-    );
-    if(response.statusCode == 200) {
+    final response = await http.post(BaseUrl.base + "user/profil", headers: {
+      "Content-Type": BaseUrl.headers.contentTypeurlx,
+      "API-App": BaseUrl.headers.apiApp,
+      "Api-Key": BaseUrl.headers.apiKey,
+      "API-Token": BaseUrl.headers.apiToken
+    }, body: {
+      "user_id": id
+    });
+    if (response.statusCode == 200) {
       return sekolahUserFromJson(response.body);
-    }else{
+    } else {
       return null;
     }
+  }
+
+  Future<bool> signOut() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool cleared = await sharedPreferences.setString('id', null);
+    id = null;
+    notifyListeners();
+    return cleared;
   }
 }

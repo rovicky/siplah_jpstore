@@ -324,7 +324,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
           Container(
 //          color: Colors.black,
             width: MediaQuery.of(context).size.width * (1 / 3) - 10,
-            child: (result.hargaSatuan == '0') ? Container() : Text(
+            child: (this.widget.user == null) ? Container() : Text(
               "Rp " + MyTools.priceFormat(int.parse(price)),
               style: MyTools.boldStyle(size: 17, color: MyTools.redColor),
               textAlign: TextAlign.end,

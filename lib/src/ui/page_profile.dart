@@ -140,10 +140,11 @@ class ProfilePageState extends State<ProfilePage> with SettingState {
           _customListTile(
               "Lain lain",
               List.generate(
-                  settingMore.length,
+                  settingMore(context).length,
                       (index) => {
-                    "title": settingMore[index].title,
-                    "subtitle": settingMore[index].subtitle
+                    "title": settingMore(context)[index].title,
+                    "subtitle": settingMore(context)[index].subtitle,
+                        "onPressed": settingMore(context)[index].onPressed
                   })),
         ],
       ),
@@ -181,7 +182,7 @@ class ProfilePageState extends State<ProfilePage> with SettingState {
                     ),
                     child: Center(
                       child: ListTile(
-                        onTap: (){
+                        onTap: () {
                           children[i]['onPressed']();
                         },
                         title: Text(

@@ -6,64 +6,6 @@ import 'package:siplah_jpmall/src/ui/mainpage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
-// class ImageSlider extends StatefulWidget {
-//   @override
-//   _ImageSliderState createState() => _ImageSliderState();
-// }
-
-// class _ImageSliderState extends State<ImageSlider> {
-//   PageController _pageController;
-//   int currentPage = 0;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _pageController = PageController(
-//       initialPage: 1, keepPage: true, viewportFraction: 0.5
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 200,
-//       child: PageView.builder(
-//         onPageChanged: (val){
-//           setState((){
-//             currentPage = val;
-//           });
-//         },
-//         controller: _pageController,
-//         itemBuilder: (context, i) => _animateItemBuilder(i),
-//       ),
-//     );
-//   }
-//   _animateItemBuilder(int index){
-//     return AnimatedBuilder(
-//       animation: _pageController,
-//       builder: (context, child){
-//         double value = 1;
-//         if(_pageController.position.haveDimensions){
-//           value = _pageController.page - index;
-//           value = (1 - (value.abs() * 0.5)).clamp(0.0, 0.1);
-//         }
-
-//         return Center(
-//           child: SizedBox(
-//             height:  Curves.easeIn.transform(value) * 450,
-//             width:  Curves.easeIn.transform(value) * 300,
-//             child: child,
-//           )
-//         );
-//       },
-//       child: Container(
-//         // margin: const EdgeInsets.all(10.0),
-//         color: index % 2 == 0 ? Colors.greenAccent : Colors.cyanAccent,
-//         child: FlutterLogo(),
-//       ),
-//     );
-//   }
-// }
 
 class ImageSlider extends StatefulWidget {
   @override

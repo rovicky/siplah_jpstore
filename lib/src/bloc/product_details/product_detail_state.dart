@@ -1,5 +1,4 @@
 import 'package:flutter_share/flutter_share.dart';
-import 'package:provider/provider.dart';
 import 'package:siplah_jpmall/src/bloc/product_details/product_detail_bloc.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/ui/produk_detail.dart';

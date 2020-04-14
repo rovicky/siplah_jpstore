@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:siplah_jpmall/src/bloc/kabupaten_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/kecamatan_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/login/login_bloc.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:siplah_jpmall/src/bloc/produk_favorit/produk_favorit_bloc.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 
