@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:siplah_jpmall/src/bloc/mitra/mitra_detail_bloc.dart';
+import 'package:siplah_jpmall/src/bloc/mitra/mitra_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/mitra/mitra_detail_state.dart';
 import 'package:siplah_jpmall/src/models/mitra_detail_model.dart';
 import 'package:siplah_jpmall/src/models/product_mitra.dart';
@@ -22,7 +22,7 @@ class DetailMitraPage extends StatefulWidget {
 
 class DetailMitraPageState extends State<DetailMitraPage>
     with MitraDetailState {
-  final bloc = MitraDetailBloc();
+  final bloc = MitraBloc();
   List<Products> productsMitra = [];
   int page = 1;
   ScrollController controller = new ScrollController();

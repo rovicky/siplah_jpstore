@@ -8,6 +8,7 @@ import 'package:siplah_jpmall/src/ui/page_feeds.dart';
 import 'package:siplah_jpmall/src/ui/page_home.dart';
 import 'package:siplah_jpmall/src/ui/page_officialstore.dart';
 import 'package:siplah_jpmall/src/ui/page_profile.dart';
+import 'package:siplah_jpmall/src/utils/mytools.dart';
 
 class MainPage extends StatefulWidget {
   final UserData user;
@@ -23,25 +24,10 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   double posisi = 0.0;
   int currentPage = 0;
-  ScrollController _controller;
-  _scrollListener() {
-    setState(() {
-      posisi = _controller.offset;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xFF6BB8E3), //top bar color
-      statusBarIconBrightness: Brightness.light, //top bar icons
-      systemNavigationBarColor: Colors.white, //bottom bar color
-      systemNavigationBarIconBrightness: Brightness.dark, //bottom bar icons
-    ));
-    _controller = ScrollController();
-    _controller.addListener(_scrollListener);
   }
 
   List<Widget> _page(UserData user) => [
@@ -73,7 +59,9 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentPage,
         onTap: _tabItem,
-        fixedColor: Colors.purple,
+        elevation: 10.0,
+        backgroundColor: Colors.white,
+        fixedColor: MyTools.primaryColor,
         type: BottomNavigationBarType.fixed,
         unselectedItemColor: Colors.grey,
         items: _tabList(this.widget.user),

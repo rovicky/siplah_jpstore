@@ -6,6 +6,7 @@ import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/ui/auth/profil_page.dart';
 import 'package:siplah_jpmall/src/ui/login.dart';
 import 'package:siplah_jpmall/src/ui/page_profile.dart';
+import 'package:siplah_jpmall/src/ui/produk_favorit.dart';
 import 'package:siplah_jpmall/src/ui/sekolah/my_order_page.dart';
 
 abstract class SettingState {
@@ -50,7 +51,9 @@ abstract class SettingState {
         SettingsDefault(title: "Pesanan",subtitle: null, onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrderPage(user: user,)));
         }),
-        SettingsDefault(title: "Produk Favorit",subtitle: null, onPressed: (){}),
+        SettingsDefault(title: "Produk Favorit",subtitle: null, onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ProdukFavorit(user: user,)));
+        }),
       ];
     }
   }

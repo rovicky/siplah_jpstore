@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:siplah_jpmall/src/bloc/mitra/mitra_detail_bloc.dart';
+import 'package:siplah_jpmall/src/bloc/mitra/mitra_bloc.dart';
 import 'package:siplah_jpmall/src/ui/mitra/detail_mitra.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,7 +8,7 @@ abstract class MitraDetailState {
 
   DetailMitraPageState get _state => createState();
 
-  MitraDetailBloc get _bloc => _state.bloc;
+  MitraBloc get _bloc => _state.bloc;
 
   bool isExpanded1 = false;
   bool isExpanded2 = false;

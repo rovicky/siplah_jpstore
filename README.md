@@ -33,4 +33,16 @@
 
 今日、もう幸せですか？、
 
-![alt text](https://firebasestorage.googleapis.com/v0/b/lelang-ukk.appspot.com/o/image_products%2FIMG_20200414_145118.jpg?alt=media&token=80338e01-f30d-49e2-9f56-baad095b903f)
+15-04-2020
+
+1. favorite page
+2. blog page,
+error : 
+1. image slider (rencananya mau gw replace),
+2. mitra page (gw replace juga rencananya),
+3. detail pesanan (belum buat),
+4. trus lupa gw ...
+
+明日もっともっと頑張ります！
+
+![alt text](https://pbs.twimg.com/media/EVfIMJjUcAEoDiO?format=jpg&name=small)

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:siplah_jpmall/src/bloc/my_order/my_order_state.dart';
 import 'package:siplah_jpmall/src/bloc/my_order/order_bloc.dart';
 import 'package:siplah_jpmall/src/models/order_model.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
+import 'package:siplah_jpmall/src/ui/sekolah/my_order_detail_page.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 
@@ -46,90 +48,171 @@ class MyOrderPageState extends State<MyOrderPage> with MyOrderState {
       body: StreamBuilder<OrderModel>(
           stream: bloc.myOrderList,
           builder: (context, snapshot) {
-            if(snapshot.hasError){
-              return MyTools.errorWidget(context, message: snapshot.error.toString());
-            }else if(snapshot.hasData) {
-              if(snapshot.data.error){
-                return MyTools.errorWidget(context, message: snapshot.data.pesanUsr);
+            if (snapshot.hasError) {
+              return MyTools.errorWidget(context,
+                  message: snapshot.error.toString());
+            } else if (snapshot.hasData) {
+              if (snapshot.data.error) {
+                return MyTools.errorWidget(context,
+                    message: snapshot.data.pesanUsr);
+              }else if(snapshot.data.data.length == 0) {
+                return MyTools.errorWidget(context, message: "Belum Ada Pesanan");
               }
               return SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: List.generate(snapshot.data.data.length, (index) => _customTile(context, snapshot.data.data[index])),
+                  children: List.generate(
+                      snapshot.data.data.length,
+                      (index) =>
+                          _customTile(context, snapshot.data.data[index])),
                 ),
               );
-            }return Center(child: CircularProgressIndicator(),);
-          }
-      ),
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
     );
   }
 
   _customTile(context, Datum result) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 4, top: 4),
-      child: Container(
-        padding: MyTools.defaultPadding(bottom: 8),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color:
-                Colors.black54.withOpacity(0.8).withAlpha(25),
-                blurRadius: 7,
-                offset: Offset(0, 0),
-                spreadRadius: 0.4)
-          ],
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  SizedBox(width: 15,),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(image: NetworkImage(result.mitra[0].foto ?? BaseUrl.baseImage))
+      child: GestureDetector(
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrderDetailPage(user: this.widget.user, id: result.id,))),
+        child: Container(
+          padding: MyTools.defaultPadding(bottom: 8),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black54.withOpacity(0.8).withAlpha(25),
+                  blurRadius: 7,
+                  offset: Offset(0, 0),
+                  spreadRadius: 0.4)
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                height: 70,
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 15,
                     ),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  result.mitra[0].foto ?? BaseUrl.baseImage))),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                            child: Text(
+                              result.mitra[0].nama,
+                              style: MyTools.boldStyle(
+                                  size: 14, color: MyTools.darkAccentColor),
+                            ),
+                            width:
+                                MediaQuery.of(context).size.width * (1 / 2) + 30),
+                        Container(
+                            child: Text(
+                              result.mitra[0].kabupatenNama,
+                              style: MyTools.regular(
+                                  size: 13, color: MyTools.darkAccentColor),
+                            ),
+                            width:
+                                MediaQuery.of(context).size.width * (1 / 2) + 30),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(
+                    result.mitra[0].produk.length,
+                    (index) => Container(
+                          height: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(width: 2, color: Colors.black54),
+                          ),
+                          child: Center(
+                            child: ListTile(
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                            result.mitra[0].produk[index].foto ??
+                                                BaseUrl.baseImage))),
+                              ),
+                              title: Text(
+                                  result.mitra[0].produk[index].nama.length < 30
+                                      ? result.mitra[0].produk[index].nama
+                                      : result.mitra[0].produk[index].nama
+                                              .substring(0, 30) +
+                                          "..."),
+                              subtitle: Text(
+                                  result.mitra[0].produk[index].jumlah +
+                                      "x | Rp " +
+                                      MyTools.priceFormat(int.parse(
+                                          result.mitra[0].produk[index].harga))),
+                            ),
+                          ),
+                        )),
+              ),
+              SizedBox(height: 5,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Status Pesanan :",
+                    style:
+                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
                   ),
-                  SizedBox(width: 10,),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(child: Text(result.mitra[0].nama, style: MyTools.boldStyle(size: 14, color: MyTools.darkAccentColor),), width: MediaQuery.of(context).size.width * (1/2) + 30),
-                      Container(child: Text(result.mitra[0].kabupatenNama, style: MyTools.regular(size: 13, color: MyTools.darkAccentColor),), width: MediaQuery.of(context).size.width * (1/2) + 30),
-                    ],
-                  )
+                  Text(
+                    result.mitra[0].statusNama,
+                    style:
+                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
+                  ),
                 ],
               ),
-            ),
-            Column(mainAxisSize: MainAxisSize.min, children: List.generate(result.mitra[0].produk.length, (index) => Container(
-              height: 70,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(width: 2, color: Colors.black54),
-              ),
-              child: Center(child: ListTile(
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(image: NetworkImage(result.mitra[0].produk[index].foto ?? BaseUrl.baseImage))
+              SizedBox(height: 5,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "waktu Pemesanan :",
+                    style:
+                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
                   ),
-                ),
-                title: Text(result.mitra[0].produk[index].nama.length < 30 ? result.mitra[0].produk[index].nama : result.mitra[0].produk[index].nama.substring(0, 30) + "..."),
-                subtitle: Text(result.mitra[0].produk[index].jumlah + "x | Rp " + MyTools.priceFormat(int.parse(result.mitra[0].produk[index].harga
-                ))),
-              ),),
-            )),),
-          ],
+                  Text(
+                    DateFormat.yMMMd().format(result.mitra[0].createdAt) +
+                        " " +
+                        DateFormat.Hm().format(result.mitra[0].createdAt),
+                    style:
+                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

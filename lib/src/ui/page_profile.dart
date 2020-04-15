@@ -21,6 +21,7 @@ import 'package:siplah_jpmall/src/ui/pesanan.dart';
 import 'package:siplah_jpmall/src/ui/produk_favorit.dart';
 import 'package:siplah_jpmall/src/ui/rekomtoko.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siplah_jpmall/src/ui/settings/setting_detail.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 import 'footer.dart';
 import 'package:http/http.dart' as http;
@@ -134,7 +135,10 @@ class ProfilePageState extends State<ProfilePage> with SettingState {
                         (i) => {
                               "title": result[index].page[i].judul,
                               "id": result[index].page[i].id,
-                              "subtitle": null
+                              "onPressed": (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingDetailPage(user: this.widget.user, id: result[index].page[i].id,)));
+                              },
+                              "subtitle": null,
                             }))),
           ),
           _customListTile(

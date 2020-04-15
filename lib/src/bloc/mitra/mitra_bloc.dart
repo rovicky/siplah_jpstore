@@ -2,7 +2,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:siplah_jpmall/src/models/mitra_detail_model.dart';
 import 'package:siplah_jpmall/src/resources/mitra_provider.dart';
 
-class MitraDetailBloc {
+class MitraBloc {
   final _provider = MitraDetailProvider();
   final _mitraProfile = PublishSubject<MitraDetailModel>();
 

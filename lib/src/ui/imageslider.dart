@@ -69,7 +69,6 @@ class _ImageSliderState extends State<ImageSlider> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getJsonData();
   }
