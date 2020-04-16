@@ -63,8 +63,8 @@ class _MyAppBarAbNormalState extends State<MyAppBarAbNormal> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            height: 50,
-            width: 100,
+            height: 40,
+            width: 90,
             decoration: new BoxDecoration(
           image: new DecorationImage(image: AssetImage("src/image/Icons_SIPLAH_JPSTORE_2020.png"),
           fit: BoxFit.fill)

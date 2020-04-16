@@ -336,7 +336,7 @@ class CartsPageState extends State<CartsPage> with CartState {
           backgroundColor: Colors.black12,
           appBar: AppBar(
             flexibleSpace:
-                Container(decoration: BoxDecoration(color: Colors.blue[800])),
+                Container(decoration: BoxDecoration(color: MyTools.primaryColor)),
             actions: <Widget>[
               Center(
                 child: Text("hapus"),

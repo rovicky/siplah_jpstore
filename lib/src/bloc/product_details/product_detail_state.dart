@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:siplah_jpmall/src/bloc/cart/cart_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/product_details/product_detail_bloc.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/ui/produk_detail.dart';
+import 'package:siplah_jpmall/src/utils/mytools.dart';
 
 abstract class ProductDetailState {
   ProductDetailPageState createState();
@@ -34,6 +37,10 @@ abstract class ProductDetailState {
                 .replaceAll(",", "%2C")
                 .replaceAll(":", "%3A"),
         chooserTitle: productName);
+  }
+
+  Future<bool> createCart(String id, String mitraId, String userId, {int qty = 1}) async {
+    return await CartBloc().create(id, userId, mitraId, qty: qty);
   }
 
 }

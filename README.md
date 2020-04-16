@@ -45,4 +45,12 @@ error :
 
 明日もっともっと頑張ります！
 
-![alt text](https://pbs.twimg.com/media/EVfIMJjUcAEoDiO?format=jpg&name=small)
+15-04-2020
+
+1. home page gw refresh, 
+2. image slider,
+3. tambah cart,
+4. mitra page nya baru,
+5. gw lupa ....
+
+![alt text](https://pbs.twimg.com/media/EVpmIe3U8AMIS6y?format=jpg&name=small)

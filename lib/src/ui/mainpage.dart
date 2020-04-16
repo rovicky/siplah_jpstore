@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/ui/login.dart';
+import 'package:siplah_jpmall/src/ui/mitra/mitra_page.dart';
 import 'package:siplah_jpmall/src/ui/page_carts.dart';
 import 'package:siplah_jpmall/src/ui/page_feeds.dart';
 import 'package:siplah_jpmall/src/ui/page_home.dart';
@@ -37,7 +38,7 @@ class _MainPageState extends State<MainPage> {
         CartsPage(
           user: user,
         ),
-        user == null ? FeedsPage() :FeedsPage(
+        user == null || user.levelId != "3" ? FeedsPage(user: user,) : MitraPage(
           user: user,
         ),
         ProfilePage(

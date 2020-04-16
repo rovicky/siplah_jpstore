@@ -6,6 +6,7 @@ import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/produk_model.dart';
 import 'package:siplah_jpmall/src/models/result_user.dart';
 import 'package:siplah_jpmall/src/models/setting_model.dart';
+import 'package:siplah_jpmall/src/models/slide_model.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
 import 'package:siplah_jpmall/src/resources/cart_provider.dart';
 import 'package:siplah_jpmall/src/resources/home_provider.dart';
@@ -26,6 +27,10 @@ void main(){
 
   test("Home Page", () async {
     final ProductModeltwo productModeltwo = await homeProvider.fetchJson("60");
+    expect(productModeltwo.error, false);
+  });
+  test("Slider", () async {
+    final SlideModel productModeltwo = await homeProvider.fetchSlide();
     expect(productModeltwo.error, false);
   });
   

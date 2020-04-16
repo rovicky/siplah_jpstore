@@ -48,43 +48,11 @@ class ProfilePageState extends State<ProfilePage> with SettingState {
   @override
   void initState() {
     super.initState();
-    if (this.widget.user != null) {
-      firstLoad();
-    }
+    firstLoad();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (this.widget.user == null) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              MyTools.errorWidget(context,
-                  message: "Upss!. Kamu Belum Login, Login Dulu Yuk ! "),
-              SizedBox(
-                height: 30,
-              ),
-              MaterialButton(
-                onPressed: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginPage())),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                height: 40,
-                minWidth: 120,
-                color: Colors.redAccent,
-                child: Text(
-                  "Login Disini",
-                  style: MyTools.boldStyle(color: Colors.white, size: 15),
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    }
     return Scaffold(
 //      appBar: _appBar(context),
       body: StreamBuilder<ResultSetting>(
@@ -114,7 +82,7 @@ class ProfilePageState extends State<ProfilePage> with SettingState {
           SizedBox(
             height: 10,
           ),
-          _customListTile(
+          (this.widget.user == null) ? Container() : _customListTile(
               "Profil",
               List.generate(
                   settingsDefault(context, this.widget.user).length,
@@ -141,7 +109,7 @@ class ProfilePageState extends State<ProfilePage> with SettingState {
                               "subtitle": null,
                             }))),
           ),
-          _customListTile(
+          (this.widget.user == null) ? Container() : _customListTile(
               "Lain lain",
               List.generate(
                   settingMore(context).length,

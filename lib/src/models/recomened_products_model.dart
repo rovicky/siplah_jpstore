@@ -1,49 +1,45 @@
 // To parse this JSON data, do
 //
-//     final productMitra = productMitraFromJson(jsonString);
+//     final recomendedProducts = recomendedProductsFromJson(jsonString);
 
 import 'dart:convert';
 
-ProductMitra productMitraFromJson(String str) => ProductMitra.fromJson(json.decode(str));
+RecomendedProducts recomendedProductsFromJson(String str) => RecomendedProducts.fromJson(json.decode(str));
 
-String productMitraToJson(ProductMitra data) => json.encode(data.toJson());
+String recomendedProductsToJson(RecomendedProducts data) => json.encode(data.toJson());
 
-class ProductMitra {
+class RecomendedProducts {
   bool error;
-  dynamic pesanSys;
-  dynamic pesanUsr;
-  List<Products> data;
+  dynamic message;
+  List<RcData> data;
   Pagination pagination;
 
-  ProductMitra({
+  RecomendedProducts({
     this.error,
-    this.pesanSys,
-    this.pesanUsr,
+    this.message,
     this.data,
     this.pagination,
   });
 
-  factory ProductMitra.fromJson(Map<String, dynamic> json) => ProductMitra(
+  factory RecomendedProducts.fromJson(Map<String, dynamic> json) => RecomendedProducts(
     error: json["Error"] == null ? null : json["Error"],
-    pesanSys: json["Pesan_sys"],
-    pesanUsr: json["Pesan_usr"],
-    data: json["Data"] == null ? null : List<Products>.from(json["Data"].map((x) => Products.fromJson(x))),
+    message: json["Message"],
+    data: json["Data"] == null ? null : List<RcData>.from(json["Data"].map((x) => RcData.fromJson(x))),
     pagination: json["Pagination"] == null ? null : Pagination.fromJson(json["Pagination"]),
   );
 
   Map<String, dynamic> toJson() => {
     "Error": error == null ? null : error,
-    "Pesan_sys": pesanSys,
-    "Pesan_usr": pesanUsr,
+    "Message": message,
     "Data": data == null ? null : List<dynamic>.from(data.map((x) => x.toJson())),
     "Pagination": pagination == null ? null : pagination.toJson(),
   };
 }
 
-class Products {
+class RcData {
   String id;
   List<Foto> foto;
-  String produk;
+  String namaProduk;
   String kategoriId;
   String harga;
   List<HargaZona> hargaZona;
@@ -53,10 +49,10 @@ class Products {
   String kabupatenId;
   String kabupatenNama;
 
-  Products({
+  RcData({
     this.id,
     this.foto,
-    this.produk,
+    this.namaProduk,
     this.kategoriId,
     this.harga,
     this.hargaZona,
@@ -67,10 +63,10 @@ class Products {
     this.kabupatenNama,
   });
 
-  factory Products.fromJson(Map<String, dynamic> json) => Products(
+  factory RcData.fromJson(Map<String, dynamic> json) => RcData(
     id: json["id"] == null ? null : json["id"],
     foto: json["foto"] == null ? null : List<Foto>.from(json["foto"].map((x) => Foto.fromJson(x))),
-    produk: json["produk"] == null ? null : json["produk"],
+    namaProduk: json["nama_produk"] == null ? null : json["nama_produk"],
     kategoriId: json["kategori_id"] == null ? null : json["kategori_id"],
     harga: json["harga"] == null ? null : json["harga"],
     hargaZona: json["harga_zona"] == null ? null : List<HargaZona>.from(json["harga_zona"].map((x) => HargaZona.fromJson(x))),
@@ -84,7 +80,7 @@ class Products {
   Map<String, dynamic> toJson() => {
     "id": id == null ? null : id,
     "foto": foto == null ? null : List<dynamic>.from(foto.map((x) => x.toJson())),
-    "produk": produk == null ? null : produk,
+    "nama_produk": namaProduk == null ? null : namaProduk,
     "kategori_id": kategoriId == null ? null : kategoriId,
     "harga": harga == null ? null : harga,
     "harga_zona": hargaZona == null ? null : List<dynamic>.from(hargaZona.map((x) => x.toJson())),
@@ -125,86 +121,38 @@ class Foto {
 }
 
 class HargaZona {
-  String id;
-  String zonaId;
-  ZonaNama zonaNama;
+  String nama;
   String harga;
-  List<Provinsi> provinsi;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   HargaZona({
-    this.id,
-    this.zonaId,
-    this.zonaNama,
+    this.nama,
     this.harga,
-    this.provinsi,
-    this.createdAt,
-    this.updatedAt,
   });
 
   factory HargaZona.fromJson(Map<String, dynamic> json) => HargaZona(
-    id: json["id"] == null ? null : json["id"],
-    zonaId: json["zona_id"] == null ? null : json["zona_id"],
-    zonaNama: json["zona_nama"] == null ? null : zonaNamaValues.map[json["zona_nama"]],
-    harga: json["harga"] == null ? null : json["harga"],
-    provinsi: json["provinsi"] == null ? null : List<Provinsi>.from(json["provinsi"].map((x) => Provinsi.fromJson(x))),
-    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id == null ? null : id,
-    "zona_id": zonaId == null ? null : zonaId,
-    "zona_nama": zonaNama == null ? null : zonaNamaValues.reverse[zonaNama],
-    "harga": harga == null ? null : harga,
-    "provinsi": provinsi == null ? null : List<dynamic>.from(provinsi.map((x) => x.toJson())),
-    "created_at": createdAt == null ? null : createdAt.toIso8601String(),
-    "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
-  };
-}
-
-class Provinsi {
-  String id;
-  String nama;
-
-  Provinsi({
-    this.id,
-    this.nama,
-  });
-
-  factory Provinsi.fromJson(Map<String, dynamic> json) => Provinsi(
-    id: json["id"] == null ? null : json["id"],
     nama: json["nama"] == null ? null : json["nama"],
+    harga: json["harga"] == null ? null : json["harga"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id == null ? null : id,
     "nama": nama == null ? null : nama,
+    "harga": harga == null ? null : harga,
   };
 }
-
-enum ZonaNama { ZONA_1, ZONA_2, ZONA_3, ZONA_4, ZONA_5 }
-
-final zonaNamaValues = EnumValues({
-  "Zona 1": ZonaNama.ZONA_1,
-  "Zona 2": ZonaNama.ZONA_2,
-  "Zona 3": ZonaNama.ZONA_3,
-  "Zona 4": ZonaNama.ZONA_4,
-  "Zona 5": ZonaNama.ZONA_5
-});
 
 class Pagination {
-  bool pagination;
-  String halaman;
+  bool status;
+  int halaman;
+  int limit;
   int dataKe;
   String jmlData;
   String jmlHalaman;
   String infoPaging;
 
   Pagination({
-    this.pagination,
+    this.status,
     this.halaman,
+    this.limit,
     this.dataKe,
     this.jmlData,
     this.jmlHalaman,
@@ -212,8 +160,9 @@ class Pagination {
   });
 
   factory Pagination.fromJson(Map<String, dynamic> json) => Pagination(
-    pagination: json["Pagination"] == null ? null : json["Pagination"],
-    halaman: json["Halaman"] == null ? null : json["Halaman"],
+    status: json["Status"] == null ? null : json["Status"],
+    halaman: json["Halaman"] == null ? null : int.parse(json["Halaman"]),
+    limit: json["Limit"] == null ? null : json["Limit"],
     dataKe: json["Data_ke"] == null ? null : json["Data_ke"],
     jmlData: json["Jml_data"] == null ? null : json["Jml_data"],
     jmlHalaman: json["Jml_halaman"] == null ? null : json["Jml_halaman"],
@@ -221,25 +170,12 @@ class Pagination {
   );
 
   Map<String, dynamic> toJson() => {
-    "Pagination": pagination == null ? null : pagination,
+    "Status": status == null ? null : status,
     "Halaman": halaman == null ? null : halaman,
+    "Limit": limit == null ? null : limit,
     "Data_ke": dataKe == null ? null : dataKe,
     "Jml_data": jmlData == null ? null : jmlData,
     "Jml_halaman": jmlHalaman == null ? null : jmlHalaman,
     "Info_paging": infoPaging == null ? null : infoPaging,
   };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    if (reverseMap == null) {
-      reverseMap = map.map((k, v) => new MapEntry(v, k));
-    }
-    return reverseMap;
-  }
 }

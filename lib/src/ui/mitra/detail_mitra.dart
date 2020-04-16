@@ -8,6 +8,7 @@ import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/resources/products_provider.dart';
 import 'package:siplah_jpmall/src/ui/page_carts.dart';
 import 'package:siplah_jpmall/src/ui/produk_detail.dart';
+import 'package:siplah_jpmall/src/utils/base_url.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 
 class DetailMitraPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class DetailMitraPage extends StatefulWidget {
 
 class DetailMitraPageState extends State<DetailMitraPage>
     with MitraDetailState {
+  Widget _widgetReach = CircularProgressIndicator();
   final bloc = MitraBloc();
   List<Products> productsMitra = [];
   int page = 1;
@@ -33,7 +35,13 @@ class DetailMitraPageState extends State<DetailMitraPage>
     firstLoad(this.widget.mitraId);
     ProductProvider()
         .fetchProductMitra(this.widget.mitraId, page: page)
-        .then((value) => setState(() => productsMitra.addAll(value.data)));
+        .then((value) {
+          if(value.data == null || value.data.length == 0) {
+            _widgetReach = Text("Tidak Ada lagi", style: MyTools.regular(size: 14,color: MyTools.darkAccentColor),);
+          }else{
+            setState(() => productsMitra.addAll(value.data));
+          }
+    });
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
         setState(() {
@@ -41,7 +49,15 @@ class DetailMitraPageState extends State<DetailMitraPage>
         });
         ProductProvider()
             .fetchProductMitra(this.widget.mitraId, page: page)
-            .then((value) => setState(() => productsMitra.addAll(value.data)));
+            .then((value) {
+              if(value == null || value.data == null || value.data.length == 0) {
+                setState(() {
+                  _widgetReach = Text("Tidak Ada lagi", style: MyTools.regular(size: 14,color: MyTools.darkAccentColor),);
+                });
+              }else{
+                setState(() => productsMitra.addAll(value.data));
+              }
+        });
       }
     });
   }
@@ -55,6 +71,8 @@ class DetailMitraPageState extends State<DetailMitraPage>
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return StreamBuilder<MitraDetailModel>(
         stream: bloc.mitraProfile,
         builder: (context, snapshot) {
@@ -87,79 +105,20 @@ class DetailMitraPageState extends State<DetailMitraPage>
                       padding: const EdgeInsets.only(left: 10.0, right: 10),
                       child: Divider(),
                     ),
+
                     GridView.count(
+                      childAspectRatio: height/width < 2 ? 0.8 : 0.85,
                       crossAxisCount: 2,
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       children: List.generate(
                           productsMitra.length,
-                          (index) => GestureDetector(
-                                onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ProductDetailPage(
-                                              mitraId: snapshot.data.data[0].id,
-                                              user: this.widget.user,
-                                              categoryId: productsMitra[index]
-                                                  .kategoriId,
-                                              productId:
-                                                  productsMitra[index].id,
-                                            ))),
-                                child: Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, left: 10, right: 10),
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Container(
-                                          height: 100,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      productsMitra[index]
-                                                          .foto[0]
-                                                          .foto))),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Container(
-                                            width: 120,
-                                            height: 40,
-                                            child: Text(
-                                              productsMitra[index].produk,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: MyTools.boldStyle(
-                                                  size: 14,
-                                                  color:
-                                                      MyTools.darkAccentColor),
-                                            )),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          "Rp " + productsMitra[index].harga,
-                                          style: MyTools.boldStyle(
-                                              size: 15,
-                                              color: Colors.redAccent),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )),
+                          (index) => _listProducts(context, productsMitra[index])),
                     ),
                     Container(
-                      height: 30,
-                      width: 30,
-                      child: CircularProgressIndicator(),
+                      height: 100,
+                      width: 100,
+                      child: Center(child: _widgetReach),
                     )
                   ],
                 ),
@@ -222,6 +181,113 @@ class DetailMitraPageState extends State<DetailMitraPage>
     );
   }
 
+  _listProducts(context, Products result ) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProductDetailPage(
+                mitraId: result.userId,
+                user: this.widget.user,
+                categoryId: result.kategoriId,
+                productId:
+                result.id,
+              ))),
+      child: Container(
+        padding: const EdgeInsets.only(
+            top: 8.0, left: 10, right: 10),
+        child: Card(
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.circular(15)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(height: 5,),
+              Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(
+                            result
+                                .foto == null ? BaseUrl.baseImage : result
+                                .foto[0]
+                                .foto))),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  width: double.infinity,
+                  height: 40,
+                  child: Text(
+                    result.produk,
+                    textAlign: TextAlign.left,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: MyTools.boldStyle(
+                        size: 13,
+                        color:
+                        MyTools.darkAccentColor),
+                  )),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                width: double.infinity,
+                child: Text(result.harga == "0" ? "harga zona" :
+                "Rp " + result.harga,
+                  textAlign: TextAlign.left,
+                  style: MyTools.boldStyle(
+                      size: 14,
+                      color: Colors.redAccent),
+                ),
+              ),
+              SizedBox(height: 3,),
+              Container(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+//                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(Icons.store, size: 15, color: MyTools.primaryColor,),
+                    SizedBox(width: 3,),
+                    Text(result.userNama.length < 15 ? result.userNama : result.userNama.substring(0, 15) + "...",
+                      style: MyTools.regular(
+                          size: 10,
+                          color: MyTools.darkAccentColor),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 10, top: 3, right: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+//                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(Icons.location_on, size: 15, color: Colors.redAccent,),
+                    SizedBox(width: 3,),
+                    Text(result.kabupatenNama,
+                      style: MyTools.regular(
+                          size: 10,
+                          color: MyTools.darkAccentColor),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   _storeInfo(context, MitraDetailModel result) {
     return Container(
 //      padding: MyTools.defaultPadding(),
@@ -244,7 +310,7 @@ class DetailMitraPageState extends State<DetailMitraPage>
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                            image: NetworkImage(result.data[0].foto),
+                            image: NetworkImage(result.data[0].foto ?? BaseUrl.baseImage),
                             fit: BoxFit.cover,
                           )),
                     ),
@@ -333,7 +399,7 @@ class DetailMitraPageState extends State<DetailMitraPage>
           Container(
             padding: const EdgeInsets.only(left: 15, right: 15),
             width: MediaQuery.of(context).size.width,
-            child: RichText(
+            child: result.data[0].deskripsi == null ? null : RichText(
               text: TextSpan(children: [
                 TextSpan(
                     text: (result.data[0].deskripsi.length < 50) ? result.data[0].deskripsi : (isExpanded1)

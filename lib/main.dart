@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:siplah_jpmall/src/resources/auth_provider.dart';
-import 'package:siplah_jpmall/src/ui/login.dart';
-import 'package:siplah_jpmall/src/ui/mainpage.dart';
 import 'package:siplah_jpmall/src/ui/splash_screen.dart';
+import 'package:siplah_jpmall/src/utils/mytools.dart';
 
 void main(){
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF6BB8E3), //top bar color
-        statusBarIconBrightness: Brightness.light, //top bar icons
-        systemNavigationBarColor: Colors.white, //bottom bar color
-        systemNavigationBarIconBrightness: Brightness.dark, //bottom bar icons
+        statusBarColor: MyTools.primaryColor, //top bar color
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
       )
   );
   return runApp(MyApp());//test

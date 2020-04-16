@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:siplah_jpmall/src/models/product_detail.dart';
+import 'package:siplah_jpmall/src/utils/base_url.dart';
 
 class MyTools {
   static String priceFormat(int value) {
@@ -26,7 +27,8 @@ class MyTools {
           wordSpacing: 1.0,
           letterSpacing: 1.0);
 
-  static Color primaryColor = Color(0xFF6BB8E3);
+  static Color primaryColor = Color(0xFF007FFF);
+  static Color primaryColorChild = Color(0xFF6BB8E3);
   static Color accentColor = Color(0xFF3FCB9B);
   static Color darkAccentColor = Color(0xFF173f5f);
   static Color redColor = Color(0xFFce2029);
@@ -75,7 +77,7 @@ class MyTools {
       height: height,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage('http://siplah.mascitra.co.id/assets/images/no-image.png'),
+          image: NetworkImage(BaseUrl.baseImage),
 //          fit: BoxFit.cover,
         ),
       ),

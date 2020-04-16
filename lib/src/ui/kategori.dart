@@ -4,6 +4,7 @@ import 'package:siplah_jpmall/src/ui/gridproduk.dart';
 import 'package:siplah_jpmall/src/ui/myappbar.dart';
 import 'package:siplah_jpmall/src/ui/myflexspace.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
+import 'package:siplah_jpmall/src/utils/mytools.dart';
 
 class Kategori extends StatefulWidget {
   final Datum data;
@@ -15,9 +16,6 @@ class Kategori extends StatefulWidget {
 }
 
 class _KategoriState extends State<Kategori> {
-   List data;
-  List data2;
-  List kategorilist;
   double posisi = 0.0;
   int currentPage = 0;
   ScrollController _controller;
@@ -63,14 +61,14 @@ class _KategoriState extends State<Kategori> {
               ),
             ];
           },
-          body: ListView(
+          body: widget.data == null || widget.data.produk == null ? MyTools.errorWidget(context, message: "Belum Ada Produk di Kategori ini") : ListView(
             padding: const EdgeInsets.all(0),
             children: <Widget>[
               Column(children: <Widget>[
                 SizedBox(
                   height: 10,
                 ),
-               GridProduk(result: widget.data, user: this.widget.user,)
+                GridProduk(result: widget.data, user: this.widget.user,)
               ]),
             ],
           )),

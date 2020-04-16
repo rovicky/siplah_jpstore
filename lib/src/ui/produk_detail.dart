@@ -7,6 +7,7 @@ import 'package:siplah_jpmall/src/models/product_detail.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/ui/mitra/detail_mitra.dart';
+import 'package:siplah_jpmall/src/utils/base_url.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -29,6 +30,7 @@ class ProductDetailPage extends StatefulWidget {
 class ProductDetailPageState extends State<ProductDetailPage>
     with ProductDetailState {
   final ProductDetailBloc bloc = ProductDetailBloc();
+  final _skey = GlobalKey<ScaffoldState>();
   int initialPage = 0;
   PageController controller;
   @override
@@ -51,6 +53,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _skey,
         body: StreamBuilder<ProductDetail>(
             stream: bloc?.product,
             builder: (context, snapshot) {
@@ -108,18 +111,23 @@ class ProductDetailPageState extends State<ProductDetailPage>
           ]),
       child: Row(
         children: <Widget>[
-          Container(
-            height: 60,
-            width: MediaQuery.of(context).size.width * (3 / 5),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(15))),
-            child: Center(
-                child: Text(
-              "Add to Cart",
-              style:
-                  MyTools.boldStyle(color: MyTools.darkAccentColor, size: 16),
-            )),
+          GestureDetector(
+            onTap: (){
+              _showBottomSheet(context, result);
+            },
+            child: Container(
+              height: 60,
+              width: MediaQuery.of(context).size.width * (3 / 5),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15))),
+              child: Center(
+                  child: Text(
+                "Add to Cart",
+                style:
+                    MyTools.boldStyle(color: MyTools.darkAccentColor, size: 16),
+              )),
+            ),
           ),
           Container(
             height: 60,
@@ -136,6 +144,131 @@ class ProductDetailPageState extends State<ProductDetailPage>
         ],
       ),
     );
+  }
+
+  _showBottomSheet(context, ProductDetail result) {
+    String price = "0";
+    if(result.hargaSatuan == "0" ) {
+      for (var i in result.hargaZona) {
+        for (var j in i.provinsi) {
+          if (j.nama == this.widget.user.namaProvinsi) {
+            print(i.harga);
+            price = i.harga;
+//         break;
+          }
+        }
+      }
+    }else{
+      price = result.hargaSatuan;
+    }
+    TextEditingController _qty = TextEditingController(text: "1");
+    return showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+        ),
+        builder: (context) {
+      return StatefulBuilder(
+        builder: (context, state) => Container(
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 10),
+          height: MediaQuery.of(context).size.height * (1/3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Container(
+                    height: 80,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          result.foto == null ? BaseUrl.baseImage :
+                          result.foto[0].foto
+                        ),
+                      )
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width * (1/2) + 20,
+                          child: Text(result.nama,maxLines: 2, overflow: TextOverflow.ellipsis, style: MyTools.boldStyle(size: 16, color: MyTools.darkAccentColor),)),
+                      Container(
+                          width: MediaQuery.of(context).size.width * (1/2) + 20,
+                          child: Text("Rp "+MyTools.priceFormat(int.parse(price)), textAlign: TextAlign.left, style: MyTools.boldStyle(size: 15, color: Colors.redAccent),))
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: (){
+                          state((){
+                            _qty = TextEditingController(text: (int.parse(_qty.text) + 1).toString());
+                          });
+                        },
+                        child: Container(
+                          height: 20,
+                          width: 40,
+                          child: Icon(Icons.add, size: 15,),
+                        ),
+                      ),
+                      Container(
+                        height: 20,
+                        width: 40,
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          enabled: false,
+                          controller: _qty,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          if(_qty.text == "1") {
+                            state((){
+                              _qty = TextEditingController(text: (int.parse(_qty.text) - 0).toString());
+                            });
+                          }else{
+                            state((){
+                              _qty = TextEditingController(text: (int.parse(_qty.text) - 1).toString());
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 20,
+                          width: 40,
+                          child: Icon(Icons.remove, size: 15,),
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+              SizedBox(height: 10,),
+              MaterialButton(onPressed: (){
+                createCart(result.id, result.userId, this.widget.user.id, qty: int.parse(_qty.text)).then((value) {
+                  if(value){
+                    Navigator.pop(context);
+                    _skey.currentState.showSnackBar(new SnackBar(content: Text("Berhasil Menambahkan", style: MyTools.boldStyle(size: 16, color: Colors.white)),));
+                  }else{
+                    Navigator.pop(context);
+                    _skey.currentState.showSnackBar(new SnackBar(content: Text("Gagal Menambahkan", style: MyTools.boldStyle(size: 16, color: Colors.white)),));
+                  }
+                });
+
+              }, height: 45, shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15)
+              ), child: Text("Tambah", style: MyTools.boldStyle(color: Colors.white, size: 16),), color: Colors.red,)
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   _body(context, ProductDetail result) {

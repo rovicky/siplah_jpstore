@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:siplah_jpmall/src/models/mitra_detail_model.dart';
+import 'package:siplah_jpmall/src/models/mitra_list_model.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
 
 class MitraDetailProvider {
@@ -17,6 +18,20 @@ class MitraDetailProvider {
     if(response.statusCode == 200) {
       final result = jsonDecode(response.body);
       return MitraDetailModel.fromJson(result);
+    }else{
+      return null;
+    }
+  }
+
+  Future<MitraListModel> getMitras() async {
+    final response = await http.post(BaseUrl.base + "admin/data_mitra/list", headers: {
+      "Content-Type": BaseUrl.headers.contentTypeurlx,
+      "API-App": BaseUrl.headers.apiApp,
+      "Api-Key": BaseUrl.headers.apiKey,
+      "API-Token": BaseUrl.headers.apiToken
+    });
+    if(response.statusCode == 200) {
+      return mitraListModelFromJson(response.body);
     }else{
       return null;
     }

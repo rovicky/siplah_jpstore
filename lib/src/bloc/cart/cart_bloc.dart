@@ -13,12 +13,24 @@ class CartBloc {
     _cartModel.sink.add(event);
   }
 
-  dispose(){
+  dispose() {
     _cartModel.close();
   }
 
   Future<bool> delete(String id, String userId) async {
     final bool result = await _cartProvider.delete(id, userId);
+    return result;
+  }
+
+  Future<bool> create(String id, String userId, String mitraId,
+      {int qty = 1}) async {
+    final bool result =
+        await _cartProvider.postCart(userId, mitraId, id, jumlah: qty);
+    return result;
+  }
+
+  Future<bool> update(String id, {int qty = 1}) async {
+    final bool result = await _cartProvider.setQty(id, jumlah: qty);
     return result;
   }
 }
