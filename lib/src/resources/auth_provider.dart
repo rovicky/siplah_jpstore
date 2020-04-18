@@ -75,7 +75,7 @@ class AuthProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
-//      print(response.body);
+      print(response.body);
       if (!result['Error']) {
         return resultUserFromJson(response.body);
       } else {
@@ -99,6 +99,40 @@ class AuthProvider extends ChangeNotifier {
       return mitraUserFromJson(response.body);
     } else {
       return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> createUser(Map<String, dynamic> result) async {
+    if (result.containsKey('npsn')) {
+      final response = await http.post(BaseUrl.base + "user/daftar_sekolah",
+          headers: {
+            "Content-Type": BaseUrl.headers.contentTypeJson,
+            "API-App": BaseUrl.headers.apiApp,
+            "Api-Key": BaseUrl.headers.apiKey,
+            "API-Token": BaseUrl.headers.apiToken
+          },
+          body: jsonEncode(result));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        return null;
+      }
+    } else {
+      final response = await http.post(BaseUrl.base + "user/daftar",
+          headers: {
+            "Content-Type": BaseUrl.headers.contentTypeJson,
+            "API-App": BaseUrl.headers.apiApp,
+            "Api-Key": BaseUrl.headers.apiKey,
+            "API-Token": BaseUrl.headers.apiToken
+          },
+          body: jsonEncode(result));
+
+      if (response.statusCode == 200) {
+        print(response.body);
+        return jsonDecode(response.body);
+      } else {
+        return null;
+      }
     }
   }
 

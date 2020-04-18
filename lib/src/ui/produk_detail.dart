@@ -252,6 +252,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
               SizedBox(height: 10,),
               MaterialButton(onPressed: (){
                 createCart(result.id, result.userId, this.widget.user.id, qty: int.parse(_qty.text)).then((value) {
+
                   if(value){
                     Navigator.pop(context);
                     _skey.currentState.showSnackBar(new SnackBar(content: Text("Berhasil Menambahkan", style: MyTools.boldStyle(size: 16, color: Colors.white)),));

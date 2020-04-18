@@ -45,7 +45,7 @@ error :
 
 明日もっともっと頑張ります！
 
-15-04-2020
+16-04-2020
 
 1. home page gw refresh, 
 2. image slider,
@@ -53,4 +53,18 @@ error :
 4. mitra page nya baru,
 5. gw lupa ....
 
-![alt text](https://pbs.twimg.com/media/EVpmIe3U8AMIS6y?format=jpg&name=small)
+18-04-2020
+
+1. login page
+2. register page
+error/onProcess :
+1. cart page,
+2. payment,
+3. detail order
+
+最近なにしているの？、今日ももうしあわせですか？
+明日一緒に頑張ろうね！
+
+なっちゃんが毎日かわいいよね、
+
+![alt text](https://drive.google.com/file/d/1JZQmk3W6FDeILhCZ9riSNlhpnItHDpxy/view?usp=drivesdk)

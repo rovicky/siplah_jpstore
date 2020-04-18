@@ -79,7 +79,7 @@ class ProductProvider {
       }else{
         return ProductDetail.fromJson(result['Data'][0]);
       }
-    }else {
+    }else if(response.persistentConnection){
         return ProductDetail(id: "00");
     }
   }

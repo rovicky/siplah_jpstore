@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siplah_jpmall/src/bloc/login/login_bloc.dart';
 import 'package:siplah_jpmall/src/models/result_user.dart';
+import 'package:siplah_jpmall/src/ui/auth/login_page.dart';
 import 'package:siplah_jpmall/src/ui/login.dart';
 import 'package:siplah_jpmall/src/ui/mainpage.dart';
 import 'package:siplah_jpmall/src/ui/splash_screen.dart';
@@ -13,8 +14,8 @@ abstract class LoginState {
 
   LoginBloc get _bloc => _state.bloc;
 
-  submit() async {
-//    debugPrint(_state.username.text);
+  Future submit() async {
+    Navigator.pop(_state.context);
     ResultUser resultUser =
         await _bloc.getLogin(_state.username.text, _state.password.text);
     if (!resultUser.error) {

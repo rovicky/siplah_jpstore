@@ -3,6 +3,7 @@ import 'package:siplah_jpmall/src/bloc/settings/setting_bloc.dart';
 import 'package:siplah_jpmall/src/models/setting_model.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/resources/auth_provider.dart';
+import 'package:siplah_jpmall/src/ui/auth/login_page.dart';
 import 'package:siplah_jpmall/src/ui/auth/profil_page.dart';
 import 'package:siplah_jpmall/src/ui/login.dart';
 import 'package:siplah_jpmall/src/ui/page_profile.dart';

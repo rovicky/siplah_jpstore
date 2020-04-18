@@ -6,8 +6,7 @@ import 'package:siplah_jpmall/src/utils/mytools.dart';
 void main(){
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: MyTools.primaryColor, //top bar color
-        statusBarIconBrightness: Brightness.light,
+        statusBarColor: MyTools.primaryColor,
         statusBarBrightness: Brightness.light,
       )
   );
