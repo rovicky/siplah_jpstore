@@ -63,8 +63,9 @@ error/onProcess :
 3. detail order
 
 最近なにしているの？、今日ももうしあわせですか？
-明日一緒に頑張ろうね！
 
-なっちゃんが毎日かわいいよね、
+俺のパーフェクト１０００％の大好きな推し
 
-![alt text](https://drive.google.com/file/d/1JZQmk3W6FDeILhCZ9riSNlhpnItHDpxy/view?usp=drivesdk)
+瀧野由美子だ！！！！、ゆみりん　:D
+
+![alt text](https://firebasestorage.googleapis.com/v0/b/lelang-ukk.appspot.com/o/icon%2FIMG_20190324_131309.jpg?alt=media&token=06806929-4aec-4609-8859-b8b0b49bc4c5)
