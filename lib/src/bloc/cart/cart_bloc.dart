@@ -1,9 +1,11 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:siplah_jpmall/src/models/cart_model.dart';
 import 'package:siplah_jpmall/src/resources/cart_provider.dart';
+import 'package:siplah_jpmall/src/resources/order_provider.dart';
 
 class CartBloc {
   CartProvider _cartProvider = CartProvider();
+  OrderProvider _orderProvider = OrderProvider();
   final PublishSubject<CartModel> _cartModel = PublishSubject<CartModel>();
 
   Stream<CartModel> get cart => _cartModel.stream;
@@ -33,4 +35,6 @@ class CartBloc {
     final bool result = await _cartProvider.setQty(id, jumlah: qty);
     return result;
   }
+
+  Future<Map<String, dynamic>> createPayment(String idUser, List<String> ids,) => _orderProvider.createPayment(idUser, ids);
 }

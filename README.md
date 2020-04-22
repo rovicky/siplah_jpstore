@@ -64,8 +64,20 @@ error/onProcess :
 
 最近なにしているの？、今日ももうしあわせですか？
 
-俺のパーフェクト１０００％の大好きな推し
+22-04-2020
 
-瀧野由美子だ！！！！、ゆみりん　:D
+1. cart page, 
+2. payment page
+3. adding raja ongkir api
 
-![alt text](https://firebasestorage.googleapis.com/v0/b/lelang-ukk.appspot.com/o/icon%2FIMG_20190324_131309.jpg?alt=media&token=06806929-4aec-4609-8859-b8b0b49bc4c5)
+on process :
+1. purchase order,
+2. detail order,
+3. mitra page {
+    1. add product,
+    2. other
+}
+
+あと少しで、頑張ってね　：D　なっちゃんがいつもかわいいもん
+
+![alt text](https://pbs.twimg.com/media/EWM5OGpVAAAonB8?format=jpg&name=small)

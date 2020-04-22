@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:siplah_jpmall/src/models/cart_model.dart';
 import 'package:siplah_jpmall/src/ui/page_carts.dart';
+import 'package:siplah_jpmall/src/ui/payment/payment_page.dart';
+import 'package:siplah_jpmall/src/ui/sekolah/cart_page.dart';
 
 import 'cart_bloc.dart';
 
 abstract class CartState {
-  CartsPageState createState();
-  CartsPageState get _state => createState();
+  CartPageState createState();
+  CartPageState get _state => createState();
 
   CartBloc get _bloc => _state.bloc;
 
@@ -22,6 +25,31 @@ abstract class CartState {
       showAlert(_state.context, "Gagal Menghapus Barang");
     }
   }
+
+  update(String id, String idUser,{int qty = 1}) async {
+    final _bool = await _bloc.update(id, qty: qty);
+    if(_bool) {
+      firstLoad(idUser);
+    }else {
+      showAlert(_state.context, "Gagal Mengupdate Jumlah Barang");
+    }
+  }
+
+  createPayment(String idUser, List<String> ids, CartModel result) async {
+    print(_state.widget.user.id);
+    final _bool = await _bloc.createPayment(idUser, ids);
+    if(!_bool['Error']) {
+      print("Success, Create Payment");
+      Navigator.push(_state.context, MaterialPageRoute(builder: (context) => PaymentPage(
+        user: _state.widget.user,
+        id: _bool['Data']['transaksi_id'].toString(),
+        result: result,
+      )));
+    }else {
+      showAlert(_state.context, "Gagal Membuat Pembayaran");
+    }
+  }
+
   void showAlert(BuildContext context, String isi) {
     showDialog(
         context: context,

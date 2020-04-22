@@ -7,6 +7,7 @@ import 'package:siplah_jpmall/src/models/product_detail.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/ui/mitra/detail_mitra.dart';
+import 'package:siplah_jpmall/src/ui/page_carts.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 
@@ -129,17 +130,30 @@ class ProductDetailPageState extends State<ProductDetailPage>
               )),
             ),
           ),
-          Container(
-            height: 60,
-            width: MediaQuery.of(context).size.width * (2 / 5),
-            decoration: BoxDecoration(
-                color: Colors.redAccent,
-                borderRadius: BorderRadius.only(topRight: Radius.circular(15))),
-            child: Center(
-                child: Text(
-              "Beli",
-              style: MyTools.boldStyle(color: Colors.white, size: 16),
-            )),
+          Builder(
+            builder:(context) => GestureDetector(
+              onTap: (){
+                createCart(result.id, result.userId, this.widget.user.id, qty: 1).then((value) {
+                  if(value){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CartsPage(user: this.widget.user,)));
+                  }else{
+                    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("Failed to Add cart", style: MyTools.regular(color: Colors.white, size: 14),)));
+                  }
+                });
+              },
+              child: Container(
+                height: 60,
+                width: MediaQuery.of(context).size.width * (2 / 5),
+                decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(15))),
+                child: Center(
+                    child: Text(
+                  "Beli",
+                  style: MyTools.boldStyle(color: Colors.white, size: 16),
+                )),
+              ),
+            ),
           ),
         ],
       ),
