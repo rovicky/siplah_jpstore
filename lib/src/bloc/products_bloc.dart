@@ -1,23 +1,21 @@
-
-import 'package:siplah_jpmall/src/models/product_model.dart';
-import 'package:siplah_jpmall/src/resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:siplah_jpmall/src/models/search_model.dart';
+import 'package:siplah_jpmall/src/resources/products_provider.dart';
 
 
 class ProductBloc{
-  final _productFetcher = PublishSubject<List<Products>>();
-  final _repository = Repository();
+  final _provider = ProductProvider();
+  final _productFetcher = PublishSubject<SearchModel>();
 
-//  Observable<List<Products>> get allProducts => _productFetcher.stream;
+  Stream<SearchModel> get searchProducts => _productFetcher.stream;
 
-//  fetchAll() async {
-////    List<Products> products = await _repository.fetchProducts();
-////    _productFetcher.sink.add(products);
-//  }
+  Future<SearchModel> searchData(String key, {String userId, int page}) async {
+    SearchModel event = await _provider.searchProduct(key, userId, page: page);
+    _productFetcher.sink.add(event);
+    return event;
+  }
 
   dispose() async {
     _productFetcher.close();
   }
 }
-
-final productBloc = ProductBloc();

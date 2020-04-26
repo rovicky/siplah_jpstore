@@ -5,6 +5,7 @@ import 'package:siplah_jpmall/src/bloc/raja_ongkir/raja_ongkir_bloc.dart';
 import 'package:siplah_jpmall/src/models/cost_model.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 
+///mengembalikan nilai service, cost, etd, courierName, courierCode dengan menggunakan key value pada map<string, dynamic>
 class PickCost extends StatefulWidget {
   final Map<String, dynamic> data;
 

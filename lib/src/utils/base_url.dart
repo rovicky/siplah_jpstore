@@ -1,5 +1,6 @@
 class BaseUrl {
   static String base = "https://siplah.jpstore.id/api/";
+  static String baseAssets = "https://siplah.jpstore.id/assets/";
   static String rjUrl = "https://pro.rajaongkir.com/api/";
   static String baseImage = "https://firebasestorage.googleapis.com/v0/b/lelang-ukk.appspot.com/o/icon%2F1024px-No_image_available.svg.png?alt=media&token=5e988671-0d63-4296-9f97-69d055a4396f";
   static Headers headers = Headers();

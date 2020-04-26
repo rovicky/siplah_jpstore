@@ -47,7 +47,7 @@ class CartPageState extends State<CartPage> with CartState {
             if (snapshot.data.error) {
               return MyTools.errorWidget(context,
                   message: snapshot.data.pesanUsr);
-            } else if (snapshot.data.data.length == 0) {
+            } else if (snapshot.data.data == null) {
               return MyTools.errorWidget(context,
                   message: "Keranjang Kamu Masih kosong !");
             }

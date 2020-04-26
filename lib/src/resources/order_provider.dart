@@ -7,54 +7,92 @@ import 'package:siplah_jpmall/src/utils/base_url.dart';
 
 class OrderProvider {
   Future<OrderModel> fetchMyOrder(String userId, {String id}) async {
-    final response = await http.post(BaseUrl.base + "sekolah/pesanan/tampil", headers: {
+    final response =
+        await http.post(BaseUrl.base + "sekolah/pesanan/tampil", headers: {
       "Content-Type": BaseUrl.headers.contentTypeurlx,
       "API-App": BaseUrl.headers.apiApp,
       "Api-Key": BaseUrl.headers.apiKey,
       "API-Token": BaseUrl.headers.apiToken
     }, body: {
-      "user_id":userId,
-      "id":id ?? ''
+      "user_id": userId,
+      "id": id ?? ''
     });
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return orderModelFromJson(response.body);
-    }else{
+    } else {
       return null;
     }
   }
 
-  Future<Map<String, dynamic>> createPayment(String idUser, List<String> ids) async {
-    List<Map<String, dynamic>> keranjangId = List.generate(ids.length, (index) => {"id": ids[index]});
+  Future<Map<String, dynamic>> createPayment(
+      String idUser, List<String> ids) async {
+    List<Map<String, dynamic>> keranjangId =
+        List.generate(ids.length, (index) => {"id": ids[index]});
     print(keranjangId.toString());
-    final response = await http.post(BaseUrl.base + "sekolah/pembayaran/tambah", headers: {
+    final response =
+        await http.post(BaseUrl.base + "sekolah/pembayaran/tambah", headers: {
       "Content-Type": BaseUrl.headers.contentTypeurlx,
       "API-App": BaseUrl.headers.apiApp,
       "Api-Key": BaseUrl.headers.apiKey,
       "API-Token": BaseUrl.headers.apiToken
     }, body: {
-      "user_id":idUser,
+      "user_id": idUser,
       "keranjang_id": jsonEncode(keranjangId)
     });
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return jsonDecode(response.body);
-    }else{
+    } else {
       return null;
     }
   }
 
   Future<PaymentModel> fetchPayment(String userId, String paymentId) async {
-    final response = await http.post(BaseUrl.base + "sekolah/pembayaran/tampil", headers: {
+    final response =
+        await http.post(BaseUrl.base + "sekolah/pembayaran/tampil", headers: {
       "Content-Type": BaseUrl.headers.contentTypeurlx,
       "API-App": BaseUrl.headers.apiApp,
       "Api-Key": BaseUrl.headers.apiKey,
       "API-Token": BaseUrl.headers.apiToken
     }, body: {
-      "user_id":userId,
-      "transaksi_id":paymentId
+      "user_id": userId,
+      "transaksi_id": paymentId
     });
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return paymentModelFromJson(response.body);
-    }else{
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> purchaseOrder(
+      {List<Map<String, dynamic>> payment,
+      List<Map<String, dynamic>> courier,
+      List<Map<String, dynamic>> marketing,
+      String transactionId,
+      Map<String, dynamic> detail}) async {
+    final response = await http.post(BaseUrl.base + "sekolah/pembayaran/bayar",
+        headers: {
+          "Content-Type": BaseUrl.headers.contentTypeJson,
+          "API-App": BaseUrl.headers.apiApp,
+          "Api-Key": BaseUrl.headers.apiKey,
+          "API-Token": BaseUrl.headers.apiToken
+        },
+        body: jsonEncode({
+          "payment": jsonEncode({
+            "transaksi_id": transactionId,
+            "kurir": jsonEncode(courier),
+            "marketing": jsonEncode(marketing),
+            "detail": jsonEncode(detail),
+            //payment
+          })
+        }));
+    print(response.body);
+    if (response.statusCode == 200) {
+      if (jsonDecode(response.body)['Error']) {
+        return false;
+      }
+      return true;
+    } else {
       return null;
     }
   }

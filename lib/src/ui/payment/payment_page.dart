@@ -5,10 +5,12 @@ import 'package:siplah_jpmall/src/bloc/my_order/order_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/my_order/payment_state.dart';
 import 'package:siplah_jpmall/src/models/address_model.dart';
 import 'package:siplah_jpmall/src/models/cart_model.dart';
+import 'package:siplah_jpmall/src/models/payment/payment_method.dart';
 import 'package:siplah_jpmall/src/models/payment_model.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
 import 'package:siplah_jpmall/src/ui/mitra/pick_marketing_page.dart';
 import 'package:siplah_jpmall/src/ui/payment/pick_cost.dart';
+import 'package:siplah_jpmall/src/ui/payment/pick_payment_method.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
 import 'package:siplah_jpmall/src/utils/mytools.dart';
 
@@ -26,8 +28,10 @@ class PaymentPage extends StatefulWidget {
 class PaymentPageState extends State<PaymentPage> with PaymentState {
   final oBloc = OrderBloc();
   final aBloc = AddressBloc();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map<String, dynamic>> listCourier = [];
   List<Map<String, dynamic>> listRefrence = [];
+  List<PaymentMethod> listPayment = [];
 
   @override
   void initState() {
@@ -39,6 +43,7 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: IconButton(
             icon: Icon(
@@ -83,11 +88,13 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
         Column(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(this.widget.result.data.length, (indexs) {
-              var shipCost = 0;
-              var service;
-              var title;
-              listCourier.add({"id":result.data[indexs].id});
-              listRefrence.add({"id":null});
+
+              if(listCourier.length < this.widget.result.data.length) {
+                listCourier.add({"id":null});
+                listRefrence.add({"id":null});
+                listPayment.add(PaymentMethod(null));
+              }
+
               return Padding(
                 padding:
                     const EdgeInsets.only(left: 10, right: 10, bottom: 4, top: 4),
@@ -291,8 +298,8 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                           ),
                         ),
                         _customListTile({
-                          "title": !listCourier[indexs].containsKey("courier_name") ? "Pilih Ongkir" : listCourier[indexs]['courier_name'],
-                          "subtitle": !listCourier[indexs].containsKey("service") ? "tekan untuk memilih kurir" : listCourier[indexs]["service"],
+                          "title": (listCourier.length == 0 )  ? "" : !listCourier[indexs].containsKey("courier_name") ? "Pilih Ongkir" : listCourier[indexs]['courier_name'],
+                          "subtitle": (listCourier.length == 0 )  ? "" : !listCourier[indexs].containsKey("service") ? "tekan untuk memilih kurir" : listCourier[indexs]["service"],
                           "onPressed": () async {
                             final navResult = await Navigator.push(
                                 context,
@@ -306,16 +313,27 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
 
                             print("hello 2");
 
-                            setState((){
-                              listCourier[indexs] = navResult;
-                            });
+                            if(navResult != null) {
+                              Map<String, dynamic> courier = {
+                                "service":navResult['service'],
+                                "courier_name":navResult['courier_name'],
+                                "courier_code":navResult['courier_code'],
+                                "cost":navResult['cost'],
+                                "etd":navResult['etd'],
+                                "mitra_id":result.data[indexs].mitraId
+                              };
+                              setState((){
+                                listCourier[indexs] = courier;
+                              });
+                              print(courier);
+                            }
 
                             print(navResult);
                           },
                         }),
                         _customListTile({
-                          "title": listRefrence[indexs]['id'] == null ? "Pilih Refrensi" : listRefrence[indexs]['code'],
-                          "subtitle": listRefrence[indexs]['id'] == null ? "tekan untuk memilih marketing" : listRefrence[indexs]['name'],
+                          "title": (listRefrence.length == 0) ?  "" : listRefrence[indexs]['id'] == null ? "Pilih Refrensi" : listRefrence[indexs]['code'],
+                          "subtitle": (listRefrence.length == 0) ?  "" : listRefrence[indexs]['id'] == null ? "tekan untuk memilih marketing" : listRefrence[indexs]['name'],
                           "onPressed": () async {
                             final navResult = await Navigator.push(context, MaterialPageRoute(
                               builder: (context) => PickMarketingPage(mitraId: result.data[indexs].mitraId,)
@@ -323,7 +341,27 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
 
                             if(navResult != null) {
                               setState((){
-                                listRefrence[indexs] = navResult;
+                                listRefrence[indexs] = {
+                                  "id":navResult['id'],
+                                  "name":navResult['name'],
+                                  "code":navResult['code'],
+                                  "mitra_id":result.data[indexs].mitraId
+                                };
+                              });
+                            }
+                          }
+                        }),
+                        _customListTile({
+                          "title": listRefrence.length == 0 ? "" : listPayment[indexs].displayName ?? "Metode Pembayaran",
+                          "subtitle": listRefrence.length == 0 ? "" : listPayment[indexs].bankName ?? "tekan untuk memilih pembayaran",
+                          "onPressed": () async {
+                            final navResult = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => PickPaymentMethod()
+                            )) ;
+
+                            if(navResult != null) {
+                              setState((){
+                                listPayment[indexs] = navResult;
                               });
                             }
                           }
@@ -353,8 +391,8 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                               style: MyTools.regular(
                                   size: 12, color: MyTools.darkAccentColor),
                             ),
-                            Text(
-                              "Rp" + MyTools.priceFormat(listCourier[indexs]['cost']),
+                            Text(listCourier.length == 0 ? "" : (listCourier[indexs].containsKey('cost')) ?
+                            "Rp" + MyTools.priceFormat(listCourier[indexs]['cost']) : "Belum Dipilih",
                               style: MyTools.regular(
                                   size: 12, color: MyTools.darkAccentColor),
                             )
@@ -405,6 +443,7 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Container(
+        padding: const EdgeInsets.only(bottom: 8.0),
         height: 60,
         decoration: BoxDecoration(
           boxShadow: [
@@ -439,6 +478,7 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Container(
+        padding: const EdgeInsets.only(bottom: 8.0),
         height: 60,
         decoration: BoxDecoration(
           boxShadow: [
@@ -453,7 +493,37 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
         ),
         child: Center(
           child: ListTile(
-            onTap: () {},
+            onTap: () {
+              if(listCourier.contains({"id":null})) {
+                _scaffoldKey.currentState.showSnackBar(new SnackBar(content: Text("Kurir Belum diisi!")));
+              }else if (listPayment.contains(PaymentMethod(null))) {
+                _scaffoldKey.currentState.showSnackBar(new SnackBar(content: Text("Payment Belum Dipilih!")));
+              }
+
+              var ongkir = 0;
+              for(var i in listCourier) {
+                ongkir += int.parse(i['cost'].toString());
+              }
+              print(ongkir.toString());
+//              purchase(
+//                courier: List.generate(listCourier.length, (index) => {
+//                  "mitra_id":listCourier[index]['mitra_id'],
+//                  "kurir":"2",
+//                  "kurir_id":listCourier[index]['courier_code'],
+//                  "kurir_service":listCourier[index]['service'],
+//                  "kurir_service_deskripsi":"",
+//                  "ongkir":listCourier[index]['cost']
+//                }),
+//                transactionId: this.widget.id,
+//                marketing: List.generate(listRefrence.length, (index) => {
+//                  "marketing_id":listRefrence[index]['id'],
+//                  "mitra_id":listRefrence[index]['mitra_id']
+//                }),
+//                detail: {
+//                  "total_ongkir": ongkir
+//                }
+//              );
+            },
             title: Center(
               child: Text(
                 "Buat Pesanan",
@@ -492,14 +562,14 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
             title: Text(
               child['title'],
               style:
-                  MyTools.boldStyle(color: MyTools.darkAccentColor, size: 16),
+                  MyTools.boldStyle(color: MyTools.darkAccentColor, size: 14),
             ),
             subtitle: child['subtitle'] == null
                 ? null
                 : Text(
                     child['subtitle'] ?? '',
                     style: MyTools.regular(
-                        size: 13, color: MyTools.darkAccentColor),
+                        size: 11, color: MyTools.darkAccentColor),
                   ),
           ),
         ),

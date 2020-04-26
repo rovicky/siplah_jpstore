@@ -78,6 +78,10 @@ on process :
     2. other
 }
 
+26-04-2020
+
+1. finishing purchase
+
 あと少しで、頑張ってね　：D　なっちゃんがいつもかわいいもん
 
 ![alt text](https://pbs.twimg.com/media/EWM5OGpVAAAonB8?format=jpg&name=small)

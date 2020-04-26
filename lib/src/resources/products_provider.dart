@@ -7,6 +7,7 @@ import 'package:siplah_jpmall/src/models/product_detail.dart';
 import 'package:siplah_jpmall/src/models/product_mitra.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/produk_model.dart';
+import 'package:siplah_jpmall/src/models/search_model.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
 //import '';
 
@@ -81,6 +82,26 @@ class ProductProvider {
       }
     }else if(response.persistentConnection){
         return ProductDetail(id: "00");
+    }
+  }
+
+  Future<SearchModel> searchProduct(String key,String userId, {int page = 1}) async {
+    final response = await client.post(url + "produk/cari_produk", headers: {
+      "Content-Type": BaseUrl.headers.contentTypeurlx,
+      "API-App": BaseUrl.headers.apiApp,
+      "Api-Key": BaseUrl.headers.apiKey,
+      "API-Token": BaseUrl.headers.apiToken
+    }, body: {
+      "user_id":userId ?? '',
+      "cari":key,
+      "limit":"10",
+      "page":page.toString()
+    });
+
+    if(response.statusCode == 200) {
+      return searchModelFromJson(response.body);
+    }else {
+      return null;
     }
   }
 }
