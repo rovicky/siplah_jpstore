@@ -26,7 +26,7 @@ abstract class CartState {
     }
   }
 
-  update(String id, String idUser,{int qty = 1}) async {
+  update(String id, String idUser, {int qty = 1}) async {
     final _bool = await _bloc.update(id, qty: qty);
     if(_bool) {
       firstLoad(idUser);

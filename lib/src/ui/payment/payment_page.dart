@@ -32,13 +32,24 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
   List<Map<String, dynamic>> listCourier = [];
   List<Map<String, dynamic>> listRefrence = [];
   List<PaymentMethod> listPayment = [];
+  var token = '';
 
   @override
   void initState() {
     super.initState();
-    loadPayment(this.widget.user.id, this.widget.id);
-    print(this.widget.id);
+    tokenSet();
   }
+
+  void tokenSet() async {
+    loadToken().then((value){
+      setState((){
+        token = value;
+      });
+    });
+
+    loadPayment(this.widget.user.id, this.widget.id);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,16 +99,15 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
         Column(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(this.widget.result.data.length, (indexs) {
-
-              if(listCourier.length < this.widget.result.data.length) {
-                listCourier.add({"id":null});
-                listRefrence.add({"id":null});
+              if (listCourier.length < this.widget.result.data.length) {
+                listCourier.add({"id": null});
+                listRefrence.add({"id": null});
                 listPayment.add(PaymentMethod(null));
               }
 
               return Padding(
-                padding:
-                    const EdgeInsets.only(left: 10, right: 10, bottom: 4, top: 4),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, bottom: 4, top: 4),
                 child: GestureDetector(
 //        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrderDetailPage(user: this.widget.user, id: result.,))),
                   child: Container(
@@ -106,7 +116,8 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                            color: Colors.black54.withOpacity(0.8).withAlpha(25),
+                            color:
+                                Colors.black54.withOpacity(0.8).withAlpha(25),
                             blurRadius: 7,
                             offset: Offset(0, 0),
                             spreadRadius: 0.4)
@@ -130,9 +141,12 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
-                                        image: NetworkImage(
-                                            this.widget.result.data[indexs].foto ??
-                                                BaseUrl.baseImage))),
+                                        image: NetworkImage(this
+                                                .widget
+                                                .result
+                                                .data[indexs]
+                                                .foto ??
+                                            BaseUrl.baseImage))),
                               ),
                               SizedBox(
                                 width: 10,
@@ -149,7 +163,11 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                                                     .nama
                                                     .length <
                                                 25
-                                            ? this.widget.result.data[indexs].nama
+                                            ? this
+                                                .widget
+                                                .result
+                                                .data[indexs]
+                                                .nama
                                             : this
                                                 .widget
                                                 .result
@@ -187,18 +205,24 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                           mainAxisSize: MainAxisSize.min,
                           children: List.generate(
                               this.widget.result.data[indexs].produk.length < 2
-                                  ? this.widget.result.data[indexs].produk.length
+                                  ? this
+                                      .widget
+                                      .result
+                                      .data[indexs]
+                                      .produk
+                                      .length
                                   : 2, (index) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Container(
-                                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
                                       width: 2,
-                                      color:
-                                          MyTools.darkAccentColor.withOpacity(0.5)),
+                                      color: MyTools.darkAccentColor
+                                          .withOpacity(0.5)),
                                 ),
                                 child: Center(
                                   child: Column(
@@ -256,7 +280,8 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                                                         "...",
                                                 style: MyTools.boldStyle(
                                                     size: 12,
-                                                    color: MyTools.darkAccentColor),
+                                                    color: MyTools
+                                                        .darkAccentColor),
                                               ),
                                               Text(
                                                 this
@@ -266,8 +291,8 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                                                         .produk[index]
                                                         .jumlah +
                                                     "x | Rp " +
-                                                    MyTools.priceFormat(int.parse(
-                                                        this
+                                                    MyTools.priceFormat(
+                                                        int.parse(this
                                                             .widget
                                                             .result
                                                             .data[indexs]
@@ -298,31 +323,41 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                           ),
                         ),
                         _customListTile({
-                          "title": (listCourier.length == 0 )  ? "" : !listCourier[indexs].containsKey("courier_name") ? "Pilih Ongkir" : listCourier[indexs]['courier_name'],
-                          "subtitle": (listCourier.length == 0 )  ? "" : !listCourier[indexs].containsKey("service") ? "tekan untuk memilih kurir" : listCourier[indexs]["service"],
+                          "title": (listCourier.length == 0)
+                              ? ""
+                              : !listCourier[indexs].containsKey("courier_name")
+                                  ? "Pilih Ongkir"
+                                  : listCourier[indexs]['courier_name'],
+                          "subtitle": (listCourier.length == 0)
+                              ? ""
+                              : !listCourier[indexs].containsKey("service")
+                                  ? "tekan untuk memilih kurir"
+                                  : listCourier[indexs]["service"],
                           "onPressed": () async {
                             final navResult = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PickCost(data: {
-                                          "destination":
-                                              result.data[indexs].tujuanKecamatanId,
-                                          "origin": result.data[indexs].kecamatanId,
-                                          "weight": result.data[indexs].totalBerat
+                                          "destination": result
+                                              .data[indexs].tujuanKecamatanId,
+                                          "origin":
+                                              result.data[indexs].kecamatanId,
+                                          "weight":
+                                              result.data[indexs].totalBerat
                                         })));
 
                             print("hello 2");
 
-                            if(navResult != null) {
+                            if (navResult != null) {
                               Map<String, dynamic> courier = {
-                                "service":navResult['service'],
-                                "courier_name":navResult['courier_name'],
-                                "courier_code":navResult['courier_code'],
-                                "cost":navResult['cost'],
-                                "etd":navResult['etd'],
-                                "mitra_id":result.data[indexs].mitraId
+                                "service": navResult['service'],
+                                "courier_name": navResult['courier_name'],
+                                "courier_code": navResult['courier_code'],
+                                "cost": navResult['cost'],
+                                "etd": navResult['etd'],
+                                "mitra_id": result.data[indexs].mitraId
                               };
-                              setState((){
+                              setState(() {
                                 listCourier[indexs] = courier;
                               });
                               print(courier);
@@ -332,35 +367,53 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                           },
                         }),
                         _customListTile({
-                          "title": (listRefrence.length == 0) ?  "" : listRefrence[indexs]['id'] == null ? "Pilih Refrensi" : listRefrence[indexs]['code'],
-                          "subtitle": (listRefrence.length == 0) ?  "" : listRefrence[indexs]['id'] == null ? "tekan untuk memilih marketing" : listRefrence[indexs]['name'],
+                          "title": (listRefrence.length == 0)
+                              ? ""
+                              : listRefrence[indexs]['id'] == null
+                                  ? "Pilih Refrensi"
+                                  : listRefrence[indexs]['code'],
+                          "subtitle": (listRefrence.length == 0)
+                              ? ""
+                              : listRefrence[indexs]['id'] == null
+                                  ? "tekan untuk memilih marketing"
+                                  : listRefrence[indexs]['name'],
                           "onPressed": () async {
-                            final navResult = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => PickMarketingPage(mitraId: result.data[indexs].mitraId,)
-                            )) ;
+                            final navResult = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PickMarketingPage(
+                                          mitraId: result.data[indexs].mitraId,
+                                        )));
 
-                            if(navResult != null) {
-                              setState((){
+                            if (navResult != null) {
+                              setState(() {
                                 listRefrence[indexs] = {
-                                  "id":navResult['id'],
-                                  "name":navResult['name'],
-                                  "code":navResult['code'],
-                                  "mitra_id":result.data[indexs].mitraId
+                                  "id": navResult['id'],
+                                  "name": navResult['name'],
+                                  "code": navResult['code'],
+                                  "mitra_id": result.data[indexs].mitraId
                                 };
                               });
                             }
                           }
                         }),
                         _customListTile({
-                          "title": listRefrence.length == 0 ? "" : listPayment[indexs].displayName ?? "Metode Pembayaran",
-                          "subtitle": listRefrence.length == 0 ? "" : listPayment[indexs].bankName ?? "tekan untuk memilih pembayaran",
+                          "title": listRefrence.length == 0
+                              ? ""
+                              : listPayment[indexs].displayName ??
+                                  "Metode Pembayaran",
+                          "subtitle": listRefrence.length == 0
+                              ? ""
+                              : listPayment[indexs].bankName ??
+                                  "tekan untuk memilih pembayaran",
                           "onPressed": () async {
-                            final navResult = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => PickPaymentMethod()
-                            )) ;
+                            final navResult = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PickPaymentMethod()));
 
-                            if(navResult != null) {
-                              setState((){
+                            if (navResult != null) {
+                              setState(() {
                                 listPayment[indexs] = navResult;
                               });
                             }
@@ -391,8 +444,14 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                               style: MyTools.regular(
                                   size: 12, color: MyTools.darkAccentColor),
                             ),
-                            Text(listCourier.length == 0 ? "" : (listCourier[indexs].containsKey('cost')) ?
-                            "Rp" + MyTools.priceFormat(listCourier[indexs]['cost']) : "Belum Dipilih",
+                            Text(
+                              listCourier.length == 0
+                                  ? ""
+                                  : (listCourier[indexs].containsKey('cost'))
+                                      ? "Rp" +
+                                          MyTools.priceFormat(
+                                              listCourier[indexs]['cost'])
+                                      : "Belum Dipilih",
                               style: MyTools.regular(
                                   size: 12, color: MyTools.darkAccentColor),
                             )
@@ -404,11 +463,17 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
                 ),
               );
             })),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         _buttonNegosiasi(),
-        SizedBox(height: 10,),
-        _buttonCreateOrder(),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
+        _buttonCreateOrder(result),
+        SizedBox(
+          height: 10,
+        ),
       ],
     );
   }
@@ -464,8 +529,7 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
               child: Text(
                 "Negoisasi",
                 textAlign: TextAlign.center,
-                style:
-                MyTools.boldStyle(color: Color(0xFF2BD6A2), size: 16),
+                style: MyTools.boldStyle(color: Color(0xFF2BD6A2), size: 16),
               ),
             ),
           ),
@@ -474,7 +538,7 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
     );
   }
 
-  _buttonCreateOrder() {
+  _buttonCreateOrder(PaymentModel result) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Container(
@@ -494,42 +558,54 @@ class PaymentPageState extends State<PaymentPage> with PaymentState {
         child: Center(
           child: ListTile(
             onTap: () {
-              if(listCourier.contains({"id":null})) {
-                _scaffoldKey.currentState.showSnackBar(new SnackBar(content: Text("Kurir Belum diisi!")));
-              }else if (listPayment.contains(PaymentMethod(null))) {
-                _scaffoldKey.currentState.showSnackBar(new SnackBar(content: Text("Payment Belum Dipilih!")));
+              var ongkir = 0;
+              for (var i in listCourier) {
+                if (i['cost'] == null) {
+                  _scaffoldKey.currentState.showSnackBar(
+                      new SnackBar(content: Text("Kurir not selected")));
+                } else {
+                  ongkir += int.parse(i['cost'].toString());
+                }
               }
 
-              var ongkir = 0;
-              for(var i in listCourier) {
-                ongkir += int.parse(i['cost'].toString());
+              var product = 0;
+              for(var i in result.data) {
+                product += int.parse(i.subTotalProduk.toString());
               }
-              print(ongkir.toString());
-//              purchase(
-//                courier: List.generate(listCourier.length, (index) => {
-//                  "mitra_id":listCourier[index]['mitra_id'],
-//                  "kurir":"2",
-//                  "kurir_id":listCourier[index]['courier_code'],
-//                  "kurir_service":listCourier[index]['service'],
-//                  "kurir_service_deskripsi":"",
-//                  "ongkir":listCourier[index]['cost']
-//                }),
-//                transactionId: this.widget.id,
-//                marketing: List.generate(listRefrence.length, (index) => {
-//                  "marketing_id":listRefrence[index]['id'],
-//                  "mitra_id":listRefrence[index]['mitra_id']
-//                }),
-//                detail: {
-//                  "total_ongkir": ongkir
-//                }
-//              );
+
+              print(product.toString());
+              purchase(
+                this.widget.user,
+                courier: listCourier.map((f) {
+                  return {
+                    "mitra_id":f['mitra_id'],
+                    "kurir":"2",
+                    "kurir_id":f['courier_code'],
+                    "kurir_service":f['service'],
+                    "kurir_service_deskripsi":"",
+                    "ongkir":f['cost'],
+                  };
+                }).toList(),
+                transactionId: this.widget.id,
+                marketing: listRefrence.map((f){
+                  return {
+                    "marketing_id":f['marketing_id'],
+                    "mitra_id":f['mitra_id']
+                  };
+                }).toList(),
+                detail: {
+                  "total_ongkir": ongkir,
+                  "sub_total": product,
+                  "user_id":this.widget.user.id,
+                  "token_id": token??''
+                }
+              );
             },
             title: Center(
               child: Text(
                 "Buat Pesanan",
                 textAlign: TextAlign.center,
-                style:
-                MyTools.boldStyle(color: Colors.white, size: 16),
+                style: MyTools.boldStyle(color: Colors.white, size: 16),
               ),
             ),
           ),

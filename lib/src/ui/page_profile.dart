@@ -144,42 +144,6 @@ class ProfilePageState extends State<ProfilePage> with SettingState {
     );
   }
 
-
-
-  _appBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.blue[800],
-      title: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Row(
-          children: <Widget>[
-            CircleAvatar(
-              radius: 20,
-              child: Center(
-                child: Image.network(
-                  (this.widget.user.foto == null)
-                      ? 'http://siplah.mascitra.co.id/assets/images/user.ico'
-                      : this.widget.user.foto,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Container(
-                width: MediaQuery.of(context).size.width / 2,
-                child: Text(
-                  this.widget.user.nama != null
-                      ? this.widget.user.nama
-                      : "waiting...",
-                  style: TextStyle(color: Colors.white),
-                )),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     bloc.dispose();

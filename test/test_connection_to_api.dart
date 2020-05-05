@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:siplah_jpmall/src/models/cart_model.dart';
 import 'package:siplah_jpmall/src/models/product_detail.dart';
@@ -72,4 +72,10 @@ void main(){
 //    debugPrint(result.toString());
     expect(result.error, false);
   });
+
+  test("connectivity", () async {
+    // bool result = await ConnectivityChecker.cheker();
+    // expect(result,true);
+  });
+  
 }

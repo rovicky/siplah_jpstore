@@ -8,6 +8,7 @@ import '../models/produk_model.dart';
 class ProductFavProvider {
 
   Future<Products> fetchProducts(String id, {String idProduct = ""}) async {
+    print(id + "-"+ idProduct);
     final response = await http.post(BaseUrl.base+"sekolah/produk_favorit/tampil", headers: {
       "Content-Type": BaseUrl.headers.contentTypeurlx,
       "API-App": BaseUrl.headers.apiApp,
@@ -18,6 +19,7 @@ class ProductFavProvider {
       "id":idProduct
     });
     if(response.statusCode == 200) {
+      print(response.body);
       final data = jsonDecode(response.body);
       Products products = Products.fromJson(data);
       return products;
@@ -27,6 +29,7 @@ class ProductFavProvider {
   }
 
   Future<bool> deleteFromFavorite(String id, String iduser) async {
+    print(id+"-"+iduser);
     final response = await http.post(BaseUrl.base+"sekolah/produk_favorit/hapus", headers: {
       "Content-Type": BaseUrl.headers.contentTypeurlx,
       "API-App": BaseUrl.headers.apiApp,
@@ -37,34 +40,30 @@ class ProductFavProvider {
       "id": id
     });
     if(response.statusCode == 200) {
-      debugPrint(response.body);
       final data = jsonDecode(response.body);
       print(data['Error']);
       return data['Error'];
 //      return products;
     }else {
-      throw Exception("Connection or Server Error");
+      return false;
     }
   }
 
   Future<bool> addToFavorite(String id, String idUser) async {
     final response = await http.post(BaseUrl.base + "sekolah/produk_favorit/tambah", headers: {
-      "Content-Type": "application/json",
-      "API-App": "siplah_jpmall.id",
-      "Api-Key": "4P1_7Pm411_51p114h",
-      "API-Token": "575696f2ed816e00edbfa90f917c6f757e5ce05a"
+      "Content-Type": BaseUrl.headers.contentTypeJson,
+      "API-App": BaseUrl.headers.apiApp,
+      "Api-Key": BaseUrl.headers.apiKey,
+      "API-Token": BaseUrl.headers.apiToken
     }, body: jsonEncode({
       'user_id': "" + idUser,
       'produk_id': id,
     }));
 
     if(response.statusCode == 200){
+      print(response.body);
       final result = jsonDecode(response.body);
-      if(result['Error'] || result['Error'] == null){
-        return false;
-      }else {
-        return true;
-      }
+      return result['Error'];
     }else{
       return false;
     }

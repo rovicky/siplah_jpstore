@@ -7,8 +7,6 @@ import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/recomened_products_model.dart';
 import 'package:siplah_jpmall/src/models/slide_model.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
-import 'package:siplah_jpmall/src/ui/gridkategori.dart';
-import 'package:siplah_jpmall/src/ui/imageslider.dart';
 import 'package:siplah_jpmall/src/ui/myappbar.dart';
 import 'package:siplah_jpmall/src/ui/myflexspace.dart';
 import 'package:siplah_jpmall/src/ui/produk_detail.dart';
@@ -61,6 +59,7 @@ class HomePageState extends State<HomePage> with HomeState {
 
   @override
   Widget build(BuildContext context) {
+    
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -91,6 +90,7 @@ class HomePageState extends State<HomePage> with HomeState {
             ];
           },
           body: RefreshIndicator(
+            backgroundColor: Colors.white,
             onRefresh: () =>
                 firstLoad(this.widget.user == null ? '' : this.widget.user.id),
             child: StreamBuilder<ProductModeltwo>(
@@ -155,17 +155,17 @@ class HomePageState extends State<HomePage> with HomeState {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10),
-                                    child: Container(width: 80, height: 1, color: Colors.grey,),
+                                    child: Container(width: MediaQuery.of(context).size.width/4 - 20, height: 1, color: Colors.grey,),
                                   ),
                                   Container(child: Text("Produk Rekomendasi", style: MyTools.boldStyle(color: MyTools.darkAccentColor, size: 16),)),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10),
-                                    child: Container(width: 80,  height: 1, color: Colors.grey,),
+                                    child: Container(width: MediaQuery.of(context).size.width/4 - 20,  height: 1, color: Colors.grey,),
                                   ),
                                 ],
                               ),
                               GridView.count(
-                                childAspectRatio: height/width < 2 ? 0.8 : 0.85,
+                                childAspectRatio: height/width < 2 ? 0.79 : 0.85,
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 crossAxisCount: 2,children: List.generate(listRc.length, (index) => _listProducts(context, listRc[index])),)
@@ -503,12 +503,12 @@ class HomePageState extends State<HomePage> with HomeState {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: MyTools.boldStyle(
-                        size: 13,
+                        size: 12,
                         color:
                         MyTools.darkAccentColor),
                   )),
               SizedBox(
-                height: 5,
+                height: 4,
               ),
               Container(
                 padding: const EdgeInsets.only(left: 10, right: 10),
@@ -517,7 +517,7 @@ class HomePageState extends State<HomePage> with HomeState {
                   "Rp " + result.harga,
                   textAlign: TextAlign.left,
                   style: MyTools.boldStyle(
-                      size: 14,
+                      size: 13,
                       color: Colors.redAccent),
                 ),
               ),
@@ -533,7 +533,7 @@ class HomePageState extends State<HomePage> with HomeState {
                     SizedBox(width: 3,),
                     Text(result.userNama.length < 15 ? result.userNama : result.userNama.substring(0, 15) + "...",
                       style: MyTools.regular(
-                          size: 10,
+                          size: 9,
                           color: MyTools.darkAccentColor),
                     ),
                   ],
@@ -550,7 +550,7 @@ class HomePageState extends State<HomePage> with HomeState {
                     SizedBox(width: 3,),
                     Text(result.kabupatenNama,
                       style: MyTools.regular(
-                          size: 10,
+                          size: 9,
                           color: MyTools.darkAccentColor),
                     ),
                   ],

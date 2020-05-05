@@ -55,8 +55,9 @@ class MyOrderPageState extends State<MyOrderPage> with MyOrderState {
               if (snapshot.data.error) {
                 return MyTools.errorWidget(context,
                     message: snapshot.data.pesanUsr);
-              }else if(snapshot.data.data.length == 0) {
-                return MyTools.errorWidget(context, message: "Belum Ada Pesanan");
+              } else if (snapshot.data.data.length == 0) {
+                return MyTools.errorWidget(context,
+                    message: "Belum Ada Pesanan");
               }
               return SingleChildScrollView(
                 child: Column(
@@ -79,7 +80,13 @@ class MyOrderPageState extends State<MyOrderPage> with MyOrderState {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 4, top: 4),
       child: GestureDetector(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrderDetailPage(user: this.widget.user, id: result.id,))),
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MyOrderDetailPage(
+                      user: this.widget.user,
+                      id: result.id,
+                    ))),
         child: Container(
           padding: MyTools.defaultPadding(bottom: 8),
           width: double.infinity,
@@ -96,122 +103,152 @@ class MyOrderPageState extends State<MyOrderPage> with MyOrderState {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                height: 70,
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  result.mitra[0].foto ?? BaseUrl.baseImage))),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Container(
-                            child: Text(
-                              result.mitra[0].nama,
-                              style: MyTools.boldStyle(
-                                  size: 14, color: MyTools.darkAccentColor),
-                            ),
-                            width:
-                                MediaQuery.of(context).size.width * (1 / 2) + 30),
-                        Container(
-                            child: Text(
-                              result.mitra[0].kabupatenNama,
-                              style: MyTools.regular(
-                                  size: 13, color: MyTools.darkAccentColor),
-                            ),
-                            width:
-                                MediaQuery.of(context).size.width * (1 / 2) + 30),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Column(
+            children: List.generate(result.mitra.length, (index) {
+              return Column(
                 mainAxisSize: MainAxisSize.min,
-                children: List.generate(
-                    result.mitra[0].produk.length,
-                    (index) => Container(
-                          height: 70,
+                children: <Widget>[
+                  Container(
+                    height: 70,
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Container(
+                          height: 40,
+                          width: 40,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(width: 2, color: Colors.black54),
-                          ),
-                          child: Center(
-                            child: ListTile(
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            result.mitra[0].produk[index].foto ??
-                                                BaseUrl.baseImage))),
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      result.mitra[index].foto ??
+                                          BaseUrl.baseImage))),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Container(
+                                child: Text(
+                                  result.mitra[index].nama,
+                                  style: MyTools.boldStyle(
+                                      size: 14, color: MyTools.darkAccentColor),
+                                ),
+                                width: MediaQuery.of(context).size.width *
+                                        (1 / 2) +
+                                    30),
+                            Container(
+                                child: Text(
+                                  result.mitra[index].kabupatenNama,
+                                  style: MyTools.regular(
+                                      size: 13, color: MyTools.darkAccentColor),
+                                ),
+                                width: MediaQuery.of(context).size.width *
+                                        (1 / 2) +
+                                    30),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                        result.mitra[index].produk.length,
+                        (index) => Container(
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                border:
+                                    Border.all(width: 2, color: Colors.black54),
                               ),
-                              title: Text(
-                                  result.mitra[0].produk[index].nama.length < 30
-                                      ? result.mitra[0].produk[index].nama
-                                      : result.mitra[0].produk[index].nama
+                              child: Center(
+                                child: ListTile(
+                                  leading: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                            image: NetworkImage(result
+                                                    .mitra[index]
+                                                    .produk[index]
+                                                    .foto ??
+                                                BaseUrl.baseImage))),
+                                  ),
+                                  title: Text(result.mitra[index].produk[index]
+                                              .nama.length <
+                                          30
+                                      ? result.mitra[index].produk[index].nama
+                                      : result.mitra[index].produk[index].nama
                                               .substring(0, 30) +
                                           "..."),
-                              subtitle: Text(
-                                  result.mitra[0].produk[index].jumlah +
-                                      "x | Rp " +
-                                      MyTools.priceFormat(int.parse(
-                                          result.mitra[0].produk[index].harga))),
-                            ),
-                          ),
-                        )),
-              ),
-              SizedBox(height: 5,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "Status Pesanan :",
-                    style:
-                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
+                                  subtitle: Text(
+                                      result.mitra[index].produk[index].jumlah +
+                                          "x | Rp " +
+                                          MyTools.priceFormat(int.parse(result
+                                              .mitra[0].produk[index].harga))),
+                                ),
+                              ),
+                            )),
                   ),
-                  Text(
-                    result.mitra[0].statusNama,
-                    style:
-                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
+                  SizedBox(
+                    height: 5,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        "Status Pesanan :",
+                        style: MyTools.regular(
+                            color: MyTools.darkAccentColor, size: 13),
+                      ),
+                      Text(
+                        result.mitra[index].statusNama,
+                        style: MyTools.regular(
+                            color: MyTools.darkAccentColor, size: 13),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        "waktu Pemesanan :",
+                        style: MyTools.regular(
+                            color: MyTools.darkAccentColor, size: 13),
+                      ),
+                      Text(
+                        DateFormat.yMMMd()
+                                .format(result.mitra[index].createdAt) +
+                            " " +
+                            DateFormat.Hm()
+                                .format(result.mitra[index].createdAt),
+                        style: MyTools.regular(
+                            color: MyTools.darkAccentColor, size: 13),
+                      ),
+                    ],
+                  ),
+                  (result.mitra.length > 1)
+                      ? (result.mitra.length - 1 == index)
+                          ? Container()
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: Container(
+                                height: 1,
+                                width: double.infinity,
+                                color: MyTools.darkAccentColor.withOpacity(0.8),
+                              ),
+                            )
+                      : Container()
                 ],
-              ),
-              SizedBox(height: 5,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "waktu Pemesanan :",
-                    style:
-                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
-                  ),
-                  Text(
-                    DateFormat.yMMMd().format(result.mitra[0].createdAt) +
-                        " " +
-                        DateFormat.Hm().format(result.mitra[0].createdAt),
-                    style:
-                        MyTools.regular(color: MyTools.darkAccentColor, size: 13),
-                  ),
-                ],
-              ),
-            ],
+              );
+            }),
           ),
         ),
       ),

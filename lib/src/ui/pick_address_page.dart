@@ -75,7 +75,7 @@ class PickAddressPageState extends State<PickAddressPage> with PickAddressState 
           return SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: List.generate(snapshot.data.data.length, (index) => Padding(padding: const EdgeInsets.only(top: 5, bottom: 4, right: 10, left: 10), child: _customTile(context,id: snapshot.data.data[index].id, title: snapshot.data.data[index].nama),)),
+              children: List.generate(snapshot.data.data.length, (index) => Padding(padding: const EdgeInsets.only(top: 5, bottom: 4, right: 10, left: 10), child: _customTile(context,id: snapshot.data.data[index].id, title: snapshot.data.data[index].type + " " + snapshot.data.data[index].nama),)),
             ),
           );
         }return Center(child: CircularProgressIndicator());

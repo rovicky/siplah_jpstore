@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:http/http.dart' show Client;
 import 'package:flutter/foundation.dart';
 import 'package:siplah_jpmall/src/models/Blog.dart';
-import 'package:siplah_jpmall/src/models/get_token.dart';
 import 'package:siplah_jpmall/src/utils/base_url.dart';
 //import '';
 

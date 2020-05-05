@@ -42,6 +42,8 @@ class OrderBloc {
     _payment.sink.add(event);
   }
 
+  Future<String> getToken() => _provider.fetchToken();
+
   dispose() {
     _myOrderList.close();
     _myOrder.close();

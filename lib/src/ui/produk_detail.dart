@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:siplah_jpmall/src/bloc/product_details/product_detail_bloc.dart';
 import 'package:siplah_jpmall/src/bloc/product_details/product_detail_state.dart';
+import 'package:siplah_jpmall/src/bloc/produk_favorit/produk_favorit_bloc.dart';
 import 'package:siplah_jpmall/src/models/product_detail.dart';
 import 'package:siplah_jpmall/src/models/product_model_two.dart';
 import 'package:siplah_jpmall/src/models/user.dart';
@@ -31,6 +32,7 @@ class ProductDetailPage extends StatefulWidget {
 class ProductDetailPageState extends State<ProductDetailPage>
     with ProductDetailState {
   final ProductDetailBloc bloc = ProductDetailBloc();
+  final ProdukFavBloc fBloc = ProdukFavBloc();
   final _skey = GlobalKey<ScaffoldState>();
   int initialPage = 0;
   PageController controller;
@@ -40,7 +42,8 @@ class ProductDetailPageState extends State<ProductDetailPage>
   @override
   void initState() {
     super.initState();
-    firstLoad(this.widget.productId, (this.widget.user == null) ? '' : this.widget.user.id);
+    firstLoad(this.widget.productId,
+        (this.widget.user == null) ? '' : this.widget.user.id);
     controller = PageController(
         initialPage: initialPage, keepPage: true, viewportFraction: 1.0);
   }
@@ -49,12 +52,13 @@ class ProductDetailPageState extends State<ProductDetailPage>
   void dispose() {
     super.dispose();
     bloc.dispose();
+    isFaved(this.widget.user.id, this.widget.productId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _skey,
+        key: _skey,
         body: StreamBuilder<ProductDetail>(
             stream: bloc?.product,
             builder: (context, snapshot) {
@@ -67,7 +71,8 @@ class ProductDetailPageState extends State<ProductDetailPage>
                     context,
                   );
                 }
-                secondLoad((this.widget.user == null) ? '' : this.widget.user.id,
+                secondLoad(
+                    (this.widget.user == null) ? '' : this.widget.user.id,
                     mitraId: this.widget.mitraId,
                     categoryId: this.widget.categoryId);
                 return SafeArea(
@@ -78,10 +83,13 @@ class ProductDetailPageState extends State<ProductDetailPage>
                       //appbar
                       _appBar(context),
                       //button
-                      (this.widget.user != null && this.widget.user.levelId == "3") ? Container() : Align(
-                        alignment: Alignment.bottomCenter,
-                        child: _button(context, snapshot.data),
-                      )
+                      (this.widget.user != null &&
+                              this.widget.user.levelId == "3")
+                          ? Container()
+                          : Align(
+                              alignment: Alignment.bottomCenter,
+                              child: _button(context, snapshot.data),
+                            )
                     ],
                   ),
                 );
@@ -90,7 +98,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
                     message: "Can't Load Anything!");
               }
               return Center(
-                child: CircularProgressIndicator(),
+                child: MyTools.loadingWidget,
               );
             }));
   }
@@ -113,7 +121,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
       child: Row(
         children: <Widget>[
           GestureDetector(
-            onTap: (){
+            onTap: () {
               _showBottomSheet(context, result);
             },
             child: Container(
@@ -121,7 +129,8 @@ class ProductDetailPageState extends State<ProductDetailPage>
               width: MediaQuery.of(context).size.width * (3 / 5),
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15))),
+                  borderRadius:
+                      BorderRadius.only(topLeft: Radius.circular(15))),
               child: Center(
                   child: Text(
                 "Add to Cart",
@@ -131,13 +140,24 @@ class ProductDetailPageState extends State<ProductDetailPage>
             ),
           ),
           Builder(
-            builder:(context) => GestureDetector(
-              onTap: (){
-                createCart(result.id, result.userId, this.widget.user.id, qty: 1).then((value) {
-                  if(value){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CartsPage(user: this.widget.user,)));
-                  }else{
-                    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("Failed to Add cart", style: MyTools.regular(color: Colors.white, size: 14),)));
+            builder: (context) => GestureDetector(
+              onTap: () {
+                createCart(result.id, result.userId, this.widget.user.id,
+                        qty: 1)
+                    .then((value) {
+                  if (value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CartsPage(
+                                  user: this.widget.user,
+                                )));
+                  } else {
+                    Scaffold.of(context).showSnackBar(new SnackBar(
+                        content: Text(
+                      "Failed to Add cart",
+                      style: MyTools.regular(color: Colors.white, size: 14),
+                    )));
                   }
                 });
               },
@@ -146,7 +166,8 @@ class ProductDetailPageState extends State<ProductDetailPage>
                 width: MediaQuery.of(context).size.width * (2 / 5),
                 decoration: BoxDecoration(
                     color: Colors.redAccent,
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(15))),
+                    borderRadius:
+                        BorderRadius.only(topRight: Radius.circular(15))),
                 child: Center(
                     child: Text(
                   "Beli",
@@ -162,7 +183,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
 
   _showBottomSheet(context, ProductDetail result) {
     String price = "0";
-    if(result.hargaSatuan == "0" ) {
+    if (result.hargaSatuan == "0") {
       for (var i in result.hargaZona) {
         for (var j in i.provinsi) {
           if (j.nama == this.widget.user.namaProvinsi) {
@@ -172,7 +193,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
           }
         }
       }
-    }else{
+    } else {
       price = result.hargaSatuan;
     }
     TextEditingController _qty = TextEditingController(text: "1");
@@ -180,110 +201,153 @@ class ProductDetailPageState extends State<ProductDetailPage>
         context: context,
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))
-        ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
         builder: (context) {
-      return StatefulBuilder(
-        builder: (context, state) => Container(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 10),
-          height: MediaQuery.of(context).size.height * (1/3),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Row(
+          return StatefulBuilder(
+            builder: (context, state) => Container(
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, top: 15, bottom: 10),
+              height: MediaQuery.of(context).size.height * (1 / 3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.white,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          result.foto == null ? BaseUrl.baseImage :
-                          result.foto[0].foto
-                        ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            image: DecorationImage(
+                              image: NetworkImage(result.foto == null
+                                  ? BaseUrl.baseImage
+                                  : result.foto[0].foto),
+                            )),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Container(
+                              width:
+                                  MediaQuery.of(context).size.width * (1 / 2) +
+                                      20,
+                              child: Text(
+                                result.nama,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: MyTools.boldStyle(
+                                    size: 16, color: MyTools.darkAccentColor),
+                              )),
+                          Container(
+                              width:
+                                  MediaQuery.of(context).size.width * (1 / 2) +
+                                      20,
+                              child: Text(
+                                "Rp " + MyTools.priceFormat(int.parse(price)),
+                                textAlign: TextAlign.left,
+                                style: MyTools.boldStyle(
+                                    size: 15, color: Colors.redAccent),
+                              ))
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              state(() {
+                                _qty = TextEditingController(
+                                    text:
+                                        (int.parse(_qty.text) + 1).toString());
+                              });
+                            },
+                            child: Container(
+                              height: 20,
+                              width: 40,
+                              child: Icon(
+                                Icons.add,
+                                size: 15,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 20,
+                            width: 40,
+                            child: TextField(
+                              textAlign: TextAlign.center,
+                              enabled: false,
+                              controller: _qty,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              if (_qty.text == "1") {
+                                state(() {
+                                  _qty = TextEditingController(
+                                      text: (int.parse(_qty.text) - 0)
+                                          .toString());
+                                });
+                              } else {
+                                state(() {
+                                  _qty = TextEditingController(
+                                      text: (int.parse(_qty.text) - 1)
+                                          .toString());
+                                });
+                              }
+                            },
+                            child: Container(
+                              height: 20,
+                              width: 40,
+                              child: Icon(
+                                Icons.remove,
+                                size: 15,
+                              ),
+                            ),
+                          )
+                        ],
                       )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      createCart(result.id, result.userId, this.widget.user.id,
+                              qty: int.parse(_qty.text))
+                          .then((value) {
+                        if (value) {
+                          Navigator.pop(context);
+                          _skey.currentState.showSnackBar(new SnackBar(
+                            content: Text("Berhasil Menambahkan",
+                                style: MyTools.boldStyle(
+                                    size: 16, color: Colors.white)),
+                          ));
+                        } else {
+                          Navigator.pop(context);
+                          _skey.currentState.showSnackBar(new SnackBar(
+                            content: Text("Gagal Menambahkan",
+                                style: MyTools.boldStyle(
+                                    size: 16, color: Colors.white)),
+                          ));
+                        }
+                      });
+                    },
+                    height: 45,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Text(
+                      "Tambah",
+                      style: MyTools.boldStyle(color: Colors.white, size: 16),
                     ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width * (1/2) + 20,
-                          child: Text(result.nama,maxLines: 2, overflow: TextOverflow.ellipsis, style: MyTools.boldStyle(size: 16, color: MyTools.darkAccentColor),)),
-                      Container(
-                          width: MediaQuery.of(context).size.width * (1/2) + 20,
-                          child: Text("Rp "+MyTools.priceFormat(int.parse(price)), textAlign: TextAlign.left, style: MyTools.boldStyle(size: 15, color: Colors.redAccent),))
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: (){
-                          state((){
-                            _qty = TextEditingController(text: (int.parse(_qty.text) + 1).toString());
-                          });
-                        },
-                        child: Container(
-                          height: 20,
-                          width: 40,
-                          child: Icon(Icons.add, size: 15,),
-                        ),
-                      ),
-                      Container(
-                        height: 20,
-                        width: 40,
-                        child: TextField(
-                          textAlign: TextAlign.center,
-                          enabled: false,
-                          controller: _qty,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          if(_qty.text == "1") {
-                            state((){
-                              _qty = TextEditingController(text: (int.parse(_qty.text) - 0).toString());
-                            });
-                          }else{
-                            state((){
-                              _qty = TextEditingController(text: (int.parse(_qty.text) - 1).toString());
-                            });
-                          }
-                        },
-                        child: Container(
-                          height: 20,
-                          width: 40,
-                          child: Icon(Icons.remove, size: 15,),
-                        ),
-                      )
-                    ],
+                    color: Colors.red,
                   )
                 ],
               ),
-              SizedBox(height: 10,),
-              MaterialButton(onPressed: (){
-                createCart(result.id, result.userId, this.widget.user.id, qty: int.parse(_qty.text)).then((value) {
-
-                  if(value){
-                    Navigator.pop(context);
-                    _skey.currentState.showSnackBar(new SnackBar(content: Text("Berhasil Menambahkan", style: MyTools.boldStyle(size: 16, color: Colors.white)),));
-                  }else{
-                    Navigator.pop(context);
-                    _skey.currentState.showSnackBar(new SnackBar(content: Text("Gagal Menambahkan", style: MyTools.boldStyle(size: 16, color: Colors.white)),));
-                  }
-                });
-
-              }, height: 45, shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15)
-              ), child: Text("Tambah", style: MyTools.boldStyle(color: Colors.white, size: 16),), color: Colors.red,)
-            ],
-          ),
-        ),
-      );
-    });
+            ),
+          );
+        });
   }
 
   _body(context, ProductDetail result) {
@@ -293,7 +357,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
         children: <Widget>[
           Container(
             color: MyTools.darkAccentColor.withOpacity(0.3),
-            height: MediaQuery.of(context).size.height * (2/4),
+            height: MediaQuery.of(context).size.height * (2 / 4),
             width: double.infinity,
             child: Center(
               child: Column(
@@ -313,7 +377,8 @@ class ProductDetailPageState extends State<ProductDetailPage>
                                 context,
                                 height:
                                     MediaQuery.of(context).size.height / 3 - 20,
-                                width: MediaQuery.of(context).size.width / 2 - 20,
+                                width:
+                                    MediaQuery.of(context).size.width / 2 - 20,
                               )),
                       controller: controller,
                       onPageChanged: (currentPage) =>
@@ -365,25 +430,33 @@ class ProductDetailPageState extends State<ProductDetailPage>
           ),
           _storeInfo(context, {
             'img': result.userFoto,
-            'key':result.userNama,
-            'value':result.userId
+            'key': result.userNama,
+            'value': result.userId
           }),
           SizedBox(
             height: 10,
           ),
-          (result.hargaSatuan == '0') ? Padding(
-            padding: MyTools.defaultPadding(),
-            child: Divider(),
-          ) : Container(),
-          (result.hargaSatuan == '0') ? _zonePriceList(context, result) : Container(),
+          (result.hargaSatuan == '0')
+              ? Padding(
+                  padding: MyTools.defaultPadding(),
+                  child: Divider(),
+                )
+              : Container(),
+          (result.hargaSatuan == '0')
+              ? _zonePriceList(context, result)
+              : Container(),
           Padding(
             padding: MyTools.defaultPadding(top: 8),
             child: Divider(),
           ),
           _productInformation(context, result),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           _otherProduct(context),
-          SizedBox(height: 60,),
+          SizedBox(
+            height: 60,
+          ),
         ],
       ),
     );
@@ -391,34 +464,61 @@ class ProductDetailPageState extends State<ProductDetailPage>
 
   _zonePriceList(context, ProductDetail result) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10,),
+      padding: const EdgeInsets.only(
+        top: 10.0,
+        left: 10,
+        right: 10,
+      ),
       child: Table(
         border: TableBorder.all(width: 2),
         children: [
           TableRow(
-            children: List.generate(result.hargaZona.length, (index) => GestureDetector(
-              onTap: (){
-                showDialog(context: context, builder: (context) => AlertDialog(
-                  content: RichText(text: TextSpan(
-                    style: MyTools.regular(color: MyTools.darkAccentColor, size: 14),
-                      children: List.generate(result.hargaZona[index].provinsi.length, (ind) => TextSpan(
-                          text: result.hargaZona[index].provinsi[ind].nama + ","
-                      ))
-                  )),
-                ));
-              },
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Text(result.hargaZona[index].zonaNama, style: MyTools.boldStyle(color: MyTools.darkAccentColor, size: 14)),
-                ),
-              ),
-            ))
-          ),
-          TableRow(children: List.generate(result.hargaZona.length, (index) => Center(child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Text("Rp "+MyTools.priceFormat(int.parse(result.hargaZona[index].harga)), style: MyTools.regular(color: MyTools.darkAccentColor, size: 14),),
-          ))))
+              children: List.generate(
+                  result.hargaZona.length,
+                  (index) => GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    content: RichText(
+                                        text: TextSpan(
+                                            style: MyTools.regular(
+                                                color: MyTools.darkAccentColor,
+                                                size: 14),
+                                            children: List.generate(
+                                                result.hargaZona[index].provinsi
+                                                    .length,
+                                                (ind) => TextSpan(
+                                                    text: result
+                                                            .hargaZona[index]
+                                                            .provinsi[ind]
+                                                            .nama +
+                                                        ",")))),
+                                  ));
+                        },
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(result.hargaZona[index].zonaNama,
+                                style: MyTools.boldStyle(
+                                    color: MyTools.darkAccentColor, size: 14)),
+                          ),
+                        ),
+                      ))),
+          TableRow(
+              children: List.generate(
+                  result.hargaZona.length,
+                  (index) => Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          "Rp " +
+                              MyTools.priceFormat(
+                                  int.parse(result.hargaZona[index].harga)),
+                          style: MyTools.regular(
+                              color: MyTools.darkAccentColor, size: 14),
+                        ),
+                      ))))
         ],
       ),
     );
@@ -434,7 +534,8 @@ class ProductDetailPageState extends State<ProductDetailPage>
             if (snapshot.hasError) {
               return MyTools.errorWidget(context);
             } else if (snapshot.hasData) {
-              return Center(child: _listProductFromCategory(snapshot.data.data[0]));
+              return Center(
+                  child: _listProductFromCategory(snapshot.data.data[0]));
             }
             return Center(child: CircularProgressIndicator());
           }),
@@ -472,11 +573,13 @@ class ProductDetailPageState extends State<ProductDetailPage>
           Container(
 //          color: Colors.black,
             width: MediaQuery.of(context).size.width * (1 / 3) - 10,
-            child: (this.widget.user == null) ? Container() : Text(
-              "Rp " + MyTools.priceFormat(int.parse(price)),
-              style: MyTools.boldStyle(size: 17, color: MyTools.redColor),
-              textAlign: TextAlign.end,
-            ),
+            child: (this.widget.user == null)
+                ? Container()
+                : Text(
+                    "Rp " + MyTools.priceFormat(int.parse(price)),
+                    style: MyTools.boldStyle(size: 17, color: MyTools.redColor),
+                    textAlign: TextAlign.end,
+                  ),
           )
         ],
       ),
@@ -484,7 +587,6 @@ class ProductDetailPageState extends State<ProductDetailPage>
   }
 
   _storeInfo(context, Map<String, dynamic> result) {
-
     /**
      * img = image,
      * key = store name,
@@ -492,21 +594,23 @@ class ProductDetailPageState extends State<ProductDetailPage>
      */
 
     return ListTile(
-      onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => DetailMitraPage(
-        user: this.widget.user,
-        mitraId: result['value'],
-      ))),
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DetailMitraPage(
+                    user: this.widget.user,
+                    mitraId: result['value'],
+                  ))),
       leading: CircleAvatar(
         child: Container(
           height: 50,
           width: 50,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: NetworkImage(result['img']),
-              fit: BoxFit.cover,
-          )
-          ),
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: NetworkImage(result['img']),
+                fit: BoxFit.cover,
+              )),
         ),
         backgroundColor: MyTools.primaryColor,
       ),
@@ -514,8 +618,12 @@ class ProductDetailPageState extends State<ProductDetailPage>
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width * (1/2) + 20,
-              child: Text(result['key'], style: MyTools.boldStyle(size: 18, color: MyTools.darkAccentColor),)),
+              width: MediaQuery.of(context).size.width * (1 / 2) + 20,
+              child: Text(
+                result['key'],
+                style:
+                    MyTools.boldStyle(size: 18, color: MyTools.darkAccentColor),
+              )),
         ],
       ),
       trailing: Icon(Icons.check_circle, size: 25, color: Colors.amberAccent),
@@ -533,10 +641,11 @@ class ProductDetailPageState extends State<ProductDetailPage>
           children: <Widget>[
             _iconOverview(context, Icons.visibility,
                 msg: "Dilihat", value: result.dilihat),
-            _iconOverview(context, Icons.access_time,
-                msg: "Kondisi", value: result.kondisi),
             _iconOverview(context, Icons.local_shipping,
                 msg: "Terkirim", value: result.terkirim),
+            _iconOverview(context, Icons.access_time,
+                msg: "Kondisi",
+                value: result.kondisi == "1" ? "Baru" : "Bekas"),
             _iconOverview(context, Icons.local_offer,
                 msg: "Min. Pembelian", value: result.pembelianMinimum)
           ],
@@ -563,16 +672,13 @@ class ProductDetailPageState extends State<ProductDetailPage>
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Icon(
-          icon,
-          size: 30,
-        ),
+        Icon(icon, size: 26, color: MyTools.darkAccentColor),
         SizedBox(
           width: 10,
         ),
         Text(
           "$msg : $val",
-          style: MyTools.regular(color: MyTools.darkAccentColor, size: 14),
+          style: MyTools.regular(color: MyTools.darkAccentColor, size: 12),
         ),
         SizedBox(
           width: 10,
@@ -602,29 +708,58 @@ class ProductDetailPageState extends State<ProductDetailPage>
             ),
             onPressed: () {},
           ),
-          IconButton(
-            icon: Icon(
-              Icons.favorite_border,
-              color: MyTools.darkAccentColor,
-            ),
-            onPressed: () {},
-          ),
+          this.widget.user != null
+              ? StreamBuilder<bool>(
+                  stream: fBloc.isFaved,
+                  initialData: false,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return IconButton(
+                        icon: Icon(
+                          snapshot.data
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: snapshot.data
+                              ? Colors.redAccent
+                              : MyTools.darkAccentColor,
+                        ),
+                        onPressed: () {
+                          if (snapshot.data) {
+                            print("snapshot is ${snapshot.data.toString()}");
+                            deleteFav(
+                                this.widget.productId, this.widget.user.id);
+                            isFaved(this.widget.user.id, this.widget.productId);
+                            print("pressed");
+                          } else {
+                            addToFav(
+                                this.widget.productId, this.widget.user.id);
+                            print("pressed");
+                          }
+                        },
+                      );
+                    }
+                    return IconButton(
+                      icon: Icon(
+                        Icons.favorite_border,
+                        color: MyTools.darkAccentColor,
+                      ),
+                      onPressed: null,
+                    );
+                  })
+              : null,
         ],
       ),
     );
   }
 
   _listProductFromCategory(Datum category) {
-    if(category.produk == null) {
+    if (category.produk == null) {
       return Container();
     }
     return Container(
       height: 180,
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-            color: Colors.black26,
-            offset: Offset(0, 3),
-            blurRadius: 3)
+        BoxShadow(color: Colors.black26, offset: Offset(0, 3), blurRadius: 3)
       ]),
       child: Container(
 //        height: 200,
@@ -639,8 +774,7 @@ class ProductDetailPageState extends State<ProductDetailPage>
                 onTap: () => Navigator.push(
                     context,
                     PageRouteBuilder(
-                        transitionDuration:
-                        Duration(milliseconds: 350),
+                        transitionDuration: Duration(milliseconds: 350),
                         pageBuilder: (context, _, __) => ProductDetailPage(
                             mitraId: category.produk[index].userId,
                             categoryId: category.id,
@@ -660,24 +794,28 @@ class ProductDetailPageState extends State<ProductDetailPage>
                         height: 100,
                         width: 100,
                         child: Container(
-                          child: (category.produk[index].foto != null) ? MyTools.imageProvider(category.produk[index].foto[0].foto, context) : Image.network('http://siplah.mascitra.co.id/assets/images/no-image.png',
-                            fit: BoxFit.cover,
-                          ),
-                          decoration: BoxDecoration(
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 5.0)
-                              ]),
+                          child: (category.produk[index].foto != null)
+                              ? MyTools.imageProvider(
+                                  category.produk[index].foto[0].foto, context)
+                              : Image.network(
+                                  'http://siplah.mascitra.co.id/assets/images/no-image.png',
+                                  fit: BoxFit.cover,
+                                ),
+                          decoration: BoxDecoration(boxShadow: <BoxShadow>[
+                            BoxShadow(color: Colors.black26, blurRadius: 5.0)
+                          ]),
                         ),
                       ),
-                      SizedBox(height: 5,),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Container(
                         height: 40,
                         width: 110,
                         child: Text(
                           category.produk[index].produk,
-                          style: MyTools.regular(size: 12, color: Colors.black87),
+                          style:
+                              MyTools.regular(size: 12, color: Colors.black87),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
@@ -689,7 +827,8 @@ class ProductDetailPageState extends State<ProductDetailPage>
                           category.produk[index].harga != '0'
                               ? "Rp " + category.produk[index].harga
                               : "harga zona",
-                          style: MyTools.boldStyle(size: 14, color: Colors.redAccent),
+                          style: MyTools.boldStyle(
+                              size: 14, color: Colors.redAccent),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),

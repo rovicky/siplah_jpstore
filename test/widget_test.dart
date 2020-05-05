@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:siplah_jpmall/main.dart';
+import 'package:siplah_jpmall/src/models/mitra/cabang_model.dart';
+import 'package:siplah_jpmall/src/resources/mitra_provider.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
@@ -26,5 +28,10 @@ void main() {
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
+  });
+  
+  test("Test cabang mitra", () async {
+    CabangModel cabang = await MitraDetailProvider().fetchCabangMitra("68");
+    expect(cabang.error, false);
   });
 }

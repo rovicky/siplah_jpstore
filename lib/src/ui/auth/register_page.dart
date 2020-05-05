@@ -34,7 +34,8 @@ class RegisterPageState extends State<Register> with RegisterState{
           context,
           DropdownButtonHideUnderline(
             child: DropdownButton(
-                dropdownColor: Colors.white,
+                // dropdownColor: Colors.white,
+
                 isExpanded: true,
                 value: selectedAccountType,
                 hint: Text(
@@ -66,7 +67,8 @@ class RegisterPageState extends State<Register> with RegisterState{
                   context,
                   DropdownButtonHideUnderline(
                     child: DropdownButton(
-                        dropdownColor: Colors.white,
+                      focusColor: Colors.white,
+                        // dropdownColor: Colors.white,
                         isExpanded: true,
                         value: slctdKatPel,
                         hint: Text(
@@ -279,7 +281,9 @@ class RegisterPageState extends State<Register> with RegisterState{
                                   thisPage = 0;
                                 });
                               }
-                            : () {},
+                            : () {
+                              Navigator.pop(context);
+                            },
                         child: Text(
                           thisPage == 1 ? "Back" : "Cancel",
                           style: TextStyle(color: Colors.white),

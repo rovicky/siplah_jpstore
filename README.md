@@ -84,4 +84,12 @@ on process :
 
 あと少しで、頑張ってね　：D　なっちゃんがいつもかわいいもん
 
+05-05-2020
+
+1. mitra page, tambah produk mitra, tambah cabang mitra, delete cabang mitra,
+
+masih proses : 
+1. edit produk, masih kendala di markdown ke notus document untuk zefyrnya
+2. edit cabang mitra belum selesai terkendala di parameter password dan konfirmasi password 
+
 ![alt text](https://pbs.twimg.com/media/EWM5OGpVAAAonB8?format=jpg&name=small)

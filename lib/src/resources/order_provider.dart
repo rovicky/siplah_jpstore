@@ -70,6 +70,16 @@ class OrderProvider {
       List<Map<String, dynamic>> marketing,
       String transactionId,
       Map<String, dynamic> detail}) async {
+        var body = jsonEncode({
+          "payment": {
+            "transaksi_id": transactionId,
+            "kurir": courier,
+            "marketing": marketing,
+            "detail": detail,
+            //payment
+          }
+        });
+        // print(body);
     final response = await http.post(BaseUrl.base + "sekolah/pembayaran/bayar",
         headers: {
           "Content-Type": BaseUrl.headers.contentTypeJson,
@@ -77,15 +87,7 @@ class OrderProvider {
           "Api-Key": BaseUrl.headers.apiKey,
           "API-Token": BaseUrl.headers.apiToken
         },
-        body: jsonEncode({
-          "payment": jsonEncode({
-            "transaksi_id": transactionId,
-            "kurir": jsonEncode(courier),
-            "marketing": jsonEncode(marketing),
-            "detail": jsonEncode(detail),
-            //payment
-          })
-        }));
+        body: body);
     print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['Error']) {
@@ -95,5 +97,14 @@ class OrderProvider {
     } else {
       return null;
     }
+  }
+  
+  Future<String> fetchToken() async {
+    final response = await http.post(BaseUrl.base + "midtrans/api/token");
+    if(response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      return result['id'];
+    }
+    return null;
   }
 }

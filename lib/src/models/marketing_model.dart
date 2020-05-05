@@ -11,7 +11,7 @@ String marketingModelToJson(MarketingModel data) => json.encode(data.toJson());
 class MarketingModel {
   bool error;
   String message;
-  List<Datum> data;
+  List<Marketing> data;
   dynamic draw;
   int recordsTotal;
   int recordsFiltered;
@@ -28,7 +28,7 @@ class MarketingModel {
   factory MarketingModel.fromJson(Map<String, dynamic> json) => MarketingModel(
     error: json["error"] == null ? null : json["error"],
     message: json["message"] == null ? null : json["message"],
-    data: json["data"] == null ? null : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? null : List<Marketing>.from(json["data"].map((x) => Marketing.fromJson(x))),
     draw: json["draw"],
     recordsTotal: json["recordsTotal"] == null ? null : json["recordsTotal"],
     recordsFiltered: json["recordsFiltered"] == null ? null : json["recordsFiltered"],
@@ -44,7 +44,7 @@ class MarketingModel {
   };
 }
 
-class Datum {
+class Marketing {
   String id;
   String kode;
   String kategori;
@@ -64,7 +64,7 @@ class Datum {
   DateTime createdAt;
   DateTime updatedAt;
 
-  Datum({
+  Marketing({
     this.id,
     this.kode,
     this.kategori,
@@ -85,7 +85,7 @@ class Datum {
     this.updatedAt,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory Marketing.fromJson(Map<String, dynamic> json) => Marketing(
     id: json["id"] == null ? null : json["id"],
     kode: json["kode"] == null ? null : json["kode"],
     kategori: json["kategori"] == null ? null : json["kategori"],

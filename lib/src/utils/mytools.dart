@@ -53,7 +53,8 @@ class MyTools {
   static Color primaryColorChild = Color(0xFF6BB8E3);
   static Color accentColor = Color(0xFF3FCB9B);
   static Color darkAccentColor = Color(0xFF173f5f);
-  static Color redColor = Color(0xFFce2029);
+  static Color redColor = Color(0xFFD62B31);
+  static Color greenLand = Color(0xFF2BD6A2);
 
   static Widget errorWidget(BuildContext context,
           {String message = "Item Not Found!"}) =>
